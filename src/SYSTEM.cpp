@@ -7,6 +7,7 @@
 #include"ADMIN.h"
 #include"../include/ConsoleHelper.h"
 #include<limits>
+#include<cctype>
 using namespace std;
 SYSTEM::SYSTEM()
     : current_user(nullptr), repo(), isAdminLogggedin(false){}
@@ -150,120 +151,27 @@ void SYSTEM::displayMainMenu()
     ConsoleHelper::PrintHeader("--------------SALES & INVENTORY SYSTEM---------------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    cout << "\n1. Register\n2. User Login\n3. Logout\n4. Admin Login\n5. Exit\n";
+    cout << "\n1. Register\n2. User Login\n3. Admin Login\n4. Exit\n";
     cout << "Enter choice: ";
 }
 
 void SYSTEM::handleRegistration()
 {
-    string fullName, username, password, contactNo, location, email;
-    int age, roleChoice;
-
-    cout << "Enter full name: ";
-    cin.ignore();
-    getline(cin, fullName);
-    cout << "Enter username: ";
-    getline(cin, username);
-    cout << "Enter password: ";
-    getline(cin, password);
-    cout << "Enter contact number: ";
-    getline(cin, contactNo);
-    cout << "Enter age: ";
-    cin >> age;
-
-    if (cin.fail())
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid age. Registration cancelled." << endl;
-        return;
-    }
-
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    cout << "Enter location: ";
-    getline(cin, location);
-    cout << "Enter email address: ";
-    getline(cin, email);
-    cout << "Select role " << endl;
-    cout << "[1] Buyer" << endl << "[2] Seller" << endl;
-    cout << "Enter role choice: ";
-    cin >> roleChoice;
-
-    if (cin.fail())
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid role. Registration cancelled." << endl;
-        return;
-    }
-
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    Authority role = (roleChoice == 2) ? ClientSELLER : ClientBUYER;
-    USER_ACCOUNT newAccount(fullName, username, password, contactNo, age, location, email, role);
-
-    if (registerAccount(newAccount))
-    {
-        cout << "Registration successful!" << endl;
-    }
-    else
-    {
-        cout << "Username already exists. Try another username." << endl;
-    }
+    // UI logic separated to USER class for easy modification
+    USER::handleUserRegistrationUI(auth);
 }
 
 void SYSTEM::handleUserLogin()
 {
-    string username, password;
-    cout << "Enter username: ";
-    cin.ignore();
-    getline(cin, username);
-    cout << "Enter password: ";
-    getline(cin, password);
-
-    // Verify credentials and get account
-    USER_ACCOUNT* account = auth.verifyAndGetAccount(username, password);
-    if (!account)
-    {
-        cout << "Login failed. Invalid credentials." << endl;
-        return;
-    }
-
-    cout << "Welcome, " << account->getUsername() << "!" << endl;
-
-    // Create appropriate user object based on role
-    if (account->getAuthority() == ClientSELLER)
-    {
-        SELLER seller(*account, repo);
-        seller.startSession();
-    }
-    else if (account->getAuthority() == ClientBUYER)
-    {
-        BUYER buyer(*account, repo);
-        buyer.startSession();
-    }
+    // UI logic separated to USER class for easy modification
+    USER::handleUserLoginUI(auth, repo);
 }
+
 
 void SYSTEM::handleAdminLogin()
 {
-    string adminPass;
-    cout << "Enter admin passcode: ";
-    cin.ignore();
-    getline(cin, adminPass);
-
-    if (!adminLogin(adminPass))
-    {
-        cout << "Invalid admin passcode." << endl;
-        return;
-    }
-
-    cout << "Admin login successful." << endl;
-
-    ADMIN admin(adminPass, repo, auth);
-    admin.startSession();
-
-    isAdminLogggedin = false;
+    // UI logic separated to ADMIN class for easy modification
+    ADMIN::handleAdminLoginUI(auth, repo);
 }
 
 void SYSTEM::run()
@@ -291,13 +199,10 @@ void SYSTEM::run()
             case 2:
                 handleUserLogin();
                 break;
-            case 3:
-                logoutCurrentUser();
-                break;
-            case 4:
+             case 3:
                 handleAdminLogin();
                 break;
-            case 5:
+            case 4:
                 cout << "Exiting system..." << endl;
                 running = false;
                 break;

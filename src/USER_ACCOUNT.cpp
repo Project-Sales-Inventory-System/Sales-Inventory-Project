@@ -5,14 +5,14 @@
 using namespace std;
 
 USER_ACCOUNT::USER_ACCOUNT(){
-    full_name=" ";
-    username=" ";
-    password=" ";
-    contact_num=" ";
+    full_name="";
+    username="";
+    password="";
+    contact_num="";
     age=0;
-    location=" ";
-    mail_address=" ";
-    authority= ClientBUYER;
+    location="";
+    mail_address="";
+    authority= Client;
         
 }
 USER_ACCOUNT:: USER_ACCOUNT(std:: string full_name, std:: string username, std:: string password, std:: string contact_num, int age, std:: string location, std:: string  mail_address, Authority auth)

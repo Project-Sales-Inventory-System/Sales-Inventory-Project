@@ -228,7 +228,7 @@ USER* AUTHORITY_SERVICE::login(std::string username, std::string password)
 
     for (int i = 0; i < registered_user.size(); i++)
     {
-        if (!(registered_user[i].getAuthority() == ClientBUYER || registered_user[i].getAuthority() == ClientSELLER))
+        if (!(registered_user[i].getAuthority() == ClientBUYER || registered_user[i].getAuthority() == ClientSELLER || registered_user[i].getAuthority()==Client))
         {
             continue;
         }
@@ -313,7 +313,7 @@ bool AUTHORITY_SERVICE::deleteUserByUsername(const std::string& username)
     return false;
 }
 
-USER_ACCOUNT* AUTHORITY_SERVICE::verifyAndGetAccount(const std::string& username, const std::string& password)
+USER_ACCOUNT AUTHORITY_SERVICE::verifyAndGetAccount(const std::string& username, const std::string& password)
 {
     for (int i = 0; i < registered_user.size(); i++)
     {
@@ -322,16 +322,28 @@ USER_ACCOUNT* AUTHORITY_SERVICE::verifyAndGetAccount(const std::string& username
             if (registered_user[i].getPassword() == password)
             {
                 cout << "Login Successful >-<" << endl;
-                return &registered_user[i];
+                return registered_user[i];  // Return copy, not pointer
             }
             else
             {
                 cout << "Password incorrect T-T" << endl;
-                return nullptr;
+                return USER_ACCOUNT();  // Return empty account
             }
         }
     }
     cout << "Username Incorrect T-T" << endl;
-    return nullptr;
+    return USER_ACCOUNT();  // Return empty account
+}
+
+bool AUTHORITY_SERVICE::usernameExists(const std::string& username) const
+{
+    for (int i = 0; i < registered_user.size(); i++)
+    {
+        if (registered_user[i].getUsername() == username)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 

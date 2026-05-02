@@ -14,19 +14,16 @@ class ADMIN: public USER
     
     void AdminMenu();
     void handleUserManagement();
-    void handleProductOperations();
     
     public:
     ADMIN(const std:: string & pass, PRODUCT_REPO& repository, AUTHORITY_SERVICE& auth_svc);
     bool authenticate(AUTHORITY_SERVICE& auth);
     void performAction();
     std:: string getUsername() const;
-    void deleteProduct(std:: string productName);
-    void updateProduct(PRODUCT product);
-    void manageSalesReport();
-    void viewAllUsers();
-    void generateSalesReport();
-    void viewProduct(std::string productName) override;
+    void viewProduct(std::string category) override;
     void searchProduct(std::string productName) override;
     void startSession();
+    
+    // UI Handler Method
+    static void handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo);
 };

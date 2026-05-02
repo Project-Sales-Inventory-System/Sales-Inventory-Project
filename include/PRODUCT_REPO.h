@@ -20,6 +20,7 @@ class PRODUCT_REPO
         void removeProduct();
         void updateProduct();
         void searchByName(string name);
+        void searchByCategory(string category);
         void getAllProducts(bool showCount);
         void saveToFile();
         void loadFromFile();

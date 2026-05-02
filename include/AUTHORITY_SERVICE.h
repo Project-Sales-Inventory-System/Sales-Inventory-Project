@@ -21,5 +21,6 @@ class AUTHORITY_SERVICE
     bool verifyAdmin(std::string passcode);
     std::vector<USER_ACCOUNT> getAllRegisteredUsers() const;
     bool deleteUserByUsername(const std::string& username);
-    USER_ACCOUNT* verifyAndGetAccount(const std::string& username, const std::string& password);
+    USER_ACCOUNT verifyAndGetAccount(const std::string& username, const std::string& password);
+    bool usernameExists(const std::string& username) const;
 };

@@ -20,6 +20,7 @@ public:
     int getQuantity() const;
     std::string getCategory() const;
     void displayInfo() const;
+    void displaySearchInfo() const;
     void updateQuantity(int qty);
     
     bool operator<(const PRODUCT& other) const;  

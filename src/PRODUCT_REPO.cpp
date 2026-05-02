@@ -5,9 +5,29 @@
 #include<iomanip>
 #include<set>
 #include<queue>
+#include<vector>
+#include<limits>
 #include<sstream>
 #include<fstream>
+#include<algorithm>
 using namespace std;
+
+// Trim whitespace from string
+static string trimString(const string& str)
+{
+    size_t start = str.find_first_not_of(" \t\n\r\f\v");
+    if (start == string::npos) return "";
+    size_t end = str.find_last_not_of(" \t\n\r\f\v");
+    return str.substr(start, end - start + 1);
+}
+
+// Convert string to lowercase
+static string toLower(const string& str)
+{
+    string result = str;
+    transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
 
 void PRODUCT_REPO:: addProduct(PRODUCT product)
 {
@@ -47,14 +67,11 @@ void PRODUCT_REPO:: showCategory()
     {
         for(int i=0; i<all_products.size(); i++)
         {
-                if(category==all_products[i].getCategory())
+            if(category==all_products[i].getCategory())
             {
-               cout<<i+1<<". ";
-               all_products[i].displayInfo();
+                cout << (i+1) << ". ";
+                all_products[i].displaySearchInfo();
             }
-            
-
-           
         }
     }
 
@@ -62,33 +79,75 @@ void PRODUCT_REPO:: removeProduct()
 {
     if(all_products.empty())
     {
-        cout<<"No product found, can't delete!!!";
+        cout<<"No product found, can't delete!!!"<<endl;
         return;
     }
-    cout<<"Available Category!!"<<endl;
-   showCategory();
+    cout<<"Available Categories:"<<endl;
+    showCategory();
     string choice;
     cout<<"Select the Category: ";
     cin>>choice;
-   set<string> verify= getCategoryInfo();
-   if(verify.count(choice)==0)
-   {
-        cout<<"Category not found!!";
-        return;
-   }
-   showProductsByCategory(choice);
-    int index;
-    cout<<"Index No. ";
-    cin>>index;
-    if(index<=0 || index>all_products.size())
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    choice = trimString(toLower(choice));
+    
+    set<string> verify= getCategoryInfo();
+    bool categoryFound = false;
+    string actualCategory;
+    
+    for(const auto& cat : verify)
     {
-        cout<<"Invalid choice";
+        if(toLower(cat) == choice)
+        {
+            categoryFound = true;
+            actualCategory = cat;
+            break;
+        }
     }
-    else{
-        all_products.erase(all_products.begin() + index-1);
-        cout<<"Removed successfully";
+    
+    if(!categoryFound)
+    {
+        cout<<"Category not found!!"<<endl;
+        return;
     }
-
+    
+    // Find all products in this category
+    vector<int> matchingIndices;
+    cout<<endl;
+    cout<<"------- PRODUCTS IN CATEGORY: "<<actualCategory<<" -------"<<endl;
+    cout<<"INDEX | PRODUCT NAME - PRICE"<<endl;
+    cout<<"-------------------------------------------"<<endl;
+    for(int i=0; i<all_products.size(); i++)
+    {
+        if(toLower(all_products[i].getCategory()) == choice)
+        {
+            matchingIndices.push_back(i);
+            cout<<"  "<<matchingIndices.size()<<"    | ";
+            all_products[i].displaySearchInfo();
+        }
+    }
+    cout<<"-------------------------------------------"<<endl;
+    
+    if(matchingIndices.empty())
+    {
+        cout<<"No products in this category!"<<endl;
+        return;
+    }
+    
+    int index;
+    cout<<"Enter Index No. to remove (e.g., 1, 2, 3...): ";
+    cin>>index;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    if(index<=0 || index>matchingIndices.size())
+    {
+        cout<<"Invalid choice!"<<endl;
+        return;
+    }
+    
+    int actualIndex = matchingIndices[index-1];
+    all_products.erase(all_products.begin() + actualIndex);
+    cout<<"Product removed successfully!"<<endl;
 }
 void PRODUCT_REPO:: updateProduct()
 {
@@ -98,61 +157,125 @@ void PRODUCT_REPO:: updateProduct()
         cout<<"Can't Update."<<endl;
         return;
     }
-    cout<<"Available Products";
+    cout<<"Available Categories:"<<endl;
     showCategory();
     string choice;
     cout<<"Select the Category: ";
     cin>>choice;
-    showProductsByCategory(choice);
-    int index;
-    cout<<"Index No. ";
-    cin>>index;
-    if(index<0|| index> all_products.size())
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    choice = trimString(toLower(choice));
+    
+    set<string> verify= getCategoryInfo();
+    bool categoryFound = false;
+    string actualCategory;
+    
+    for(const auto& cat : verify)
     {
-        cout<<"Invalid choice";
-    }
-    else{
-        cout<<"What do you want to Update: "<<endl;
-        while(1)
+        if(toLower(cat) == choice)
         {
-        cout<<"1. Name"<<endl;
-        cout<<"2. Price"<<endl;
-        cout<<"3. Qty"<<endl;
-        int option;
-        cout<<"Select: ";
-        cin>>option;
-        if(option==1)
-        {
-            string name;
-            cout<<"New Name: ";
-            cin>>name;
-            all_products[index-1].setName(name);
+            categoryFound = true;
+            actualCategory = cat;
             break;
         }
-        else if(option==2)
-        {
-            double price;
-            cout<<"New Price: ";
-            cin>>price;
-            all_products[index-1].setPrice(price);
-            break;        
-        }
-        else if(option==3)
-        {
-            int qty;
-            cout<<"New Qty: ";
-            cin>>qty;
-            all_products[index-1].setQuantity(qty);
-            break;
-        }
-        else{
-            cout<<"You alright?";
-            cout<<"Select again.";
-        }
-        }
-        rebuildSorting();
-        
     }
+    
+    if(!categoryFound)
+    {
+        cout<<"Category not found!!"<<endl;
+        return;
+    }
+    
+    // Find all products in this category
+    vector<int> matchingIndices;
+    cout<<endl;
+    cout<<"------- PRODUCTS IN CATEGORY: "<<actualCategory<<" -------"<<endl;
+    cout<<"INDEX | PRODUCT NAME - PRICE"<<endl;
+    cout<<"-------------------------------------------"<<endl;
+    for(int i=0; i<all_products.size(); i++)
+    {
+        if(toLower(all_products[i].getCategory()) == choice)
+        {
+            matchingIndices.push_back(i);
+            cout<<"  "<<matchingIndices.size()<<"    | ";
+            all_products[i].displaySearchInfo();
+        }
+    }
+    cout<<"-------------------------------------------"<<endl;
+    
+    if(matchingIndices.empty())
+    {
+        cout<<"No products in this category!"<<endl;
+        return;
+    }
+    
+    int index;
+    cout<<"Enter Index No. to update (e.g., 1, 2, 3...): ";
+    cin>>index;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    if(index<=0 || index>matchingIndices.size())
+    {
+        cout<<"Invalid choice!"<<endl;
+        return;
+    }
+    
+    int actualIndex = matchingIndices[index-1];
+    
+    // Show selected product confirmation
+    cout<<endl;
+    cout<<"==============================================="<<endl;
+    cout<<"SELECTED PRODUCT TO UPDATE:"<<endl;
+    cout<<"Name: "<<all_products[actualIndex].getName()<<endl;
+    cout<<"Price: Rs"<<fixed<<setprecision(2)<<all_products[actualIndex].getPrice()<<endl;
+    cout<<"Quantity: "<<all_products[actualIndex].getQuantity()<<endl;
+    cout<<"Category: "<<all_products[actualIndex].getCategory()<<endl;
+    cout<<"==============================================="<<endl;
+    cout<<endl;
+    
+    cout<<"What do you want to Update:"<<endl;
+    cout<<"1. Name"<<endl;
+    cout<<"2. Price"<<endl;
+    cout<<"3. Quantity"<<endl;
+    int option;
+    cout<<"Select: ";
+    cin>>option;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    if(option==1)
+    {
+        string name;
+        cout<<"Current Name: "<<all_products[actualIndex].getName()<<endl;
+        cout<<"Enter new name: ";
+        getline(cin, name);
+        all_products[actualIndex].setName(name);
+        cout<<"Name updated successfully!"<<endl;
+    }
+    else if(option==2)
+    {
+        double price;
+        cout<<"Current Price: Rs"<<fixed<<setprecision(2)<<all_products[actualIndex].getPrice()<<endl;
+        cout<<"Enter new price: ";
+        cin>>price;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        all_products[actualIndex].setPrice(price);
+        cout<<"Price updated successfully!"<<endl;
+    }
+    else if(option==3)
+    {
+        int qty;
+        cout<<"Current Quantity: "<<all_products[actualIndex].getQuantity()<<endl;
+        cout<<"Enter new quantity: ";
+        cin>>qty;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        all_products[actualIndex].setQuantity(qty);
+        cout<<"Quantity updated successfully!"<<endl;
+    }
+    else
+    {
+        cout<<"Invalid option!"<<endl;
+    }
+    rebuildSorting();
 }
 void PRODUCT_REPO:: searchByName(string name)
 {
@@ -161,7 +284,7 @@ void PRODUCT_REPO:: searchByName(string name)
     {
         if(name==all_products[i].getName())
         {
-            all_products[i].displayInfo();
+            all_products[i].displaySearchInfo();
             found = true;
         }
     }
@@ -170,25 +293,67 @@ void PRODUCT_REPO:: searchByName(string name)
         cout << "Product not found!" << endl;
     }
 }
+
+void PRODUCT_REPO:: searchByCategory(string category)
+{
+    string originalCategory = category;
+    category = trimString(toLower(category));
+    bool found = false;
+    vector<int> matchingIndices;
+    
+    // First find the actual category name (to preserve original case)
+    string actualCategory;
+    for(int i=0; i<all_products.size(); i++)
+    {
+        if(toLower(all_products[i].getCategory()) == category)
+        {
+            actualCategory = all_products[i].getCategory();
+            matchingIndices.push_back(i);
+            found = true;
+        }
+    }
+    
+    if(!found)
+    {
+        cout << "No products found in category: " << originalCategory << endl;
+    }
+    else
+    {
+        // Display category header only once
+        cout << endl;
+        cout << "------- PRODUCTS IN CATEGORY: " << actualCategory << " -------" << endl;
+        cout << "INDEX | PRODUCT NAME - PRICE" << endl;
+        cout << "-------------------------------------------" << endl;
+        
+        // Display all products in this category
+        for(int idx = 0; idx < matchingIndices.size(); idx++)
+        {
+            cout << "  " << (idx + 1) << "    | ";
+            all_products[matchingIndices[idx]].displaySearchInfo();
+        }
+        cout << "-------------------------------------------" << endl;
+    }
+}
 void PRODUCT_REPO:: getAllProducts(bool showCount)
 {
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("------TOTAL PRODUCTS------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
+    
     rebuildSorting();
     int total_count = all_products.size();
     auto temp = sorted_price;
     while(!temp.empty())
     {
-        temp.top().displayInfo();
+        temp.top().displaySearchInfo();
         temp.pop();
     }
+    ConsoleHelper::PrintDivider();
     if (showCount==true)
     {
-    cout<<"Available Products In System: "<<total_count<<endl;
+        cout<<"Available Products In System: "<<total_count<<endl;
     }
-   
 }
     void PRODUCT_REPO:: saveToFile()
     {

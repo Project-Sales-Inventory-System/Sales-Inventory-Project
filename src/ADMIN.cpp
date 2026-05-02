@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+#include <iomanip>
 #include "SYSTEM.h"
 #include "USER_ACCOUNT.h"
 #include "../include/ConsoleHelper.h"
@@ -37,7 +38,7 @@ void ADMIN::AdminMenu()
     ConsoleHelper::PrintDivider();
     cout << "\n--- Admin Panel ---\n";
     cout << "1. Manage User\n";
-    cout << "2. View all Products\n";
+    cout << "2. View Products by Category\n";
     cout << "3. Add Product\n";
     cout << "4. Remove Product\n";
     cout << "5. Update Product\n";
@@ -61,16 +62,23 @@ void ADMIN::handleUserManagement()
         return;
     }
 
-    cout << "\nRegistered Users:\n";
+    cout << endl;
+    cout << "===============================================" << endl;
+    cout << "REGISTERED USERS" << endl;
+    cout << "===============================================" << endl;
+    cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
+    cout << "-----------------------------------------------" << endl;
     for (int i = 0; i < users.size(); i++)
     {
-        cout << i + 1 << ". "
-             << users[i].getFullname()
-             << " | username: " << users[i].getUsername()
-             << " | role: " << (users[i].getAuthority() == ClientSELLER ? "Seller" : "Buyer")
-             << " | email: " << users[i].getMailAddress()
+        cout << i + 1 << "     | "
+             << users[i].getFullname() << " | "
+             << users[i].getUsername() << " | "
+             << (users[i].getAuthority() == ClientSELLER ? "Seller" : "Buyer") << " | "
+             << users[i].getMailAddress()
              << endl;
     }
+    cout << "-----------------------------------------------" << endl;
+    
     string usernameToDelete;
     cout << "Enter username to delete or 0 to go back: ";
     getline(cin, usernameToDelete);
@@ -81,72 +89,44 @@ void ADMIN::handleUserManagement()
     }
     if (auth_service->deleteUserByUsername(usernameToDelete))
     {
-        cout << "User deleted successfully." << endl;
+        cout << "User deleted successfully!" << endl;
+        cout << "\n===============================================" << endl;
+        cout << "UPDATED USER LIST" << endl;
+        cout << "===============================================" << endl;
+        
+        vector<USER_ACCOUNT> updatedUsers = auth_service->getAllRegisteredUsers();
+        if (updatedUsers.empty())
+        {
+            cout << "No users registered." << endl;
+        }
+        else
+        {
+            cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
+            cout << "-----------------------------------------------" << endl;
+            for (int i = 0; i < updatedUsers.size(); i++)
+            {
+                cout << i + 1 << "     | "
+                     << updatedUsers[i].getFullname() << " | "
+                     << updatedUsers[i].getUsername() << " | "
+                     << (updatedUsers[i].getAuthority() == ClientSELLER ? "Seller" : "Buyer") << " | "
+                     << updatedUsers[i].getMailAddress()
+                     << endl;
+            }
+            cout << "-----------------------------------------------" << endl;
+        }
     }
     else
     {
         cout << "User not found or failed to delete." << endl;
     }
-}
-
-void ADMIN::handleProductOperations()
-{
-    if (!repo)
-    {
-        cout << "Product repository not available." << endl;
-        return;
-    }
-
-    cout << "All Products:\n";
-    repo->getAllProducts(true);
+    cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 // Get username
 std::string ADMIN::getUsername() const
 {
     return "ADMIN";
-}
-
-// Delete product by name
-void ADMIN::deleteProduct(std::string productName)
-{
-    cout << "Deleting product: " << productName << endl;
-}
-
-// Update product
-void ADMIN::updateProduct(PRODUCT product)
-{
-    cout << "Updating product: " << product.getName() << endl;
-}
-
-// Manage sales report
-void ADMIN::manageSalesReport()
-{
-    cout << "Managing sales report..." << endl;
-}
-
-// View all users
-void ADMIN::viewAllUsers()
-{
-    cout << "Viewing all users..." << endl;
-}
-
-// Generate sales report
-void ADMIN::generateSalesReport()
-{
-    cout << "Generating sales report..." << endl;
-}
-
-// View product (implementing pure virtual)
-void ADMIN::viewProduct(std::string productName)
-{
-    cout << "Viewing product: " << productName << endl;
-}
-
-// Search product (implementing pure virtual)
-void ADMIN::searchProduct(std::string productName)
-{
-    cout << "Searching for product: " << productName << endl;
 }
 
 // Admin session handler
@@ -175,8 +155,15 @@ void ADMIN::startSession()
                 handleUserManagement();
                 break;
             case 2:
-                handleProductOperations();
+            {
+                string category;
+                cout << "Enter category to view products: ";
+                getline(cin, category);
+                viewProduct(category);
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
+            }
             case 3:
             {
                 string category, name;
@@ -191,6 +178,17 @@ void ADMIN::startSession()
                 cout << "Enter product quantity: ";
                 cin >> qty;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                
+                // Show confirmation before adding
+                cout << endl;
+                cout << "===============================================" << endl;
+                cout << "PRODUCT TO BE ADDED:" << endl;
+                cout << "Category: " << category << endl;
+                cout << "Name: " << name << endl;
+                cout << "Price: Rs" << fixed << setprecision(2) << price << endl;
+                cout << "Quantity: " << qty << endl;
+                cout << "===============================================" << endl;
+                
                 PRODUCT product(category, name, price, qty);
                 if (repo)
                 {
@@ -198,6 +196,8 @@ void ADMIN::startSession()
                     repo->saveToFile();
                     cout << "Product added successfully!" << endl;
                 }
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
             case 4:
@@ -206,6 +206,8 @@ void ADMIN::startSession()
                     repo->removeProduct();
                     repo->saveToFile();
                 }
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             case 5:
                 if (repo)
@@ -213,6 +215,8 @@ void ADMIN::startSession()
                     repo->updateProduct();
                     repo->saveToFile();
                 }
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             case 6:
             {
@@ -223,6 +227,8 @@ void ADMIN::startSession()
                 {
                     repo->searchByName(name);
                 }
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
             case 7:
@@ -233,4 +239,63 @@ void ADMIN::startSession()
                 cout << "Invalid choice. Try again." << endl;
         }
     }
+}
+
+// View product (implementing pure virtual)
+void ADMIN::viewProduct(std::string category)
+{
+    // Admin can view all products in a category
+    if (repo)
+    {
+        repo->searchByCategory(category);
+    }
+    else
+    {
+        cout << "Product repository not available." << endl;
+    }
+}
+
+// Search product (implementing pure virtual)
+void ADMIN::searchProduct(std::string productName)
+{
+    if (repo)
+    {
+        repo->searchByName(productName);
+    }
+    else
+    {
+        cout << "Product repository not available." << endl;
+    }
+}
+
+// UI Handler for Admin Login - All console input/output here
+void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
+{
+    string adminPass;
+    cout << "Enter admin passcode (Tab to show/hide): ";
+    adminPass= ConsoleHelper::getPassword();
+    
+    if(adminPass.empty())
+    {
+        cout << "Error: Admin passcode cannot be empty!" << endl;
+        cout << "Press Enter to continue...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    if (!auth_service.verifyAdmin(adminPass))
+    {
+        cout << "Invalid Passcode." << endl;
+        cout << "Press Enter to continue...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    cout << "Admin login successful." << endl;
+
+    ADMIN admin(adminPass, repo, auth_service);
+    admin.startSession();
+
+    cout << "\nPress Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }

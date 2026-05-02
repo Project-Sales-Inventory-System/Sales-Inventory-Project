@@ -1,6 +1,6 @@
 #pragma once
 #include"../include/USER.h"
-#include"../include/BILL.h"
+//#include"../include/BILL.h"
 #include"../include/PRODUCT.h"
 #include"AUTHORITY_SERVICE.h"
 #include<string>
@@ -21,7 +21,5 @@ class SELLER: public USER
     void viewProduct(std:: string);
     void searchProduct(std::string);
     void addProduct(PRODUCT product);
-    void addPrice(std::string productName, float productPrice);
-    void addQuantity(std::string productName, int qty);
     void startSession();
 };

@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <iostream>
 #include <iomanip>
+#include<conio.h>
+#include<string>
 using namespace std;
 void ConsoleHelper::SetColor(int ColorCode)
 {
@@ -44,3 +46,33 @@ void ConsoleHelper::PrintHeader(std::string title)
     cout << "  " << title << endl;
     cout << setfill('-') << setw(10) << endl;
 } 
+ std:: string ConsoleHelper:: getPassword() {
+    string password;
+    char ch;
+    bool show = false;
+
+    while ((ch = _getch()) != '\r') // '\r' is Enter key
+    {
+        if (ch == '\b') // Backspace
+        {
+            if (!password.empty()) {
+                password.pop_back();
+                cout << "\b \b"; // erase last * from screen
+            }
+        }
+        else if (ch == 9) // Tab key to toggle show/hide
+        {
+            show = !show;
+        }
+        else
+        {
+            password += ch;
+            if (show)
+                cout << ch;
+            else
+                cout << '*';
+        }
+    }
+    cout << endl;
+    return password;
+}

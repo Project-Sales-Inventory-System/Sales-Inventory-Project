@@ -17,7 +17,6 @@ class SYSTEM
     void handleRegistration();
     void handleUserLogin();
     void handleAdminLogin();
-    
     public:
     SYSTEM();
 

@@ -120,7 +120,7 @@ void CART::addItem(const PRODUCT product)
     ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("ITEM ADDED SUCCESSFULLY");
     ConsoleHelper::PrintDivider();
-    cout << "Product: " << product.getName() << " | Qty: " << product.getQuantity() << " | Price: $" << fixed << setprecision(2) << product.getPrice() << endl;
+    cout << "Product: " << product.getName() << " | Qty: " << product.getQuantity() << " | Price: Rs" << fixed << setprecision(2) << product.getPrice() << endl;
     ConsoleHelper::ResetColor();
     cout << "Press Enter to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -193,7 +193,7 @@ void CART::viewCart()
         ConsoleHelper::PrintDivider();
         cout << endl;
         cout << left << setw(30) << "TOTAL ITEMS: " << total_qty << endl;
-        cout << left << setw(30) << "TOTAL AMOUNT: $" << fixed << setprecision(2) << total_amount << endl;
+        cout << left << setw(30) << "TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
     }
     ConsoleHelper::PrintDivider();
     cout << endl;
@@ -209,7 +209,7 @@ double CART::calculateTotal()
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
 cout << fixed << setprecision(2);
-    cout << "Total amount: $" << total_amount << endl;
+    cout << "Total amount: Rs" << total_amount << endl;
     cout << "Press Enter to continue...";
     cin.ignore(10000, '\n');
     return total_amount;

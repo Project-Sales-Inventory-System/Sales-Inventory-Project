@@ -1,5 +1,6 @@
 #include"PRODUCT.h"
 #include<iostream>
+#include<iomanip>
 using namespace std;
 PRODUCT:: PRODUCT()
 {
@@ -52,10 +53,14 @@ bool PRODUCT:: operator>( const PRODUCT& other) const
 }
 void PRODUCT:: displayInfo() const
 {
-    cout<<" Category: "<<product_category<<endl;
-    cout<<" Name: "<<product_name<<endl;
-    cout<<" Price: "<<product_price<<endl;
-    cout<<" Quantity: "<<product_qty<<endl;
-    cout<<" Category: "<<product_category<<endl;
+    cout << left
+         << setw(20) << product_name << "|"
+         << setw(15) << product_category << "|"
+         << setw(12) << fixed << setprecision(2) << product_price << "|"
+         << setw(12) << product_qty << endl;
+}
 
+void PRODUCT:: displaySearchInfo() const
+{
+    cout << product_name << " - Rs" << fixed << setprecision(2) << product_price << endl;
 }

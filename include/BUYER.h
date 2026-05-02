@@ -1,6 +1,6 @@
 #pragma once
 #include"../include/USER.h"
-#include"../include/BILL.h"
+//#include"../include/BILL.h"
 #include"../include/PRODUCT.h"
 #include"AUTHORITY_SERVICE.h"
 #include<string>
@@ -22,10 +22,10 @@ class BUYER: public USER
     std:: string getUsername() const;
     void viewProduct(std:: string);
     void searchProduct(std:: string);
-    void myProducts();
-    void placeOrder();
-    void viewCart();
-    void editCart();
-    void requestBill();
+    // void myProducts();
+    // void placeOrder();
+    // void viewCart();
+    // void editCart();
+    // void requestBill();
     void startSession();
 };

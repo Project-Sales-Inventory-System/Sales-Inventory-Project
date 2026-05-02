@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-enum Authority { ClientBUYER, ClientSELLER, Admin };
+enum Authority { Client, ClientBUYER, ClientSELLER, Admin };
 
 class USER_ACCOUNT
 {

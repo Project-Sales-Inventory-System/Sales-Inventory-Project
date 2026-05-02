@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-
 #include<string>
 #include<WINDOWS.h>
 class ConsoleHelper {
@@ -12,4 +11,6 @@ class ConsoleHelper {
     static void PrintDivider();
     static void PrintSuccess();
     static void PrintHeader(std::string title);
+    static std:: string getPassword();
+
 };
