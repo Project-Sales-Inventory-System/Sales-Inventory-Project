@@ -1,24 +1,29 @@
 #include"PRODUCT.h"
 #include<iostream>
 #include<iomanip>
+#include<stringUtlis.h>
 using namespace std;
 PRODUCT:: PRODUCT()
 {
-    product_name =" ";
+    product_name ="";
     product_price=0;
     product_qty=0;
-    product_category= " ";
+    product_category= "";
 }
-PRODUCT:: PRODUCT (string product_category, std:: string product_name, double product_price,int product_qty )
+PRODUCT::PRODUCT(string category, string name, double price, int qty)
 {
-    this-> product_category= product_category;
-    this-> product_name = product_name;
-    this-> product_price= product_price;
-    this-> product_qty= product_qty;
+    product_category = toLower(trim(category));
+    product_name = trim(name);
+    product_price = price;
+    product_qty = qty;
 }
-void PRODUCT:: setName( string name)
+void PRODUCT::setName(string name)
 {
-    this-> product_name= name;
+    product_name = trim(name);
+}
+void PRODUCT::setCategory(string category)
+{
+    product_category = toLower(trim(category));
 }
 std::string PRODUCT::getName() const { return product_name;}
 void PRODUCT:: setPrice( double price)
@@ -47,9 +52,9 @@ bool PRODUCT:: operator<( const PRODUCT& other) const
 {
     return product_price<other. product_price;
 }
-bool PRODUCT:: operator>( const PRODUCT& other) const
+bool PRODUCT:: operator<( const PRODUCT& other) const
 {
-    return product_price<other. product_price;
+    return product_price > other.product_price;
 }
 void PRODUCT:: displayInfo() const
 {

@@ -10,7 +10,7 @@
 #include<cctype>
 using namespace std;
 SYSTEM::SYSTEM()
-    : current_user(nullptr), repo(), isAdminLogggedin(false){}
+    : current_user(nullptr), repo(), isAdminLoggedin(false){}
 
 bool SYSTEM::registerAccount(const USER_ACCOUNT& account)
 {
@@ -26,14 +26,14 @@ USER* SYSTEM::loginAccount(const std::string& username, const std::string& passw
     }
 
     current_user = auth.login(username, password);
-    isAdminLogggedin = false;
+    isAdminLoggedin = false;
     return current_user;
 }
 
 bool SYSTEM::adminLogin(const std::string& passcode)
 {
-    isAdminLogggedin= auth.verifyAdmin(passcode);
-    return isAdminLogggedin;
+    isAdminLoggedin= auth.verifyAdmin(passcode);
+    return isAdminLoggedin;
 }
 
 std::vector<USER_ACCOUNT> SYSTEM::getAllUsers() const
@@ -61,7 +61,7 @@ bool SYSTEM::deleteUser(const std::string& username)
 
 
 void SYSTEM:: addProduct(PRODUCT product){
-        if(isAdminLogggedin){
+        if(isAdminLoggedin){
             repo.addProduct(product);
             return;
         }
@@ -77,7 +77,7 @@ void SYSTEM:: addProduct(PRODUCT product){
         repo.addProduct(product);
     }
     void SYSTEM::removeProduct(){
-        if(!isAdminLogggedin){
+        if(!isAdminLoggedin){
             cout<<"Access not granted!!"<<endl;
             return;
         }
@@ -85,13 +85,13 @@ void SYSTEM:: addProduct(PRODUCT product){
         repo.removeProduct();
     }
     void SYSTEM:: updateProduct(){
-        if(!isAdminLogggedin){
+        if(!isAdminLoggedin){
             cout<<"Access not granted!!"<<endl;
             return;
         }
         repo.updateProduct();
     }
-    void SYSTEM:: searchByName(string name){
+    void SYSTEM:: searchByName(std:: string name){
         
         repo.searchByName(name);
         
@@ -100,7 +100,7 @@ void SYSTEM:: addProduct(PRODUCT product){
     }
 
     void SYSTEM:: getAllProducts(){
-        if(isAdminLogggedin){
+        if(isAdminLoggedin){
             repo.getAllProducts(true);
             return;
         }
@@ -125,7 +125,7 @@ AUTHORITY_SERVICE& SYSTEM::getAuthService()
     return auth;
 }
 
-void SYSTEM::displayMainMenu()
+void SYSTEM::displayGuestMenu()
 {
     cout << endl;
     ConsoleHelper::ClearScreen();
@@ -133,9 +133,21 @@ void SYSTEM::displayMainMenu()
     ConsoleHelper::PrintHeader("--------------SALES & INVENTORY SYSTEM---------------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    cout << "\n1. Register\n2. User Login\n3. Admin Login\n4. Exit\n";
+    cout << "\n1. Register\n2. Search Products\n3. View Products\n4. Exit\n";
     cout << "Enter choice: ";
 }
+void SYSTEM:: displayMainMenu()
+{
+    cout << endl;
+    ConsoleHelper::ClearScreen();
+    ConsoleHelper::SetColor(11);
+    ConsoleHelper::PrintHeader("--------------SALES & INVENTORY SYSTEM---------------");
+    ConsoleHelper::ResetColor();
+    ConsoleHelper::PrintDivider();
+    cout << "\n1. User Login\n2. Admin Login\n 4. Exit\n";
+    cout << "Enter choice: ";
+}
+
 
 void SYSTEM::handleRegistration()
 {
@@ -154,6 +166,49 @@ void SYSTEM::handleAdminLogin()
 {
     // UI logic separated to ADMIN class for easy modification
     ADMIN::handleAdminLoginUI(auth, repo);
+}
+
+
+void SYSTEM:: guestMenu()
+{
+    bool end= true;
+    while(end)
+    {
+       displayGuestMenu();
+        int choice;
+        cin>>choice;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Try again." << endl;
+            continue;
+        }
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        switch (choice)
+        {
+            case 1:
+                handleRegistration();
+                break;
+            case 2:
+               { string name;
+                cout<<"Enter the name of the product: ";
+                getline(cin,name);
+                searchByName(name);
+                break;
+               }
+             case 3:
+                repo.getAllProducts(false);
+                break;
+
+            case 4:
+                cout << "Exiting system..." << endl;
+                end = false;
+                break;
+            default:
+                cout << "Invalid choice. Try again." << endl;
+        }
+    }
 }
 
 void SYSTEM::run()
@@ -175,16 +230,14 @@ void SYSTEM::run()
 
         switch (choice)
         {
+            
             case 1:
-                handleRegistration();
-                break;
-            case 2:
                 handleUserLogin();
                 break;
-             case 3:
+             case 2:
                 handleAdminLogin();
                 break;
-            case 4:
+            case 3:
                 cout << "Exiting system..." << endl;
                 running = false;
                 break;
@@ -192,4 +245,5 @@ void SYSTEM::run()
                 cout << "Invalid choice. Try again." << endl;
         }
     }
+
 }

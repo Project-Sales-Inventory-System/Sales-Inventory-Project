@@ -1,0 +1,5 @@
+full_name,username,password,contact_num,age,location,mail_address,authority
+User,testuser,actualpassword,1234567890,25,City,test@email.com,1
+John Buyer,johnbuyer,buypass,1234567890,25,New York,john@email.com,1
+Jane Seller,janeseller,sellpass,9876543210,30,LA,jane@email.com,2
+prasamsa risal,prasamsa#2,12345,9823220411,19,itahari,abc@gmail.com,0

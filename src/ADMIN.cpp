@@ -38,7 +38,7 @@ void ADMIN::AdminMenu()
     ConsoleHelper::PrintDivider();
     cout << "\n--- Admin Panel ---\n";
     cout << "1. Manage User\n";
-    cout << "2. View Products by Category\n";
+    cout << "2. View Products\n";
     cout << "3. Add Product\n";
     cout << "4. Remove Product\n";
     cout << "5. Update Product\n";
@@ -241,21 +241,30 @@ void ADMIN::startSession()
     }
 }
 
-// View product (implementing pure virtual)
+
 void ADMIN::viewProduct(std::string category)
 {
     // Admin can view all products in a category
-    if (repo)
+    int choice;
+    cout<<"1. View Products Category\n2.View Product Stock\n";
+    cout<<"Enter choice: ";
+    cin>>choice;
+
+    if (choice==1)
     {
         repo->searchByCategory(category);
     }
+    else if(choice==2)
+    {
+        repo->getAllProducts(true);
+    }
     else
     {
-        cout << "Product repository not available." << endl;
+        cout<<"Product info not found in repositroy"<<endl;
     }
 }
 
-// Search product (implementing pure virtual)
+
 void ADMIN::searchProduct(std::string productName)
 {
     if (repo)
@@ -268,7 +277,6 @@ void ADMIN::searchProduct(std::string productName)
     }
 }
 
-// UI Handler for Admin Login - All console input/output here
 void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
 {
     string adminPass;

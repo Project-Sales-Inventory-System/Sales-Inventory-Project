@@ -10,30 +10,16 @@
 #include<sstream>
 #include<fstream>
 #include<algorithm>
+#include<stringUtlis.h>
 using namespace std;
 
-// Trim whitespace from string
-static string trimString(const string& str)
-{
-    size_t start = str.find_first_not_of(" \t\n\r\f\v");
-    if (start == string::npos) return "";
-    size_t end = str.find_last_not_of(" \t\n\r\f\v");
-    return str.substr(start, end - start + 1);
-}
 
-// Convert string to lowercase
-static string toLower(const string& str)
-{
-    string result = str;
-    transform(result.begin(), result.end(), result.begin(), ::tolower);
-    return result;
-}
-
-void PRODUCT_REPO:: addProduct(PRODUCT product)
+void PRODUCT_REPO::addProduct(PRODUCT product)
 {
     all_products.push_back(product);
     sorted_price.push(product);
 }
+
 void PRODUCT_REPO::rebuildSorting()
 {
     while(!sorted_price.empty()) 
@@ -89,7 +75,7 @@ void PRODUCT_REPO:: removeProduct()
     cin>>choice;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     
-    choice = trimString(toLower(choice));
+    choice = toLower(trim(choice));
     
     set<string> verify= getCategoryInfo();
     bool categoryFound = false;
@@ -164,7 +150,7 @@ void PRODUCT_REPO:: updateProduct()
     cin>>choice;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     
-    choice = trimString(toLower(choice));
+    choice = toLower(trim(choice));
     
     set<string> verify= getCategoryInfo();
     bool categoryFound = false;
@@ -277,62 +263,56 @@ void PRODUCT_REPO:: updateProduct()
     }
     rebuildSorting();
 }
-void PRODUCT_REPO:: searchByName(string name)
+void PRODUCT_REPO::searchByName(string name)
 {
-    bool found = false;
-    for(int i=0; i<all_products.size(); i++)
+    string input = toLower(trim(name));
+
+for (int i = 0; i < all_products.size(); i++)
+{
+    string productName = all_products[i].getName(); // already clean
+
+    if (productName.find(input) != string::npos)
     {
-        if(name==all_products[i].getName())
-        {
-            all_products[i].displaySearchInfo();
-            found = true;
-        }
-    }
-    if(!found)
-    {
-        cout << "Product not found!" << endl;
+        all_products[i].displaySearchInfo();
     }
 }
-
-void PRODUCT_REPO:: searchByCategory(string category)
+}
+void PRODUCT_REPO::searchByCategory(string category)
 {
     string originalCategory = category;
-    category = trimString(toLower(category));
-    bool found = false;
+    category = toLower(trim(category));
+
     vector<int> matchingIndices;
-    
-    // First find the actual category name (to preserve original case)
-    string actualCategory;
-    for(int i=0; i<all_products.size(); i++)
+    string actualCategory = "";
+
+    for(int i = 0; i < all_products.size(); i++)
     {
-        if(toLower(all_products[i].getCategory()) == category)
+        if(toLower(trim(all_products[i].getCategory())) == category)
         {
-            actualCategory = all_products[i].getCategory();
+            if(actualCategory.empty())
+                actualCategory = all_products[i].getCategory();
+
             matchingIndices.push_back(i);
-            found = true;
         }
     }
-    
-    if(!found)
+
+    if(matchingIndices.empty())
     {
         cout << "No products found in category: " << originalCategory << endl;
+        return;
     }
-    else
+
+    cout << "\n------- PRODUCTS IN CATEGORY: " << actualCategory << " -------\n";
+    cout << "INDEX | PRODUCT NAME - PRICE\n";
+    cout << "-------------------------------------------\n";
+
+    for(int idx = 0; idx < matchingIndices.size(); idx++)
     {
-        // Display category header only once
-        cout << endl;
-        cout << "------- PRODUCTS IN CATEGORY: " << actualCategory << " -------" << endl;
-        cout << "INDEX | PRODUCT NAME - PRICE" << endl;
-        cout << "-------------------------------------------" << endl;
-        
-        // Display all products in this category
-        for(int idx = 0; idx < matchingIndices.size(); idx++)
-        {
-            cout << "  " << (idx + 1) << "    | ";
-            all_products[matchingIndices[idx]].displaySearchInfo();
-        }
-        cout << "-------------------------------------------" << endl;
+        cout << "  " << (idx + 1) << "    | ";
+        all_products[matchingIndices[idx]].displaySearchInfo();
     }
+
+    cout << "-------------------------------------------\n";
 }
 void PRODUCT_REPO:: getAllProducts(bool showCount)
 {
@@ -352,7 +332,7 @@ void PRODUCT_REPO:: getAllProducts(bool showCount)
     ConsoleHelper::PrintDivider();
     if (showCount==true)
     {
-        cout<<"Available Products In System: "<<total_count<<endl;
+        cout<<"Total Products In System: "<<total_count<<endl;
     }
 }
     void PRODUCT_REPO:: saveToFile()
@@ -375,7 +355,7 @@ void PRODUCT_REPO:: getAllProducts(bool showCount)
         if(!my_file)
         {
             cout<<"file doesn't exist";
-
+            return;
         }
         string line;
         while(getline(my_file, line))

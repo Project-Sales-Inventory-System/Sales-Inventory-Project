@@ -11,9 +11,9 @@ class SYSTEM
     USER* current_user;
     AUTHORITY_SERVICE auth;
     PRODUCT_REPO repo;
-    bool isAdminLogggedin;
-    
+    bool isAdminLoggedin;
     void displayMainMenu();
+    void displayGuestMenu();
     void handleRegistration();
     void handleUserLogin();
     void handleAdminLogin();
@@ -29,11 +29,12 @@ class SYSTEM
     void addProduct(PRODUCT product);
     void removeProduct();
     void updateProduct();
-    void searchByName(string name);
+    void searchByName(std:: string name);
     void getAllProducts();
     void saveToFile();
     PRODUCT_REPO& getRepo();
     AUTHORITY_SERVICE& getAuthService();
     void run();
+    void guestMenu();
 };
 

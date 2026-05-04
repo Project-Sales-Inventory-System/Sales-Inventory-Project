@@ -266,7 +266,7 @@ bool AUTHORITY_SERVICE::verifyClient(const std::string& username, const std::str
     {
         if (registered_user[i].getUsername() == username)
         {
-            if (password.empty() || registered_user[i].getPassword() == password)
+            if (!password.empty() && registered_user[i].getPassword() == password)
             {
                 return true;
             }

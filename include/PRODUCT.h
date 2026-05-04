@@ -13,6 +13,7 @@ public:
     PRODUCT();
     PRODUCT(std::string product_category, std::string product_name, double product_price, int product_qty);
     void setName(std::string name);
+    void setCategory(std:: string name);
     std::string getName() const;
     void setPrice(double price);
     double getPrice() const;
