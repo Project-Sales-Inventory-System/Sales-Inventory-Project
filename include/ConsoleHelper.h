@@ -11,6 +11,7 @@ class ConsoleHelper {
     static void PrintDivider();
     static void PrintSuccess();
     static void PrintHeader(std::string title);
+    static void Header();
     static std:: string getPassword();
 
 };

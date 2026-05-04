@@ -27,8 +27,8 @@ void ConsoleHelper::ClearScreen()
 }
 void ConsoleHelper::PrintError() 
 {
-    SetColor(12);
-    cout << "Error :(" << endl; 
+    SetColor(9);
+    cout << "⚠️ Try again" << endl; 
 }
 void ConsoleHelper::PrintDivider()
 {
@@ -39,9 +39,17 @@ void ConsoleHelper::PrintSuccess()
     SetColor(10);
     cout << "SUCCESS :)" << endl;
 }
+void ConsoleHelper::Header()
+{
+    ConsoleHelper::ClearScreen();
+    ConsoleHelper::SetColor(14);  // Cyan color like current main
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    cout << "✦ Sales & Inventory System ✦" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl << endl;
+}
 void ConsoleHelper::PrintHeader(std::string title)
 {
-    SetColor(11);
+    SetColor(10);
     cout << setfill('-') << setw(10) << endl;
     cout << "  " << title << endl;
     cout << setfill('-') << setw(10) << endl;

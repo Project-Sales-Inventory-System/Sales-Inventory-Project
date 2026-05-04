@@ -6,6 +6,7 @@
 #include "USER_ACCOUNT.h"
 #include "../include/ConsoleHelper.h"
 #include "../include/ADMIN.h"
+#include "../include/UI_config.h"
 using namespace std;
 
 // Constructor
@@ -32,19 +33,22 @@ void ADMIN::performAction()
 void ADMIN::AdminMenu()
 {
     ConsoleHelper::ClearScreen();
-    ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("-------ADMIN PANEL-------");
+    ConsoleHelper::Header();
+    ConsoleHelper::SetColor(10);  // Cyan
+    cout << endl;
+    cout << string(44, '=') << endl;
+    cout << "             🛠️ Admin Panel 🛠️" << endl;
+    cout << string(44, '=') << endl;
+    cout << "[1] 👥 Manage user" << endl;
+    cout << "[2] 👀 View Products by Category" << endl;
+    cout << "[3] ➕ Add Product" << endl;
+    cout << "[4] ➖ Remove Product" << endl;
+    cout << "[5] ✏️ Update Product" << endl;
+    cout << "[6] 🔍 Search Products" << endl;
+    cout << "[7] ❌ Logout" << endl;
+    cout << "──────────────────────────────" << endl;
     ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
-    cout << "\n--- Admin Panel ---\n";
-    cout << "1. Manage User\n";
-    cout << "2. View Products\n";
-    cout << "3. Add Product\n";
-    cout << "4. Remove Product\n";
-    cout << "5. Update Product\n";
-    cout << "6. Search Product\n";
-    cout << "7. Logout\n";
-    cout << "Enter Choice: ";
+    cout << "Enter your Choice: ";
 }
 
 void ADMIN::handleUserManagement()

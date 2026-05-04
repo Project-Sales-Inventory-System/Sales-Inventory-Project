@@ -6,6 +6,7 @@
 #include"SELLER.h"
 #include"ADMIN.h"
 #include"../include/ConsoleHelper.h"
+#include "../include/UI_config.h"
 #include<limits>
 #include<cctype>
 using namespace std;
@@ -130,21 +131,44 @@ void SYSTEM::displayGuestMenu()
     cout << endl;
     ConsoleHelper::ClearScreen();
     ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------------SALES & INVENTORY SYSTEM---------------");
+    ConsoleHelper::Header();
+    cout << endl;
+    cout << string(44, '=') << endl;
+    cout << "            👥 Guest Panel 👥" << endl;
+    cout << string(44, '=') << endl;
+    ConsoleHelper::SetColor(10);
+    cout << "Welcome to our System Portal👋" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::SetColor(14);
+    cout << "[1] 📋 Register" << endl;
+    cout << "[2] 🔍 Search Products" << endl;
+    cout << "[3] 👀 View Products" << endl;
+    cout << "[4] ⏹️ Exit" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
     ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
-    cout << "\n1. Register\n2. Search Products\n3. View Products\n4. Exit\n";
     cout << "Enter choice: ";
 }
 void SYSTEM:: displayMainMenu()
 {
-    cout << endl;
-    ConsoleHelper::ClearScreen();
+    ConsoleHelper::Header();
+    ConsoleHelper::SetColor(10);
+    cout << "Welcome to our Management Portal👋" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::SetColor(14);
+    cout << "   Please select your role to continue:" << endl << endl;
     ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------------SALES & INVENTORY SYSTEM---------------");
+    cout << " 👤 User Login" << endl;
+    cout << " 🛡️ Admin Login" << endl;
+    cout << " ⏹️ Exit" << endl << endl;
+    ConsoleHelper::SetColor(14);
+    cout << "Guideline : Press integer '1 to 3' to select options!!!" << endl;
+    cout << " Navigate with number keys for speed." << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
-    cout << "\n1. User Login\n2. Admin Login\n 3. Exit\n";
     cout << "Enter choice: ";
 }
 
@@ -238,11 +262,13 @@ void SYSTEM::run()
                 handleAdminLogin();
                 break;
             case 3:
+                cout << "✨Thank you for using the system.✨" << endl;
+                cout << "Have a Goodday!" << endl;
                 cout << "Exiting system..." << endl;
                 running = false;
                 break;
             default:
-                cout << "Invalid choice. Try again." << endl;
+                cout << "⚠️Try again."<< endl;
         }
     }
 
