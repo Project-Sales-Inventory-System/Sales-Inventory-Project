@@ -140,7 +140,7 @@ void SYSTEM::displayGuestMenu()
     cout << "Welcome to our System Portal👋" << endl;
     ConsoleHelper::SetColor(15);
     cout << "──────────────────────────────" << endl;
-    ConsoleHelper::SetColor(14);
+    ConsoleHelper::SetColor(11);
     cout << "[1] 📋 Register" << endl;
     cout << "[2] 🔍 Search Products" << endl;
     cout << "[3] 👀 View Products" << endl;
@@ -268,6 +268,7 @@ void SYSTEM::run()
                 running = false;
                 break;
             default:
+                ConsoleHelper::SetColor(12);
                 cout << "⚠️Try again."<< endl;
         }
     }

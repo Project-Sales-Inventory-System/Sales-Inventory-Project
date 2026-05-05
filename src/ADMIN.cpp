@@ -35,10 +35,13 @@ void ADMIN::AdminMenu()
     ConsoleHelper::ClearScreen();
     ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);  // Cyan
-    cout << endl;
     cout << string(44, '=') << endl;
     cout << "             🛠️ Admin Panel 🛠️" << endl;
     cout << string(44, '=') << endl;
+    cout << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::SetColor(11);
     cout << "[1] 👥 Manage user" << endl;
     cout << "[2] 👀 View Products by Category" << endl;
     cout << "[3] ➕ Add Product" << endl;
@@ -46,6 +49,7 @@ void ADMIN::AdminMenu()
     cout << "[5] ✏️ Update Product" << endl;
     cout << "[6] 🔍 Search Products" << endl;
     cout << "[7] ❌ Logout" << endl;
+    ConsoleHelper::SetColor(15);
     cout << "──────────────────────────────" << endl;
     ConsoleHelper::ResetColor();
     cout << "Enter your Choice: ";
@@ -67,11 +71,14 @@ void ADMIN::handleUserManagement()
     }
 
     cout << endl;
+    ConsoleHelper::SetColor(10);
     cout << "===============================================" << endl;
     cout << "REGISTERED USERS" << endl;
     cout << "===============================================" << endl;
+    ConsoleHelper::SetColor(15);
     cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
     cout << "-----------------------------------------------" << endl;
+    ConsoleHelper::SetColor(10);
     for (int i = 0; i < users.size(); i++)
     {
         cout << i + 1 << "     | "
@@ -82,7 +89,7 @@ void ADMIN::handleUserManagement()
              << endl;
     }
     cout << "-----------------------------------------------" << endl;
-    
+    ConsoleHelper::SetColor(7);
     string usernameToDelete;
     cout << "Enter username to delete or 0 to go back: ";
     getline(cin, usernameToDelete);
@@ -94,21 +101,24 @@ void ADMIN::handleUserManagement()
     if (auth_service->deleteUserByUsername(usernameToDelete))
     {
         cout << "User deleted successfully!" << endl;
+        ConsoleHelper::SetColor(10);
         cout << "\n===============================================" << endl;
         cout << "UPDATED USER LIST" << endl;
         cout << "===============================================" << endl;
-        
         vector<USER_ACCOUNT> updatedUsers = auth_service->getAllRegisteredUsers();
         if (updatedUsers.empty())
         {
+            ConsoleHelper::SetColor(12);
             cout << "No users registered." << endl;
         }
         else
         {
+            ConsoleHelper::SetColor(15);
             cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
             cout << "-----------------------------------------------" << endl;
             for (int i = 0; i < updatedUsers.size(); i++)
             {
+                ConsoleHelper::SetColor(10);
                 cout << i + 1 << "     | "
                      << updatedUsers[i].getFullname() << " | "
                      << updatedUsers[i].getUsername() << " | "
@@ -121,8 +131,10 @@ void ADMIN::handleUserManagement()
     }
     else
     {
-        cout << "User not found or failed to delete." << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ User not found or failed to delete." << endl;
     }
+    ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
@@ -147,7 +159,9 @@ void ADMIN::startSession()
         {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Try again." << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Invalid input. Try again." << endl;
+            ConsoleHelper::SetColor(7);
             continue;
         }
 
@@ -164,7 +178,9 @@ void ADMIN::startSession()
                 cout << "Enter category to view products: ";
                 getline(cin, category);
                 viewProduct(category);
+                ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
+                ConsoleHelper::SetColor(7);
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             }
@@ -185,21 +201,27 @@ void ADMIN::startSession()
                 
                 // Show confirmation before adding
                 cout << endl;
+                ConsoleHelper::SetColor(15);
                 cout << "===============================================" << endl;
+                ConsoleHelper::SetColor(10);
                 cout << "PRODUCT TO BE ADDED:" << endl;
+                ConsoleHelper::SetColor(11);
                 cout << "Category: " << category << endl;
                 cout << "Name: " << name << endl;
                 cout << "Price: Rs" << fixed << setprecision(2) << price << endl;
                 cout << "Quantity: " << qty << endl;
+                ConsoleHelper::SetColor(15);
                 cout << "===============================================" << endl;
-                
+                ConsoleHelper::SetColor(7);
                 PRODUCT product(category, name, price, qty);
                 if (repo)
                 {
                     repo->addProduct(product);
                     repo->saveToFile();
+                    ConsoleHelper::SetColor(13);
                     cout << "Product added successfully!" << endl;
                 }
+                ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
@@ -210,8 +232,10 @@ void ADMIN::startSession()
                     repo->removeProduct();
                     repo->saveToFile();
                 }
+                ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                ConsoleHelper::SetColor(7);
                 break;
             case 5:
                 if (repo)
@@ -219,28 +243,34 @@ void ADMIN::startSession()
                     repo->updateProduct();
                     repo->saveToFile();
                 }
+                ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 break;
             case 6:
             {
                 string name;
+                ConsoleHelper::SetColor(7);
                 cout << "Enter product name to search: ";
                 getline(cin, name);
                 if (repo)
                 {
                     repo->searchByName(name);
                 }
+                ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                ConsoleHelper::SetColor(7);
                 break;
             }
             case 7:
+            ConsoleHelper::SetColor(12);
                 cout << "Admin logout." << endl;
                 adminLoggedIn = false;
                 break;
             default:
-                cout << "Invalid choice. Try again." << endl;
+            ConsoleHelper::SetColor(12);
+                cout << "⚠️ Invalid choice. Try again." << endl;
         }
     }
 }
@@ -250,8 +280,15 @@ void ADMIN::viewProduct(std::string category)
 {
     // Admin can view all products in a category
     int choice;
-    cout<<"1. View Products Category\n2.View Product Stock\n";
-    cout<<"Enter choice: ";
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::SetColor(11);
+    cout << "[1]👀 View Products Category " << endl;
+    cout << "[2]📦 View Product Stock" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::ResetColor();
+    cout << "Enter choice: ";
     cin>>choice;
 
     if (choice==1)
@@ -264,7 +301,7 @@ void ADMIN::viewProduct(std::string category)
     }
     else
     {
-        cout<<"Product info not found in repositroy"<<endl;
+        cout<<"⚠️ Product info not found in repositroy"<<endl;
     }
 }
 
@@ -277,7 +314,7 @@ void ADMIN::searchProduct(std::string productName)
     }
     else
     {
-        cout << "Product repository not available." << endl;
+        cout << "⚠️ Product repository not available." << endl;
     }
 }
 
@@ -289,7 +326,7 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
     
     if(adminPass.empty())
     {
-        cout << "Error: Admin passcode cannot be empty!" << endl;
+        cout << "⚠️Error: Admin passcode cannot be empty!" << endl;
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
@@ -297,7 +334,7 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 
     if (!auth_service.verifyAdmin(adminPass))
     {
-        cout << "Invalid Passcode." << endl;
+        cout << "⚠️ Invalid Passcode." << endl;
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
@@ -307,7 +344,8 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 
     ADMIN admin(adminPass, repo, auth_service);
     admin.startSession();
-
-    cout << "\nPress Enter to continue...";
+    ConsoleHelper::SetColor(13);
+    cout << "Press Enter to continue...";
+    ConsoleHelper::ResetColor();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }

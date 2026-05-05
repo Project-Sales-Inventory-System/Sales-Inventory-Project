@@ -4,6 +4,7 @@
 #include <vector>
 class CART
 {
+    friend class BILL;
     private:
     std::vector<PRODUCT> cart_items;
     double total_amount;

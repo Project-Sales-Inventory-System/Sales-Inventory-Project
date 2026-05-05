@@ -14,12 +14,17 @@ using namespace std;
 
 void CART::printMenu()
 {
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::SetColor(11);
     cout << "[1] ➕ Add Item" << endl;
     cout << "[2] ➖ Remove Item" << endl;
     cout << "[3] ✏️ Update Quantity" << endl;
     cout << "[4] 📋 View Cart" << endl;
     cout << "[5] 💰 Calculate Total" << endl;
     cout << "[0] ⏹️ Exit" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "──────────────────────────────" << endl;
 }
 
 void CART::CartMenu()
@@ -40,8 +45,10 @@ void CART::CartMenu()
         if (!(cin >> choice)) {
             cin.clear();
             cin.ignore(10000, '\n');
-            ConsoleHelper::PrintError();
-            cout << "Invalid input. Press Enter to continue...";
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Invalid input!!!" << endl;
+            ConsoleHelper::SetColor(13);
+            cout << "Press Enter to continue...";
             cin.ignore(10000, '\n');
             continue;
         }
@@ -54,7 +61,7 @@ void CART::CartMenu()
                     double price;
                     int qty;
                     ConsoleHelper::ClearScreen();
-                    ConsoleHelper::SetColor(13);
+                    ConsoleHelper::SetColor(7);
                     cout << "Enter category: ";
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     getline(cin, cat);
@@ -73,7 +80,7 @@ void CART::CartMenu()
                 {
                     string name;
                     ConsoleHelper::ClearScreen();
-                    ConsoleHelper::SetColor(13);
+                    ConsoleHelper::SetColor(7);
                     cout << "Enter product name to remove: ";
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     getline(cin, name);
@@ -86,14 +93,13 @@ void CART::CartMenu()
                     string name;
                     int qty;
                     ConsoleHelper::ClearScreen();
-                    ConsoleHelper::SetColor(13);
+                    ConsoleHelper::ResetColor();
                     cout << "Enter product name to update: ";
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     getline(cin, name);
                     cout << "Enter new quantity: ";
                     cin >> qty;
                     updateQuantity(name, qty);
-                    ConsoleHelper::ResetColor();
                 }
                 break;
             case 4:
@@ -107,12 +113,14 @@ void CART::CartMenu()
                 ConsoleHelper::ResetColor();
                 return;
             default:
-                ConsoleHelper::PrintError();
-                ConsoleHelper::SetColor(9);
-                cout << "Invalid choice. Press Enter to continue...";
+                ConsoleHelper::SetColor(12);
+                cout << "⚠️ Invalid choice!!! " << endl;
+                ConsoleHelper::SetColor(13);
+                cout << " Press Enter to continue...";
                 cin.ignore(10000, '\n');
                 ConsoleHelper::ResetColor();
         }
+        ConsoleHelper::SetColor(13);
         cout << "Press Enter to continue...";
         cin.ignore(10000, '\n');
     }
@@ -127,20 +135,19 @@ void CART::addItem(const PRODUCT product)
     ConsoleHelper::PrintHeader("ITEM ADDED SUCCESSFULLY");
     
     ConsoleHelper::SetColor(13);
-    cout << left << setw(20) << "Product" << "|" << setw(10) << "Qty" << "|" << setw(15) << "Price (Rs)" << "|" << setw(15) << "Subtotal (Rs)" << endl;
+    cout << left << setw(20) << "Product" << "|" << setw(10) << "Qty" << "|" << setw(15) << "Price (Rs)" << endl;
     ConsoleHelper::ResetColor();
 
     // Partition line
-    cout << string(20, '-') << "+" << string(10, '-') << "+" << string(15, '-') << "+" << string(15, '-') << endl;
+    cout << string(20, '-') << "+" << string(10, '-') << "+" << string(15, '-') << endl;
     
     // Table rows
     for (const auto& item : cart_items) {
-        double subtotal = item.getPrice() * item.getQuantity();
-        cout << left << setw(20) << item.getName() << "|" << setw(10) << item.getQuantity() << "|" << setw(15) << fixed << setprecision(2) << item.getPrice() << "|" << setw(15) << fixed << setprecision(2) << subtotal << endl;
+        cout << left << setw(20) << item.getName() << "|" << setw(10) << item.getQuantity() << "|" << setw(15) << fixed << setprecision(2) << item.getPrice() << endl;
     }
 
     // Partition line before total
-    cout << string(20, '-') << "+" << string(10, '-') << "+" << string(15, '-') << "+" << string(15, '-') << endl;
+    cout << string(20, '-') << "+" << string(10, '-') << "+" << string(15, '-') << endl;
     cout << "Press Enter to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -155,13 +162,15 @@ void CART::removeItem(const std::string product_name )
         ConsoleHelper::ClearScreen();
         ConsoleHelper::SetColor(10);
         ConsoleHelper::PrintHeader("ITEM REMOVED SUCCESSFULLY");
-        ConsoleHelper::SetColor(9);
+        ConsoleHelper::SetColor(13);
         cout << product_name << "➖ removed from cart!" << endl;
 
     } else {
         ConsoleHelper::PrintError();
-        cout << "Product not found!" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Product not found!" << endl;
     }
+    ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
@@ -194,7 +203,7 @@ void CART::viewCart()
     cout << endl;
     ConsoleHelper::PrintDivider();
     cout << endl;
-    ConsoleHelper::SetColor(11);
+    ConsoleHelper::SetColor(10);
     cout << string(62, '=') << endl;
     cout << "             🛒 YOUR CART" << endl;
     cout << string(62, '=') << endl;
@@ -204,7 +213,7 @@ void CART::viewCart()
         cout << "Your cart is empty. Add items to view contents." << endl;
     } else {
         // Table header
-        cout << left << setw(20) << "Product Name" << "|" << setw(10) << "Quantity" << "|" << setw(12) << "Price (Rs)" << "|" << setw(15) << "Category" << endl;
+        cout << left << setw(20) << "📦 Product Name" << "|" << setw(10) << "📊 Quantity" << "|" << setw(12) << "💲 Price (Rs)" << "|" << setw(15) << "🏷️ Category" << endl;
 
         // Partition line
         cout << string(20, '-') << "+" << string(10, '-') << "+" << string(12, '-') << "+" << string(15, '-') << endl;
@@ -219,11 +228,12 @@ void CART::viewCart()
         cout << string(20, '-') << "+" << string(10, '-') << "+" << string(12, '-') << "+" << string(15, '-') << endl;
 
         // Totals
-        cout << left << setw(30) << "TOTAL ITEMS: " << total_qty << endl;
-        cout << left << setw(30) << "TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
+        cout << left << setw(30) << "🛍️ TOTAL ITEMS: " << total_qty << endl;
+        cout << left << setw(30) << "💲 TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
     }
     ConsoleHelper::PrintDivider();
     cout << endl;
+    ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
     cin.ignore(10000, '\n');
 }
@@ -231,12 +241,13 @@ void CART::viewCart()
 double CART::calculateTotal()
 {
     ConsoleHelper::ClearScreen();
-    ConsoleHelper::SetColor(11);
+    ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("CART TOTAL");
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << fixed << setprecision(2);
     cout << "Total amount: Rs" << total_amount << endl;
+    ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
     cin.ignore(10000, '\n');
     return total_amount;
