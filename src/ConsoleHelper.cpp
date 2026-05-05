@@ -32,12 +32,13 @@ void ConsoleHelper::PrintError()
 }
 void ConsoleHelper::PrintDivider()
 {
-    cout << setfill('-') << setw(10) << endl;
+    ConsoleHelper::SetColor(15);
+    cout << string(60, '-') << endl;
 }
 void ConsoleHelper::PrintSuccess()
 {
     SetColor(10);
-    cout << "SUCCESS :)" << endl;
+    cout << "SUCCESS!!" << endl;
 }
 void ConsoleHelper::Header()
 {

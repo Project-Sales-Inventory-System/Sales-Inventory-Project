@@ -149,21 +149,17 @@ void SYSTEM::displayGuestMenu()
 
     ConsoleHelper::SetColor(12);
     cout << "Guideline:" << endl;
-    cout << "Please select your role to continue:" << endl;
+    cout << "Please select your role to continue." << endl;
     cout << "Navigate with number keys for speed." << endl;
-    cout << "Press '1' to register." << endl;
-    cout << "Press '2' for view Product. " << endl;
-    cout << "Press '3' for search product." << endl;
-    cout << "Press '4' to exit." << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
-    cout << "📋 Register" << endl;
-    cout << "🔍 Search Products" << endl;
-    cout << "👀 View Products" << endl;
-    cout << "⏹️  Exit" << endl;
+    cout << "[1] Register" << endl;
+    cout << "[2] Search Products" << endl;
+    cout << "[3] View Products" << endl;
+    cout << "[4]  Exit" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
@@ -174,7 +170,7 @@ void SYSTEM:: displayMainMenu()
     ConsoleHelper::SetColor(10);
     const int terminalWidth = 80; // assume 80 characters wide
     std::string line = std::string(44, '=');
-    std::string message = "Welcome to our Management Portal👋";
+    std::string message = "Welcome to our Management Portal";
 
     // compute left padding for centering
     int padding = (terminalWidth - line.length()) / 2;
@@ -189,19 +185,16 @@ void SYSTEM:: displayMainMenu()
 
     ConsoleHelper::SetColor(12);
     cout << "Guideline:" << endl;
-    cout << "Please select your role to continue:" << endl;
+    cout << "Please select your role to continue." << endl;
     cout << "Navigate with number keys for speed." << endl;
-    cout << "Press '1' to UserLogin." << endl;
-    cout << "Press '2' to AdminLogin." << endl;
-    cout << "Press '3' to Exit." << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
-    cout << "👤 User Login" << endl;
-    cout << "🛡️  Admin Login" << endl;
-    cout << "⏹️  Exit" << endl;
+    cout << "[1] User Login" << endl;
+    cout << "[2]  Admin Login" << endl;
+    cout << "[3]  Exit" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }

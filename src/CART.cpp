@@ -15,16 +15,16 @@ using namespace std;
 void CART::printMenu()
 {
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(11);
-    cout << "[1] ➕ Add Item" << endl;
-    cout << "[2] ➖ Remove Item" << endl;
-    cout << "[3] ✏️ Update Quantity" << endl;
-    cout << "[4] 📋 View Cart" << endl;
-    cout << "[5] 💰 Calculate Total" << endl;
-    cout << "[0] ⏹️ Exit" << endl;
+    cout << "[1] Add Item" << endl;
+    cout << "[2] Remove Item" << endl;
+    cout << "[3] Update Quantity" << endl;
+    cout << "[4] View Cart" << endl;
+    cout << "[5] Calculate Total" << endl;
+    cout << "[0] Exit" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::PrintDivider();
 }
 
 void CART::CartMenu()
@@ -35,7 +35,7 @@ void CART::CartMenu()
         ConsoleHelper::Header();
         ConsoleHelper::SetColor(10);
         cout << string(44, '=') << endl;
-        cout << "             🛍️ CART MENU" << endl;
+        cout << "              CART MENU" << endl;
         cout << string(44, '=') << endl;
         ConsoleHelper::ResetColor();
         printMenu();
@@ -205,7 +205,7 @@ void CART::viewCart()
     cout << endl;
     ConsoleHelper::SetColor(10);
     cout << string(62, '=') << endl;
-    cout << "             🛒 YOUR CART" << endl;
+    cout << "              YOUR CART" << endl;
     cout << string(62, '=') << endl;
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
@@ -213,7 +213,7 @@ void CART::viewCart()
         cout << "Your cart is empty. Add items to view contents." << endl;
     } else {
         // Table header
-        cout << left << setw(20) << "📦 Product Name" << "|" << setw(10) << "📊 Quantity" << "|" << setw(12) << "💲 Price (Rs)" << "|" << setw(15) << "🏷️ Category" << endl;
+        cout << left << setw(20) << " Product Name" << "|" << setw(10) << " Quantity" << "|" << setw(12) << " Price (Rs)" << "|" << setw(15) << " Category" << endl;
 
         // Partition line
         cout << string(20, '-') << "+" << string(10, '-') << "+" << string(12, '-') << "+" << string(15, '-') << endl;
@@ -228,8 +228,8 @@ void CART::viewCart()
         cout << string(20, '-') << "+" << string(10, '-') << "+" << string(12, '-') << "+" << string(15, '-') << endl;
 
         // Totals
-        cout << left << setw(30) << "🛍️ TOTAL ITEMS: " << total_qty << endl;
-        cout << left << setw(30) << "💲 TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
+        cout << left << setw(30) << " TOTAL ITEMS: " << total_qty << endl;
+        cout << left << setw(30) << " TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
     }
     ConsoleHelper::PrintDivider();
     cout << endl;

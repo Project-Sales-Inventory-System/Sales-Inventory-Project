@@ -36,21 +36,21 @@ void ADMIN::AdminMenu()
     ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);  // Cyan
     cout << string(44, '=') << endl;
-    cout << "             🛠️ Admin Panel 🛠️" << endl;
+    cout << "              Admin Panel " << endl;
     cout << string(44, '=') << endl;
     cout << endl;
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(11);
-    cout << "[1] 👥 Manage user" << endl;
-    cout << "[2] 👀 View Products by Category" << endl;
-    cout << "[3] ➕ Add Product" << endl;
-    cout << "[4] ➖ Remove Product" << endl;
-    cout << "[5] ✏️ Update Product" << endl;
-    cout << "[6] 🔍 Search Products" << endl;
-    cout << "[7] ❌ Logout" << endl;
+    cout << "[1]  Manage user" << endl;
+    cout << "[2]  View Products by Category" << endl;
+    cout << "[3]  Add Product" << endl;
+    cout << "[4]  Remove Product" << endl;
+    cout << "[5]  Update Product" << endl;
+    cout << "[6]  Search Products" << endl;
+    cout << "[7]  Logout" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter your Choice: ";
 }
@@ -283,8 +283,8 @@ void ADMIN::viewProduct(std::string category)
     ConsoleHelper::SetColor(15);
     cout << "──────────────────────────────" << endl;
     ConsoleHelper::SetColor(11);
-    cout << "[1]👀 View Products Category " << endl;
-    cout << "[2]📦 View Product Stock" << endl;
+    cout << "[1] View Products Category " << endl;
+    cout << "[2] View Product Stock" << endl;
     ConsoleHelper::SetColor(15);
     cout << "──────────────────────────────" << endl;
     ConsoleHelper::ResetColor();
@@ -326,7 +326,7 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
     
     if(adminPass.empty())
     {
-        cout << "⚠️Error: Admin passcode cannot be empty!" << endl;
+        cout << "⚠️ Error: Admin passcode cannot be empty!" << endl;
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;

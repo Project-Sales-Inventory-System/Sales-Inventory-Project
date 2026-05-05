@@ -40,8 +40,8 @@ void BILL::generateBill()
 
     ConsoleHelper::SetColor(10);
     cout << endl;
-    cout << " 🧾Bill #" << billId << endl;
-    cout << " 🕒Generated on:" << date << endl;
+    cout << " Bill #" << billId << endl;
+    cout << " Generated on:" << date << endl;
     ConsoleHelper::ResetColor();
 }
 void BILL::displayBill()
@@ -50,15 +50,15 @@ void BILL::displayBill()
     ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);
     cout << string(50, '=') << endl;
-    cout << "🧾 BILL RECEIPT 🧾" << endl;
+    cout << " BILL RECEIPT " << endl;
     cout << string(50, '=') << endl;
     ConsoleHelper::ResetColor();
     
     //Bill Info
-    cout << "🔢 Bill ID:" << endl;
-    cout << "🪪 Customer ID:" << endl;
-    cout << "📅 Date:" << endl;
-    cout << "💳 Payment Status:" << endl;
+    cout << " Bill ID:" << endl;
+    cout << " Customer ID:" << endl;
+    cout << " Date:" << endl;
+    cout << " Payment Status:" << endl;
     
     if (payment_status == "PAID")
         ConsoleHelper::SetColor(10);   // green
@@ -68,7 +68,7 @@ void BILL::displayBill()
     ConsoleHelper::ResetColor();
 
     // Table header
-    cout << left << setw(20) << "📦 Product Name" << "|" << setw(10) << "📊 Quantity" << "|" << setw(12) << "💲 Price (Rs)" << "|" << setw(15) << "🏷️ Category" << endl;
+    cout << left << setw(20) << " Product Name" << "|" << setw(10) << " Quantity" << "|" << setw(12) << " Price (Rs)" << "|" << setw(15) << " Category" << endl;
 
     // Partition line
     cout << string(20, '-') << "+" << string(10, '-') << "+" << string(12, '-') << "+" << string(15, '-') << endl;
@@ -80,8 +80,8 @@ void BILL::displayBill()
         cout << string(20, '-') << "+" << string(10, '-') << "+" << string(12, '-') << "+" << string(15, '-') << endl;
 
         // Totals
-        cout << left << setw(30) << "🛍️ TOTAL ITEMS: " << item_count << endl;
-        cout << left << setw(30) << "💲 TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
+        cout << left << setw(30) << " TOTAL ITEMS: " << item_count << endl;
+        cout << left << setw(30) << " TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
 
     ConsoleHelper::PrintDivider();
     cout << endl;
