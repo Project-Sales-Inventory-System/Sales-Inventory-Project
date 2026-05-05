@@ -12,6 +12,7 @@ class SYSTEM
     AUTHORITY_SERVICE auth;
     PRODUCT_REPO repo;
     bool isAdminLoggedin;
+    bool isRegistered;
     void displayMainMenu();
     void displayGuestMenu();
     void handleRegistration();

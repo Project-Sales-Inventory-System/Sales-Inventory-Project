@@ -25,7 +25,7 @@ Authority USER::getAuthority() const {
 }
 
 // UI Handler for User Registration - All console input/output here
-void USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
+bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
 {
     string fullName, username, password, contactNo, location, email;
     int age;
@@ -151,7 +151,7 @@ void USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Invalid age" << endl;
-        return;
+        return false;
     }
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -183,9 +183,11 @@ void USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         cout << "Registration successful!" << endl;
     } else {
         cout << "Registration failed. Please try again." << endl;
+        cout << "\nPress Enter to continue...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return false;
     }
-    cout << "\nPress Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return false;
 }
 
 // UI Handler for User Login - All console input/output here

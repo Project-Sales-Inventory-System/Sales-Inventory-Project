@@ -11,7 +11,8 @@
 #include<cctype>
 using namespace std;
 SYSTEM::SYSTEM()
-    : current_user(nullptr), repo(), isAdminLoggedin(false){}
+    : current_user(nullptr), repo(), isAdminLoggedin(false), isRegistered(false){}
+
 
 bool SYSTEM::registerAccount(const USER_ACCOUNT& account)
 {
@@ -72,7 +73,7 @@ void SYSTEM:: addProduct(PRODUCT product){
         }
         if(current_user->getAuthority()!=ClientSELLER)
         {
-            cout<<"Access not granted!!"<<endl;
+            cout <<"Access not granted!!"<<endl;
             return;
         }
         repo.addProduct(product);
@@ -147,26 +148,30 @@ void SYSTEM::displayGuestMenu()
     cout << string(padding, ' ') << line << endl;
 
     ConsoleHelper::SetColor(12);
+    cout << "Guideline:" << endl;
     cout << "Please select your role to continue:" << endl;
-    cout << "Guideline : Press integer '1 to 3' to select options!!!" << endl;
     cout << "Navigate with number keys for speed." << endl;
+    cout << "Press '1' to register." << endl;
+    cout << "Press '2' for view Product. " << endl;
+    cout << "Press '3' for search product." << endl;
+    cout << "Press '4' to exit." << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::SetColor(10);
-    cout << "[1] 📋 Register" << endl;
-    cout << "[2] 🔍 Search Products" << endl;
-    cout << "[3] 👀 View Products" << endl;
-    cout << "[4] ⏹️  Exit" << endl;
+    cout << "📋 Register" << endl;
+    cout << "🔍 Search Products" << endl;
+    cout << "👀 View Products" << endl;
+    cout << "⏹️  Exit" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
+
 void SYSTEM:: displayMainMenu()
 {
     ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);
-
     const int terminalWidth = 80; // assume 80 characters wide
     std::string line = std::string(44, '=');
     std::string message = "Welcome to our Management Portal👋";
@@ -183,17 +188,20 @@ void SYSTEM:: displayMainMenu()
     cout << string(padding, ' ') << line << endl;
 
     ConsoleHelper::SetColor(12);
+    cout << "Guideline:" << endl;
     cout << "Please select your role to continue:" << endl;
-    cout << "Guideline : Press integer '1 to 3' to select options!!!" << endl;
     cout << "Navigate with number keys for speed." << endl;
+    cout << "Press '1' to UserLogin." << endl;
+    cout << "Press '2' to AdminLogin." << endl;
+    cout << "Press '3' to Exit." << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::SetColor(10);
     cout << "👤 User Login" << endl;
     cout << "🛡️  Admin Login" << endl;
     cout << "⏹️  Exit" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
@@ -202,7 +210,14 @@ void SYSTEM:: displayMainMenu()
 void SYSTEM::handleRegistration()
 {
     // UI logic separated to USER class for easy modification
-    USER::handleUserRegistrationUI(auth);
+   bool success = USER::handleUserRegistrationUI(auth);
+    if (success)
+    {
+        isRegistered = true;   // only set true if actually registered
+    }
+    // if failed → isRegistered stays false
+    // → guest loop continues
+    // → pressing 4 exits on first press ✅
 }
 
 void SYSTEM::handleUserLogin()
@@ -221,7 +236,7 @@ void SYSTEM::handleAdminLogin()
 
 void SYSTEM:: guestMenu()
 {
-    bool end= true;
+    bool end = true;
     while(end)
     {
        displayGuestMenu();
@@ -264,40 +279,118 @@ void SYSTEM:: guestMenu()
 void SYSTEM::run()
 {
     bool running = true;
+
     while (running)
     {
-        displayMainMenu();
-        int choice;
-        cin >> choice;
-
-        if (cin.fail())
+        if (!isRegistered)
         {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "⚠️ Invalid input. Try again." << endl;
-            continue;
-        }
+            // show guest menu
+            displayGuestMenu();
 
-        switch (choice)
-        {
-            
-            case 1:
-                handleUserLogin();
-                break;
-             case 2:
-                handleAdminLogin();
-                break;
-            case 3:
-                ConsoleHelper::ClearScreen();
-                ConsoleHelper::SetColor(14);
-                cout << "✨Thank you for visiting us✨" << endl;
-                cout << "Have a Goodday!!!" << endl;
-                running = false;
-                break;
-            default:
+            int choice;
+            cin >> choice;
+
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 ConsoleHelper::SetColor(12);
-                cout << "⚠️ Try again."<< endl;
+                cout << "  ⚠️  Invalid input. Try again." << endl;
+                ConsoleHelper::ResetColor();
+                continue;
+            }
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            switch (choice)
+            {
+                case 1:
+                    handleRegistration(); // sets isRegistered = true
+                    break;               // next iteration shows main menu
+                                         // automatically — no double exit
+
+                case 2:
+                {
+                    ConsoleHelper::ClearScreen();
+                    ConsoleHelper::Header();
+                    repo.getAllProducts(false);
+                    cout << "\n  Press Enter to go back...";
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    break;
+                }
+
+                case 3:
+                {
+                    ConsoleHelper::ClearScreen();
+                    ConsoleHelper::Header();
+                    string name;
+                    ConsoleHelper::SetColor(11);
+                    cout << "  Enter product name to search: ";
+                    ConsoleHelper::ResetColor();
+                    getline(cin, name);
+                    searchByName(name);
+                    cout << "\n  Press Enter to go back...";
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    break;
+                }
+
+                case 4: // ONE press exits cleanly
+                    ConsoleHelper::ClearScreen();
+                    ConsoleHelper::SetColor(14);
+                    cout << "\n  ✨ Thank you for visiting us! ✨" << endl;
+                    cout << "  Have a great day!!!\n" << endl;
+                    ConsoleHelper::ResetColor();
+                    running = false; // exits the ONE loop
+                    break;
+
+                default:
+                    ConsoleHelper::SetColor(12);
+                    cout << "  ⚠️  Invalid choice. Try again." << endl;
+                    ConsoleHelper::ResetColor();
+            }
+        }
+        else
+        {
+            // show main menu
+            displayMainMenu();
+
+            int choice;
+            cin >> choice;
+
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                ConsoleHelper::SetColor(12);
+                cout << "  ⚠️  Invalid input. Try again." << endl;
+                ConsoleHelper::ResetColor();
+                continue;
+            }
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            switch (choice)
+            {
+                case 1:
+                    handleUserLogin();
+                    break;
+
+                case 2:
+                    handleAdminLogin();
+                    break;
+
+                case 3: // ONE press exits cleanly
+                    ConsoleHelper::ClearScreen();
+                    ConsoleHelper::SetColor(14);
+                    cout << "\n  ✨ Thank you for visiting us! ✨" << endl;
+                    cout << "  Have a great day!!!\n" << endl;
+                    ConsoleHelper::ResetColor();
+                    running = false; // exits the SAME loop
+                    break;
+
+                default:
+                    ConsoleHelper::SetColor(12);
+                    cout << "  ⚠️  Invalid choice. Try again." << endl;
+                    ConsoleHelper::ResetColor();
+            }
         }
     }
-
 }

@@ -24,7 +24,7 @@ class USER
     Authority getAuthority() const;
     
     // UI Handler Methods - Separated for easier UI modification
-    static void handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service);
+    static bool handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service);
     static void handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo);
 
 };
