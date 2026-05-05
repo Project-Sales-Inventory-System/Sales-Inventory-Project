@@ -42,10 +42,15 @@ void ConsoleHelper::PrintSuccess()
 void ConsoleHelper::Header()
 {
     ConsoleHelper::ClearScreen();
-    ConsoleHelper::SetColor(14);  // Cyan color like current main
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
-    cout << "✦ Sales & Inventory System ✦" << endl;
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl << endl;
+     ConsoleHelper::ClearScreen();
+    const int terminalWidth = 80; // assume 80 characters wide
+    std::string message = "✦ Sales & Inventory System ✦";
+
+    // compute left padding for centering
+    int msgPadding = (terminalWidth - message.length()) / 2;
+
+    ConsoleHelper::SetColor(1);
+    cout << string(msgPadding, ' ') << message << endl;
 }
 void ConsoleHelper::PrintHeader(std::string title)
 {

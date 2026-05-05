@@ -130,23 +130,35 @@ void SYSTEM::displayGuestMenu()
 {
     cout << endl;
     ConsoleHelper::ClearScreen();
-    ConsoleHelper::SetColor(11);
     ConsoleHelper::Header();
-    cout << endl;
-    cout << string(44, '=') << endl;
-    cout << "            👥 Guest Panel 👥" << endl;
-    cout << string(44, '=') << endl;
-    ConsoleHelper::SetColor(10);
-    cout << "Welcome to our System Portal👋" << endl;
+    const int terminalWidth = 80; // assume 80 characters wide
+    std::string line = std::string(44, '=');
+    std::string message ="    👥 Welcome to our System Portal 👥" ;
+
+     // compute left padding for centering
+    int padding = (terminalWidth - line.length()) / 2;
+    int msgPadding = (terminalWidth - message.length()) / 2;
+
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
-    ConsoleHelper::SetColor(11);
+    cout << string(padding, ' ') << line << endl;
+    ConsoleHelper::SetColor(10);
+    cout << string(padding, ' ') << message << endl;
+    ConsoleHelper::SetColor(15);
+    cout << string(padding, ' ') << line << endl;
+
+    ConsoleHelper::SetColor(12);
+    cout << "Please select your role to continue:" << endl;
+    cout << "Guideline : Press integer '1 to 3' to select options!!!" << endl;
+    cout << "Navigate with number keys for speed." << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    ConsoleHelper::SetColor(10);
     cout << "[1] 📋 Register" << endl;
     cout << "[2] 🔍 Search Products" << endl;
     cout << "[3] 👀 View Products" << endl;
-    cout << "[4] ⏹️ Exit" << endl;
+    cout << "[4] ⏹️  Exit" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
@@ -154,20 +166,34 @@ void SYSTEM:: displayMainMenu()
 {
     ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);
-    cout << "Welcome to our Management Portal👋" << endl;
+
+    const int terminalWidth = 80; // assume 80 characters wide
+    std::string line = std::string(44, '=');
+    std::string message = "Welcome to our Management Portal👋";
+
+    // compute left padding for centering
+    int padding = (terminalWidth - line.length()) / 2;
+    int msgPadding = (terminalWidth - message.length()) / 2;
+
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
-    ConsoleHelper::SetColor(14);
-    cout << "   Please select your role to continue:" << endl << endl;
-    ConsoleHelper::SetColor(11);
-    cout << " 👤 User Login" << endl;
-    cout << " 🛡️ Admin Login" << endl;
-    cout << " ⏹️ Exit" << endl << endl;
-    ConsoleHelper::SetColor(14);
+    cout << string(padding, ' ') << line << endl;
+    ConsoleHelper::SetColor(10);
+    cout << string(padding, ' ') << message << endl;
+    ConsoleHelper::SetColor(15);
+    cout << string(padding, ' ') << line << endl;
+
+    ConsoleHelper::SetColor(12);
+    cout << "Please select your role to continue:" << endl;
     cout << "Guideline : Press integer '1 to 3' to select options!!!" << endl;
-    cout << " Navigate with number keys for speed." << endl;
+    cout << "Navigate with number keys for speed." << endl;
     ConsoleHelper::SetColor(15);
-    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
+    ConsoleHelper::SetColor(10);
+    cout << "👤 User Login" << endl;
+    cout << "🛡️  Admin Login" << endl;
+    cout << "⏹️  Exit" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" << endl;
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
@@ -205,7 +231,7 @@ void SYSTEM:: guestMenu()
         {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Try again." << endl;
+            cout << "⚠️ Invalid input. Try again." << endl;
             continue;
         }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -230,7 +256,7 @@ void SYSTEM:: guestMenu()
                 end = false;
                 break;
             default:
-                cout << "Invalid choice. Try again." << endl;
+                cout << "⚠️ Invalid choice. Try again." << endl;
         }
     }
 }
@@ -248,7 +274,7 @@ void SYSTEM::run()
         {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Try again." << endl;
+            cout << "⚠️ Invalid input. Try again." << endl;
             continue;
         }
 
@@ -262,14 +288,15 @@ void SYSTEM::run()
                 handleAdminLogin();
                 break;
             case 3:
-                cout << "✨Thank you for using the system.✨" << endl;
-                cout << "Have a Goodday!" << endl;
-                cout << "Exiting system..." << endl;
+                ConsoleHelper::ClearScreen();
+                ConsoleHelper::SetColor(14);
+                cout << "✨Thank you for visiting us✨" << endl;
+                cout << "Have a Goodday!!!" << endl;
                 running = false;
                 break;
             default:
                 ConsoleHelper::SetColor(12);
-                cout << "⚠️Try again."<< endl;
+                cout << "⚠️ Try again."<< endl;
         }
     }
 
