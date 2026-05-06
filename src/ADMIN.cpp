@@ -32,13 +32,23 @@ void ADMIN::performAction()
 // Admin Menu - display only
 void ADMIN::AdminMenu()
 {
-    ConsoleHelper::ClearScreen();
-    ConsoleHelper::Header();
-    ConsoleHelper::SetColor(10);  // Cyan
-    cout << string(44, '=') << endl;
-    cout << "              Admin Panel " << endl;
-    cout << string(44, '=') << endl;
-    cout << endl;
+   ConsoleHelper::Header();
+    ConsoleHelper::SetColor(10);
+    const int terminalWidth = 80; // assume 80 characters wide
+    std::string line = std::string(44, '=');
+    std::string message = "Welcome to our Admin Portal";
+
+    // compute left padding for centering
+    int padding = (terminalWidth - line.length()) / 2;
+    int msgPadding = (terminalWidth - message.length()) / 2;
+
+    ConsoleHelper::SetColor(15);
+    cout << string(padding, ' ') << line << endl;
+    ConsoleHelper::SetColor(10);
+    cout << string(padding, ' ') << message << endl;
+    ConsoleHelper::SetColor(15);
+    cout << string(padding, ' ') << line << endl;
+
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(11);
