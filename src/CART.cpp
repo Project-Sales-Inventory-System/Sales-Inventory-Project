@@ -11,7 +11,9 @@
 using std::find_if;
 
 using namespace std;
-
+int CART:: getItemCount() const{
+    return cart_items.size();
+}
 void CART::printMenu()
 {
     ConsoleHelper::SetColor(15);

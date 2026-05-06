@@ -19,8 +19,8 @@ class PRODUCT_REPO
         void addProduct(PRODUCT product);
         void removeProduct();
         void updateProduct();
-        void searchByName(string name);
-        void searchByCategory(string category);
+        vector<PRODUCT> searchByName(string name);
+        vector<PRODUCT> searchByCategory(string category);
         void getAllProducts(bool showCount);
         void saveToFile();
         void loadFromFile();

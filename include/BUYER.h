@@ -2,15 +2,17 @@
 #include"../include/USER.h"
 //#include"../include/BILL.h"
 #include"../include/PRODUCT.h"
-#include"AUTHORITY_SERVICE.h"
+#include"../include/AUTHORITY_SERVICE.h"
 #include<string>
-#include"USER_ACCOUNT.h"
-#include"PRODUCT_REPO.h"
+#include"../include/USER_ACCOUNT.h"
+#include"../include/PRODUCT_REPO.h"
+#include"../include/CART.h"
 
 class BUYER: public USER
 {
     private:
     PRODUCT_REPO* repo;
+    CART cart;
     void BuyerMenu();
     void handleSearch();
     

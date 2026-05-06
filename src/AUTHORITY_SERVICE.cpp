@@ -1,14 +1,14 @@
-#include "AUTHORITY_SERVICE.h"
+#include "../include/AUTHORITY_SERVICE.h"
 #include"../include/ConsoleHelper.h"
 #include<iostream>
 #include<fstream>
 #include<sstream>
 using namespace std;
-#include"USER_ACCOUNT.h"
+#include"../include/USER_ACCOUNT.h"
 #include<vector>
-#include"BUYER.h"
-#include"SELLER.h"
-#include"ADMIN.h"
+#include"../include/BUYER.h"
+#include"../include/SELLER.h"
+#include"../include/ADMIN.h"
 
 namespace
 {

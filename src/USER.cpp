@@ -1,13 +1,13 @@
 #include<iostream>
 using namespace std;
-#include "USER.h"
-#include"USER_ACCOUNT.h"
-#include"AUTHORITY_SERVICE.h"
+#include "../include/USER.h"
+#include"../include/USER_ACCOUNT.h"
+#include"../include/AUTHORITY_SERVICE.h"
 #include"../include/ConsoleHelper.h"
-#include"SYSTEM.h"
-#include"BUYER.h"
-#include"SELLER.h"
-#include"PRODUCT_REPO.h"
+#include"../include/SYSTEM.h"
+#include"../include/BUYER.h"
+#include"../include/SELLER.h"
+#include"../include/PRODUCT_REPO.h"
 #include<limits>
 #include<cctype>
 //#include"../include/CART.h"

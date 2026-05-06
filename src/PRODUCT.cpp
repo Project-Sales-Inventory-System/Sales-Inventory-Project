@@ -1,7 +1,7 @@
-#include"PRODUCT.h"
+#include"../include/PRODUCT.h"
 #include<iostream>
 #include<iomanip>
-#include"../include/stringUtils.h"
+#include"../include/stringUtlis.h"
 using namespace std;
 PRODUCT:: PRODUCT()
 {

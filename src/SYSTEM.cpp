@@ -1,10 +1,10 @@
-#include"SYSTEM.h"
-#include"USER.h"
+#include"../include/SYSTEM.h"
+#include"../include/USER.h"
 #include<iostream>
-#include"USER_ACCOUNT.h"
-#include"BUYER.h"
-#include"SELLER.h"
-#include"ADMIN.h"
+#include"../include/USER_ACCOUNT.h"
+#include"../include/BUYER.h"
+#include"../include/SELLER.h"
+#include"../include/ADMIN.h"
 #include"../include/ConsoleHelper.h"
 #include "../include/UI_config.h"
 #include<limits>
@@ -185,8 +185,11 @@ void SYSTEM:: displayMainMenu()
 
     ConsoleHelper::SetColor(12);
     cout << "Guideline:" << endl;
-    cout << "Please select your role to continue." << endl;
-    cout << "Navigate with number keys for speed." << endl;
+    cout<<"Register to the System if you like"<<endl;
+    cout<< "If you're already a registered user"<<endl;
+    cout<<"Proceed to next Menu exiting this Menu"<<endl;
+    cout << "Navigate with number keys." << endl;
+    
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
@@ -199,37 +202,33 @@ void SYSTEM:: displayMainMenu()
     cout << "Enter choice: ";
 }
 
-
 void SYSTEM::handleRegistration()
 {
     // UI logic separated to USER class for easy modification
    bool success = USER::handleUserRegistrationUI(auth);
     if (success)
     {
-        isRegistered = true;   // only set true if actually registered
+        isRegistered = true;
     }
-    // if failed → isRegistered stays false
-    // → guest loop continues
-    // → pressing 4 exits on first press
+    
 }
 
 void SYSTEM::handleUserLogin()
 {
-    // UI logic separated to USER class for easy modification
     USER::handleUserLoginUI(auth, repo);
 }
 
 
 void SYSTEM::handleAdminLogin()
 {
-    // UI logic separated to ADMIN class for easy modification
     ADMIN::handleAdminLoginUI(auth, repo);
 }
 
-
-/*void SYSTEM:: guestMenu()
+void SYSTEM:: guestMenu()
 {
-    bool end = true;
+    bool end= true;
+    while(end)
+    {
        displayGuestMenu();
         int choice;
         cin>>choice;
@@ -238,7 +237,7 @@ void SYSTEM::handleAdminLogin()
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "⚠️ Invalid input. Try again." << endl;
-            return;
+            continue;
         }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         switch (choice)
@@ -262,127 +261,44 @@ void SYSTEM::handleAdminLogin()
                 end = false;
                 break;
             default:
-                cout << "⚠️ Invalid choice. Try again." << endl;
+            cout << "⚠️ Invalid input. Try again." << endl;
         }
+    }
 }
-*/
+
 void SYSTEM::run()
 {
     bool running = true;
-
     while (running)
     {
-        if (!isRegistered)
+        displayMainMenu();
+        int choice;
+        cin >> choice;
+
+        if (cin.fail())
         {
-            // show guest menu
-            displayGuestMenu();
-
-            int choice;
-            cin >> choice;
-
-            if (cin.fail())
-            {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                ConsoleHelper::SetColor(12);
-                cout << "  ⚠️  Invalid input. Try again." << endl;
-                ConsoleHelper::ResetColor();
-                continue;
-            }
+            cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-            switch (choice)
-            {
-                case 1:
-                    handleRegistration(); // sets isRegistered = true
-                    break;               // next iteration shows main menu
-                                         // automatically — no double exit
-
-                case 2:
-                {
-                    ConsoleHelper::ClearScreen();
-                    ConsoleHelper::Header();
-                    repo.getAllProducts(false);
-                    cout << "\n  Press Enter to go back...";
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    break;
-                }
-
-                case 3:
-                {
-                    ConsoleHelper::ClearScreen();
-                    ConsoleHelper::Header();
-                    string name;
-                    ConsoleHelper::SetColor(11);
-                    cout << "  Enter product name to search: ";
-                    ConsoleHelper::ResetColor();
-                    getline(cin, name);
-                    searchByName(name);
-                    cout << "\n  Press Enter to go back...";
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    break;
-                }
-
-                case 4: // ONE press exits cleanly
-                    ConsoleHelper::ClearScreen();
-                    ConsoleHelper::SetColor(14);
-                    cout << "\n  ✨ Thank you for visiting us! ✨" << endl;
-                    cout << "  Have a great day!!!\n" << endl;
-                    ConsoleHelper::ResetColor();
-                    running = false; // exits the ONE loop
-                    break;
-
-                default:
-                    ConsoleHelper::SetColor(12);
-                    cout << "  ⚠️  Invalid choice. Try again." << endl;
-                    ConsoleHelper::ResetColor();
-            }
+            cout << "⚠️ Invalid input. Try again." << endl;
+            continue;
         }
-        else
+
+        switch (choice)
         {
-            // show main menu
-            displayMainMenu();
-
-            int choice;
-            cin >> choice;
-
-            if (cin.fail())
-            {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                ConsoleHelper::SetColor(12);
-                cout << "  ⚠️  Invalid input. Try again." << endl;
-                ConsoleHelper::ResetColor();
-                continue;
-            }
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-            switch (choice)
-            {
-                case 1:
-                    handleUserLogin();
-                    break;
-
-                case 2:
-                    handleAdminLogin();
-                    break;
-
-                case 3: // ONE press exits cleanly
-                    cin.clear(); // ← ADD THIS
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    ConsoleHelper::ClearScreen();
-                    ConsoleHelper::SetColor(14);
-                    cout << "\n  ✨ Thank you for visiting us! ✨" << endl;
-                    cout << "  Have a great day!!!\n" << endl;
-                    ConsoleHelper::ResetColor();
-                    running = false; // exits the SAME loop
-                    break;
-
-                default:
-                    ConsoleHelper::SetColor(12);
-                    cout << "  ⚠️  Invalid choice. Try again." << endl;
-                    ConsoleHelper::ResetColor();
-            }
+            
+            case 1:
+                handleUserLogin();
+                break;
+             case 2:
+                handleAdminLogin();
+                break;
+            case 3:
+                cout << "Exiting system..." << endl;
+                running = false;
+                break;
+            default:
+            cout << "⚠️ Invalid input. Try again." << endl;
         }
     }
+
 }

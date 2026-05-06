@@ -1,4 +1,4 @@
-#include"SELLER.h"
+#include"../include/SELLER.h"
 #include"../include/USER.h"
 #include"../include/BILL.h"
 #include"../include/PRODUCT.h"
@@ -8,7 +8,7 @@
 #include<iostream>
 #include<iomanip>
 #include<limits>
-#include"USER_ACCOUNT.h"
+#include"../include/USER_ACCOUNT.h"
 using namespace std;
 
 SELLER:: SELLER(USER_ACCOUNT sDetails, PRODUCT_REPO& repository){
