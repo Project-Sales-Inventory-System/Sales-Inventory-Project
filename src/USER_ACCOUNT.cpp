@@ -1,7 +1,6 @@
 #include "../include/USER_ACCOUNT.h"
-#include"../include/consoleHelper.h"
+#include"../include/ConsoleHelper.h"
 #include<iostream>
-#include "USER_ACCOUNT.h"
 using namespace std;
 
 USER_ACCOUNT::USER_ACCOUNT(){

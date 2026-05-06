@@ -1,5 +1,5 @@
 #include <iostream>
-#include "SYSTEM.h"
+#include "../include/SYSTEM.h"
 using namespace std;
 
 int main()

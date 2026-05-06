@@ -5,6 +5,7 @@
 #include"USER.h"
 #include"AUTHORITY_SERVICE.h"
 #include"USER_ACCOUNT.h"
+#include"CART.h"
 class SYSTEM
 {
     private:
@@ -13,14 +14,14 @@ class SYSTEM
     PRODUCT_REPO repo;
     bool isAdminLoggedin;
     bool isRegistered;
+    
+    public:
     void displayMainMenu();
     void displayGuestMenu();
     void handleRegistration();
     void handleUserLogin();
     void handleAdminLogin();
-    public:
     SYSTEM();
-
     bool registerAccount(const USER_ACCOUNT& account);
     USER* loginAccount(const std::string& username, const std::string& password);
     bool adminLogin(const std::string& passcode);
