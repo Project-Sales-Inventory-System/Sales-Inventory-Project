@@ -181,6 +181,8 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
     USER_ACCOUNT newAccount(fullName, username, password, contactNo, age, location, email, Client);
     if (auth_service.registerUser(newAccount)) {
         cout << "Registration successful!" << endl;
+        cin.get();
+        return true;  // ← CHANGE false to true here!
     } else {
         cout << "Registration failed. Please try again." << endl;
         cout << "\nPress Enter to continue...";

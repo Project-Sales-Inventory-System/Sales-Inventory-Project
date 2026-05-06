@@ -210,7 +210,7 @@ void SYSTEM::handleRegistration()
     }
     // if failed → isRegistered stays false
     // → guest loop continues
-    // → pressing 4 exits on first press ✅
+    // → pressing 4 exits on first press
 }
 
 void SYSTEM::handleUserLogin()
@@ -227,11 +227,9 @@ void SYSTEM::handleAdminLogin()
 }
 
 
-void SYSTEM:: guestMenu()
+/*void SYSTEM:: guestMenu()
 {
     bool end = true;
-    while(end)
-    {
        displayGuestMenu();
         int choice;
         cin>>choice;
@@ -240,7 +238,7 @@ void SYSTEM:: guestMenu()
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "⚠️ Invalid input. Try again." << endl;
-            continue;
+            return;
         }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         switch (choice)
@@ -266,9 +264,8 @@ void SYSTEM:: guestMenu()
             default:
                 cout << "⚠️ Invalid choice. Try again." << endl;
         }
-    }
 }
-
+*/
 void SYSTEM::run()
 {
     bool running = true;
@@ -371,6 +368,8 @@ void SYSTEM::run()
                     break;
 
                 case 3: // ONE press exits cleanly
+                    cin.clear(); // ← ADD THIS
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     ConsoleHelper::ClearScreen();
                     ConsoleHelper::SetColor(14);
                     cout << "\n  ✨ Thank you for visiting us! ✨" << endl;
