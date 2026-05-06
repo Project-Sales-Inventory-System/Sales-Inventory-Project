@@ -1,23 +1,33 @@
 #pragma once
 #include<string>
-#include"../include/PRODUCT.h"
-#include"../include/CART.h"
+#include"PRODUCT.h"
+#include"CART.h"
+#include"SYSTEM.h"
+#include<vector>
 class BILL
 {
     private:
-    int billId;
-    int customerId;
+    CART* cart;
+    SYSTEM* system;
+    std::string customerId;
     std::vector<PRODUCT> items;
     int item_count;
     float total_amount;
     std:: string date;
     std:: string payment_status;
-    CART cart;
     std::string getCurrentDate();
     public:
     BILL();
-    BILL(int id, int custId, CART& cart);
+    BILL(std::string custId, CART& cart);
     ~BILL();
     void generateBill();
     void displayBill();
+    void markAsPaid();
+    void saveBillToSalesReport();
+    float getTotalAmount() const;
+    int getItemCount() const;
+    std::string getCustomerId() const;
+    std::string getDate() const;
+    std::string getPaymentStatus() const;
+    const std::vector<PRODUCT>& getItems() const;
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include<string>
-#include "../include/PRODUCT.h"
+#include"PRODUCT.h"
 #include <vector>
 class CART
 {
@@ -16,5 +16,7 @@ class CART
     void removeItem(const std::string product_name);
     void updateQuantity(const std::string product_name, int qnt);
     void viewCart();
+    void checkout();
     double calculateTotal();
+    void clearCart();
 };

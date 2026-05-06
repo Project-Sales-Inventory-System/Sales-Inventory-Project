@@ -6,12 +6,14 @@
 #include"AUTHORITY_SERVICE.h"
 #include"USER_ACCOUNT.h"
 #include"CART.h"
+#include"BILL_SERVICE.h"
 class SYSTEM
 {
     private:
     USER* current_user;
     AUTHORITY_SERVICE auth;
     PRODUCT_REPO repo;
+    BILL_SERVICE bill_service;
     bool isAdminLoggedin;
     bool isRegistered;
     
@@ -36,6 +38,7 @@ class SYSTEM
     void saveToFile();
     PRODUCT_REPO& getRepo();
     AUTHORITY_SERVICE& getAuthService();
+    BILL_SERVICE& getBillService();
     void run();
     void guestMenu();
 };

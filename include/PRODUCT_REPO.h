@@ -24,4 +24,5 @@ class PRODUCT_REPO
         void getAllProducts(bool showCount);
         void saveToFile();
         void loadFromFile();
+        void reduceStock(const std::string& productName, int quantity);
 };

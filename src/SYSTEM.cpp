@@ -127,6 +127,11 @@ AUTHORITY_SERVICE& SYSTEM::getAuthService()
     return auth;
 }
 
+BILL_SERVICE& SYSTEM::getBillService()
+{
+    return bill_service;
+}
+
 void SYSTEM::displayGuestMenu()
 {
     cout << endl;
@@ -215,13 +220,13 @@ void SYSTEM::handleRegistration()
 
 void SYSTEM::handleUserLogin()
 {
-    USER::handleUserLoginUI(auth, repo);
+    USER::handleUserLoginUI(auth, repo, bill_service);
 }
 
 
 void SYSTEM::handleAdminLogin()
 {
-    ADMIN::handleAdminLoginUI(auth, repo);
+    ADMIN::handleAdminLoginUI(auth, repo, bill_service);
 }
 
 void SYSTEM:: guestMenu()
