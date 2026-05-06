@@ -10,7 +10,7 @@
 #include<sstream>
 #include<fstream>
 #include<algorithm>
-#include<stringUtlis.h>
+#include"../include/stringUtils.h"  
 using namespace std;
 
 void PRODUCT_REPO::addProduct(PRODUCT product)

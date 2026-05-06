@@ -25,6 +25,8 @@ BILL::BILL(int id, int custId, CART& c)
     total_amount  = 0.0;
     payment_status = "UNPAID";
 }
+BILL::~BILL() {}
+
 void BILL::generateBill()
 {
     items = cart.cart_items;
