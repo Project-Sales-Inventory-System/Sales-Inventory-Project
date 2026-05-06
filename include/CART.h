@@ -9,6 +9,7 @@ class CART
     std::vector<PRODUCT> cart_items;
     double total_amount;
     public:
+    int getItemCount() const;
     void printMenu();
     void CartMenu();
     void addItem(const PRODUCT product);

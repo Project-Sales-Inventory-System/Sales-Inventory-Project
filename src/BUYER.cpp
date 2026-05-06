@@ -192,15 +192,70 @@ void BUYER:: viewCart(){
     ConsoleHelper::PrintHeader("--------VIEW CART-------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    //LOGIC
+    cart.viewCart();
 }
 void BUYER :: editCart(){
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("--------EDIT CART-------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    //LOGIC
+    bool editing = true;
+    while(editing)
+    {
+        ConsoleHelper::ClearScreen();
+        cart.viewCart();
+        if(cart.getItemCount()==0)
+        {
+            cout<<"Cart is empty!!"<<endl;
+            editing=false;
+            break;
+        }
+        cout << "[R] Remove Item\n";
+        cout << "[U] Update Quantity\n";
+        cout << "[B] Back to Menu\n";
+        cout << "Enter choice: ";
+        
+        char choice;
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+        switch(choice)
+        {
+            case 'R':
+            case 'r':
+            {
+                string productName;
+                cout << "Enter product name to remove: ";
+                getline(cin, productName);
+                cart.removeItem(productName);
+                break;
+            }
+            case 'U':
+            case 'u':
+            {
+                string productName;
+                int qty;
+                cout << "Enter product name to update: ";
+                getline(cin, productName);
+                cout << "Enter new quantity: ";
+                cin >> qty;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cart.updateQuantity(productName, qty);
+                break;
+            }
+            case 'B':
+            case 'b':
+                editing = false;
+                break;
+            default:
+                cout << "Invalid choice!" << endl;
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
 }
+    
+
 void  BUYER:: requestBill(){
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("--------BILL-------");
