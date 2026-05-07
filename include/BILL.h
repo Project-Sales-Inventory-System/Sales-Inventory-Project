@@ -2,13 +2,11 @@
 #include<string>
 #include"PRODUCT.h"
 #include"CART.h"
-#include"SYSTEM.h"
 #include<vector>
 class BILL
 {
     private:
     CART* cart;
-    SYSTEM* system;
     std::string customerId;
     std::vector<PRODUCT> items;
     int item_count;
