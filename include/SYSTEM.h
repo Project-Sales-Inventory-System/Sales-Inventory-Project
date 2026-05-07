@@ -1,6 +1,7 @@
 #pragma once
 #include<string>
 #include<vector>
+#include"BILL_SERVICE.h"
 #include"PRODUCT_REPO.h"
 #include"USER.h"
 #include"AUTHORITY_SERVICE.h"
@@ -12,6 +13,7 @@ class SYSTEM
     USER* current_user;
     AUTHORITY_SERVICE auth;
     PRODUCT_REPO repo;
+    BILL_SERVICE bill_service;
     bool isAdminLoggedin;
     bool isRegistered;
     
@@ -36,6 +38,7 @@ class SYSTEM
     void saveToFile();
     PRODUCT_REPO& getRepo();
     AUTHORITY_SERVICE& getAuthService();
+    BILL_SERVICE& getBillService();
     void run();
     void guestMenu();
 };

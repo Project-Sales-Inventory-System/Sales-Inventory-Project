@@ -10,11 +10,12 @@
 using namespace std;
 
 // Constructor
-ADMIN::ADMIN(const std::string & pass, PRODUCT_REPO& repository, AUTHORITY_SERVICE& auth_svc) 
+ADMIN::ADMIN(const std::string & pass, PRODUCT_REPO& repository, AUTHORITY_SERVICE& auth_svc, BILL_SERVICE& bill_svc) 
     : passcode(pass)
 {
     repo = &repository;
     auth_service = &auth_svc;
+    bill_service = &bill_svc;
 }
 
 // Authenticate admin with passcode
@@ -23,32 +24,19 @@ bool ADMIN::authenticate(AUTHORITY_SERVICE& auth)
     return auth.verifyAdmin(passcode);
 }
 
-// Perform admin action
+
 void ADMIN::performAction()
 {
     AdminMenu();
 }
 
-// Admin Menu - display only
+
 void ADMIN::AdminMenu()
 {
    ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);
-    const int terminalWidth = 80; // assume 80 characters wide
     std::string line = std::string(44, '=');
     std::string message = "Welcome to our Admin Portal";
-
-    // compute left padding for centering
-    int padding = (terminalWidth - line.length()) / 2;
-    int msgPadding = (terminalWidth - message.length()) / 2;
-
-    ConsoleHelper::SetColor(15);
-    cout << string(padding, ' ') << line << endl;
-    ConsoleHelper::SetColor(10);
-    cout << string(padding, ' ') << message << endl;
-    ConsoleHelper::SetColor(15);
-    cout << string(padding, ' ') << line << endl;
-
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(11);
@@ -58,7 +46,8 @@ void ADMIN::AdminMenu()
     cout << "[4]  Remove Product" << endl;
     cout << "[5]  Update Product" << endl;
     cout << "[6]  Search Products" << endl;
-    cout << "[7]  Logout" << endl;
+    cout << "[7]  Manage Sales Reports" << endl;
+    cout << "[8]  Logout" << endl;
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
@@ -274,6 +263,11 @@ void ADMIN::startSession()
                 break;
             }
             case 7:
+            {
+                manageSalesReports();
+                break;
+            }
+            case 8:
             ConsoleHelper::SetColor(12);
                 cout << "Admin logout." << endl;
                 adminLoggedIn = false;
@@ -281,6 +275,61 @@ void ADMIN::startSession()
             default:
             ConsoleHelper::SetColor(12);
                 cout << "⚠️ Invalid choice. Try again." << endl;
+        }
+    }
+}
+
+
+void ADMIN::manageSalesReports()
+{
+    if (!bill_service)
+    {
+        cout << "Bill service not available." << endl;
+        return;
+    }
+    
+    bool manageReports = true;
+    while (manageReports)
+    {
+        ConsoleHelper::ClearScreen();
+        ConsoleHelper::Header();
+        ConsoleHelper::SetColor(10);
+        cout << string(60, '=') << endl;
+        cout << "MANAGE SALES REPORTS" << endl;
+        cout << string(60, '=') << endl;
+        ConsoleHelper::ResetColor();
+        ConsoleHelper::PrintDivider();
+        
+        cout << "[1] View All Sales" << endl;
+        cout << "[2] View Sales by Customer" << endl;
+        cout << "[3] Back to Menu" << endl;
+        ConsoleHelper::PrintDivider();
+        cout << "Enter your choice: ";
+        
+        int reportChoice;
+        cin >> reportChoice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+        switch (reportChoice)
+        {
+            case 1:
+                bill_service->displayAllSales();
+                break;
+            case 2:
+            {
+                string customer;
+                cout << "Enter customer username: ";
+                getline(cin, customer);
+                bill_service->displaySalesByCustomer(customer);
+                break;
+            }
+            case 3:
+                manageReports = false;
+                break;
+            default:
+                cout << "⚠️ Invalid choice!" << endl;
+                cout << "Press Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     }
 }
@@ -328,7 +377,7 @@ void ADMIN::searchProduct(std::string productName)
     }
 }
 
-void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
+void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_service)
 {
     string adminPass;
     cout << "Enter admin passcode (Tab to show/hide): ";
@@ -352,7 +401,7 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 
     cout << "Admin login successful." << endl;
 
-    ADMIN admin(adminPass, repo, auth_service);
+    ADMIN admin(adminPass, repo, auth_service, bill_service);
     admin.startSession();
     ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";

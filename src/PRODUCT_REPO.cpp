@@ -360,3 +360,18 @@ void PRODUCT_REPO:: getAllProducts(bool showCount)
     {
         loadFromFile();
     }
+
+void PRODUCT_REPO::reduceStock(const std::string& productName, int quantity) {
+    for (auto& product : all_products) {
+        if (product.getName() == productName) {
+            int currentQty = product.getQuantity();
+            if (currentQty >= quantity) {
+                product.setQuantity(currentQty - quantity);
+            } else {
+                std::cout << "Insufficient stock for " << productName << std::endl;
+            }
+            return;
+        }
+    }
+    std::cout << "Product not found: " << productName << std::endl;
+}

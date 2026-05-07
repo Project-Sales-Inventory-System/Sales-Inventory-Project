@@ -193,7 +193,7 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
 }
 
 // UI Handler for User Login - All console input/output here
-void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
+void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_service)
 {
     int modeChoice;
     cout<<"Enter as: "<<endl;
@@ -229,7 +229,7 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
     
     if(modeChoice==1)
     {
-        BUYER buyer(account, repo);
+        BUYER buyer(account, repo, bill_service);
         buyer.startSession();
     }
     else if(modeChoice==2)

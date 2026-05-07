@@ -2,18 +2,21 @@
 #include<iostream>
 #include<iomanip>
 #include<limits>
+#include<string>
 using namespace std;
 #include"../include/ConsoleHelper.h"
 #include"../include/USER.h"
 #include"../include/CART.h"
-//#include"../include/BILL.h"
+#include"../include/BILL.h"
+#include"../include/BILL_SERVICE.h"
 #include"../include/PRODUCT.h"
 #include"../include/AUTHORITY_SERVICE.h"
-    BUYER::BUYER(USER_ACCOUNT Bdetails, PRODUCT_REPO& repository)
+    BUYER::BUYER(USER_ACCOUNT Bdetails, PRODUCT_REPO& repository, BILL_SERVICE& bill_svc)
     {
         CART cart;
     user_acc = Bdetails;
     repo = &repository;
+    bill_service = &bill_svc;
 }
 bool BUYER:: authenticate(AUTHORITY_SERVICE& auth) {
      return auth.verifyClient(user_acc.getUsername(), "");
@@ -32,9 +35,10 @@ void BUYER::BuyerMenu()
     ConsoleHelper::PrintDivider();  
     cout << "[1] View Product" << endl;
     cout << "[2] Search Product" << endl;
-    cout << "[3] Logout" << endl;
-    cout << "[4] View Cart" << endl;
-    cout << "[5] Edit Cart" << endl;
+    cout << "[3] View Cart" << endl;
+    cout << "[4] Edit Cart" << endl;
+    cout<<"[5] Checkout"<<endl;
+    cout << "[6] Logout" << endl;
     cout<<"Enter your choice: ";
 
     
@@ -170,23 +174,17 @@ void BUYER:: startSession()
         {
             case 1: viewProduct(""); break;
             case 2: searchProduct(""); break;
-            case 3:
-                cout<<"Logging out..."<<endl;
+            case 3: viewCart();break; 
+            case 4: editCart(); break;
+            case 5: checkout(); break;
+            case 6: cout<<"Logging out..."<<endl;
                 buyerLoggedIn=false; 
                 break;
             default:cout<<"Invalid choice"<<endl;
         }
     }
 }
-void BUYER:: myProducts(){}
 
-void BUYER:: placeOrder(){
-        //LOGIC
-    ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------PLACE ORDER-------");
-    ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
-}
 void BUYER:: viewCart(){
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("--------VIEW CART-------");
@@ -256,10 +254,68 @@ void BUYER :: editCart(){
 }
     
 
-void  BUYER:: requestBill(){
+void  BUYER:: checkout(){
     ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------BILL-------");
+    ConsoleHelper::PrintHeader("--------CHECKOUT-------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    //LOGIC
+    
+    // Check if cart is empty
+    if (cart.getItemCount() == 0) {
+        ConsoleHelper::SetColor(12);
+        cout << "Your cart is empty! Add items before checkout." << endl;
+        ConsoleHelper::ResetColor();
+        cout << "Press Enter to continue...";
+        cin.ignore(10000, '\n');
+        return;
+    }
+    
+    // Initialize bill with username
+    bill = BILL(user_acc.getUsername(), cart);
+    
+    // Generate bill
+    bill.generateBill();
+    
+    // Display bill preview
+    bill.displayBill();
+    
+    // Ask for confirmation
+    ConsoleHelper::SetColor(11);
+    cout << "\nConfirm purchase? (Y/N): ";
+    ConsoleHelper::ResetColor();
+    
+    char confirmation;
+    cin >> confirmation;
+    cin.ignore(10000, '\n');
+    
+    if (confirmation == 'Y' || confirmation == 'y') {
+        // Auto confirm and save sale through BILL_SERVICE
+        bill_service->autoConfirmAndSaveSale(bill);
+        
+        // Reduce stock for each item in cart
+        const auto& cartItems = bill.getItems();
+        for (const auto& item : cartItems) {
+            repo->reduceStock(item.getName(), item.getQuantity());
+        }
+        
+        // Clear cart
+        cart.clearCart();
+        
+        // Display confirmation
+        ConsoleHelper::SetColor(10);
+        cout << "\n" << string(50, '=') << endl;
+        cout << "✓ Purchase successful!" << endl;
+        cout << "✓ Bill saved to sales.txt" << endl;
+        cout << string(50, '=') << endl;
+        ConsoleHelper::ResetColor();
+        cout << "Press Enter to continue...";
+        cin.ignore(10000, '\n');
+    } else {
+        // User cancelled - bill stays UNPAID, cart stays the same
+        ConsoleHelper::SetColor(12);
+        cout << "\nPurchase cancelled. Your cart items are still saved." << endl;
+        ConsoleHelper::ResetColor();
+        cout << "Press Enter to continue...";
+        cin.ignore(10000, '\n');
+    }
 }

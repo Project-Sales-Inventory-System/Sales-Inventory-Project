@@ -1,8 +1,9 @@
 #pragma once
-#include "../include/USER_ACCOUNT.h"
+#include"USER_ACCOUNT.h"
 //#include "CART.h"
 class AUTHORITY_SERVICE;
 class PRODUCT_REPO;
+class BILL_SERVICE;
 
 #include<string>
 class USER
@@ -25,6 +26,6 @@ class USER
     
     // UI Handler Methods - Separated for easier UI modification
     static bool handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service);
-    static void handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo);
+    static void handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_service);
 
 };

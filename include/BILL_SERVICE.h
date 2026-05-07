@@ -1,17 +1,27 @@
-#pragma  once
+#pragma once
 #include<string>
-#include"../include/BILL.h"
-#include"../include/CART.h"
+#include<vector>
+#include"BILL.h"
 class BILL_SERVICE
 {
     private:
-    BILL* allBills;
-    int bill_count;
+    struct SaleRecord {
+        std::string customer;
+        std::string date;
+        float amount;
+        int items;
+        std::string status;
+    };
+    std::vector<SaleRecord> saleReports;
+    void loadSalesFromFile();
+    
     public:
     BILL_SERVICE();
     ~BILL_SERVICE();
-    BILL createBILL(CART cart, int user_ID);
-    BILL autoGenerateBill(CART cart);
-    void autoConfirmSale(int bill_id);
-    BILL* getSaleReport(int & count);
+    void autoConfirmAndSaveSale(BILL& bill);
+    void displayAllSales() const;
+    void displaySalesByCustomer(const std::string& customer) const;
+    float getTotalRevenue() const;
+    int getTotalSales() const;
+    void exportSalesReport() const;
 };

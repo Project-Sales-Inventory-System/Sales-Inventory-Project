@@ -240,18 +240,7 @@ void CART::viewCart()
     cin.ignore(10000, '\n');
 }
 
-double CART::calculateTotal()
-{
-    ConsoleHelper::ClearScreen();
-    ConsoleHelper::SetColor(10);
-    ConsoleHelper::PrintHeader("CART TOTAL");
-    ConsoleHelper::PrintDivider();
-    ConsoleHelper::ResetColor();
-    cout << fixed << setprecision(2);
-    cout << "Total amount: Rs" << total_amount << endl;
-    ConsoleHelper::SetColor(13);
-    cout << "Press Enter to continue...";
-    cin.ignore(10000, '\n');
-    return total_amount;
+void CART::clearCart() {
+    cart_items.clear();
+    total_amount = 0.0;
 }
-
