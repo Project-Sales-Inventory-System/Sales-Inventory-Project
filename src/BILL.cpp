@@ -25,7 +25,22 @@ BILL::BILL(int id, int custId, CART& c)
     total_amount  = 0.0;
     payment_status = "UNPAID";
 }
-BILL::~BILL() {}
+BILL::~BILL() 
+{
+    items.clear();
+}
+int BILL::getBillId() const {
+    return billId;
+}
+std::string BILL::getPaymentStatus() const 
+{
+    return payment_status;
+}
+
+void BILL::confirmPayment() 
+{
+    payment_status = "Confirmed";
+}
 
 void BILL::generateBill()
 {

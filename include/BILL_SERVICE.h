@@ -5,7 +5,7 @@
 class BILL_SERVICE
 {
     private:
-    BILL* allBills;
+    std::vector<BILL> allBills;
     int bill_count;
     public:
     BILL_SERVICE();

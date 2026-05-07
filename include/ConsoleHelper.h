@@ -1,7 +1,11 @@
 #pragma once
 #include <string>
 #include<string>
-#include<WINDOWS.h>
+#ifndef WINDOWS_H
+#define WINDOWS_H
+#include <windows.h>
+#undef WINDOWS_H
+#endif
 class ConsoleHelper {
     public:
     static void SetColor(int ColourCode);

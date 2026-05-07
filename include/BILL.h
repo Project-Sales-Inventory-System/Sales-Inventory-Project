@@ -20,4 +20,7 @@ class BILL
     ~BILL();
     void generateBill();
     void displayBill();
+    int getBillId() const;
+    std::string getPaymentStatus() const;
+    void confirmPayment();
 };
