@@ -1,68 +1,67 @@
-#include<iostream>
-#include<vector>
-#include<string>
-#include"../include/BILL_SERVICE.h"
-#include"../include/BILL.h"
-#include"../include/CART.h"
-#include<iomanip>
-using namespace std;
-BILL_SERVICE::BILL_SERVICE()
-{
+#include "../include/BILL_SERVICE.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+BILL_SERVICE::BILL_SERVICE() {
     bill_count = 0;
+    loadSalesFromFile(); 
 }
-BILL_SERVICE::~BILL_SERVICE()
-{
-    allBills.clear();
+
+BILL_SERVICE::~BILL_SERVICE() {
+    saveSalesFromFile();
 }
-BILL BILL_SERVICE::createBILL(CART cart, int user_ID)
-{
-    if (cart.getItemCount() == 0) 
-    {
-        std::cout << "Error: Cart is empty! Cannot generate bill." << std::endl;
-        return BILL(); 
+
+void BILL_SERVICE::saveSalesFromFile() {
+    std::ofstream file("sales_history.csv");
+    for (const auto& bill : allBills) {
+        file << bill.getBillId() << "," << bill.getUserId() << "," << bill.getPaymentStatus() << "\n";
     }
-    int new_BILL_ID = bill_count + 1;
-    BILL newBILL(new_BILL_ID,user_ID, cart);
-
-    newBILL.generateBill();
-    newBILL.displayBill();
-
-    allBills.push_back(newBILL);
-    bill_count ++;
-    return newBILL;
+    file.close();
 }
-void BILL_SERVICE::autoConfirmSale(int bill_id)
-{
-    cout << "Enter Your Bill_ID:" << endl;
-    cin >> bill_id;
-    for (int i = 0; i < allBills.size(); i++)
-    {
-        if (allBills[i].getBillId() == bill_id) 
-        {
 
-            //check payment status 
-            if (allBills[i].getPaymentStatus() == "Confirmed") 
-            {
-                std::cout << "Bill ID " << bill_id << " is already confirmed!" << std::endl;
+void BILL_SERVICE::loadSalesFromFile() {
+    std::ifstream file("sales_history.csv");
+    if (!file) return;
+    std::string line;
+    while (getline(file, line)) {
+        std::stringstream ss(line);
+        std::string id, uId, status;
+        getline(ss, id, ',');
+        getline(ss, uId, ',');
+        getline(ss, status, ',');
+        if (!id.empty()) {
+            bill_count = std::max(bill_count, std::stoi(id));
+            // In a full build, you'd push a reconstructed bill to allBills here
+        }
+    }
+    file.close();
+}
+
+void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
+    for (auto& bill : allBills) {
+        if (bill.getBillId() == bill_id) {
+            if (bill.getPaymentStatus() == "Confirmed") {
+                std::cout << "Bill already confirmed." << std::endl;
                 return;
             }
 
-            //confirms pending status
-            allBills[i].confirmPayment();
-            std::cout << "Bill ID " << bill_id << " has been confirmed!" << std::endl;
+            // 1. Mark as paid
+            bill.confirmPayment();
+
+            
+            auto items = bill.getCart().getItems(); 
+            for (auto& item : items) {
+                repo.reduceStock(item.getName(), item.getQuantity());
+            }
+
+            // 3. Save both states
+            saveSalesFromFile();
+            repo.saveToFile(); 
+            
+            std::cout << "Sale confirmed and inventory adjusted." << std::endl;
             return;
         }
     }
-
-    std::cout << "Bill ID " << bill_id << " not found!" << std::endl;
-}
-BILL* BILL_SERVICE::getSaleReport(int & count)
-{
-    count = allBills.size();
-    if (count == 0) 
-    {
-        std::cout << "No bills found!" << std::endl;
-        return nullptr;
-    }
-    return allBills.data();
+    std::cout << "Bill ID not found." << std::endl;
 }
