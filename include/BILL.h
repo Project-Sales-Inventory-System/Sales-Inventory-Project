@@ -20,4 +20,12 @@ class BILL
     ~BILL();
     void generateBill();
     void displayBill();
+
+    
+    // Getter methods for testing
+    int getItemCount() const { return item_count; }
+    float getTotalAmount() const { return total_amount; }
+    std::string getDate() const { return date; }
+    std::string getPaymentStatus() const { return payment_status; }
+    
 };

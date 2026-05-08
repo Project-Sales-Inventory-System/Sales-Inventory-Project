@@ -1,3 +1,19 @@
+/*
+- class ADMIN : Represents admin user in the system, inherits from USER class
+- string passcode : stores the admin passcode used for authentication
+- ADMIN(const std:: string & pass ) : Constructor to initialize admin with passcode and &pass: passcode is passed by reference variable pass
+- bool authenticate(AUTHORITY_SERVICE& auth) : Authenticates admin using AUTHORITY_SERVICE, auth Reference to AUTHORITY_SERVICE
+- void performAction() : Displays messages indicating admin's action
+- std:: string getUsername() const : get username of the admin
+- void viewProduct() : Displays all available Product
+- void searchProduct(std::string) : search specific product by its name
+- void manageProduct(std:: string) : manages product by its name
+- void deleteProduct(std:: string productName) : delete product by its name
+- void updateProduct(PRODUCT product) : Updates product details and product: PRODUCT object with updated data
+- void manageSalesReport() : manages sales report
+- void viewAllUsers() : Displays all registered users
+- void generateSalesReport() : Generates sales report
+*/
 #pragma once
 #include"USER.h"
 #include"../include/PRODUCT.h"
