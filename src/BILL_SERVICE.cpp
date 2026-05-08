@@ -1,4 +1,5 @@
 #include "../include/BILL_SERVICE.h"
+#include"../include/ConsoleHelper.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -13,8 +14,10 @@ BILL_SERVICE::~BILL_SERVICE() {
 }
 
 void BILL_SERVICE::saveSalesFromFile() {
+    ConsoleHelper::SetColor(12);
     std::ofstream file("sales_history.csv");
     for (const auto& bill : allBills) {
+        ConsoleHelper::SetColor(10);
         file << bill.getBillId() << "," << bill.getUserId() << "," << bill.getPaymentStatus() << "\n";
     }
     file.close();
@@ -42,6 +45,7 @@ void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
     for (auto& bill : allBills) {
         if (bill.getBillId() == bill_id) {
             if (bill.getPaymentStatus() == "Confirmed") {
+                ConsoleHelper::SetColor(10);
                 std::cout << "Bill already confirmed." << std::endl;
                 return;
             }
@@ -58,10 +62,12 @@ void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
             // 3. Save both states
             saveSalesFromFile();
             repo.saveToFile(); 
-            
+            ConsoleHelper::SetColor(10);
             std::cout << "Sale confirmed and inventory adjusted." << std::endl;
             return;
         }
     }
-    std::cout << "Bill ID not found." << std::endl;
+    ConsoleHelper::SetColor(12);
+    std::cout << "⚠️ Bill ID not found." << std::endl;
+    ConsoleHelper::ResetColor();
 }

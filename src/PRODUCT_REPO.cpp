@@ -190,9 +190,12 @@ void PRODUCT_REPO:: updateProduct()
     
     vector<int> matchingIndices;
     std::cout<<endl;
-    std::cout<<"------- PRODUCTS IN CATEGORY: "<<actualCategory<<" -------"<<endl;
+    std::cout<<"PRODUCTS IN CATEGORY: "<<actualCategory<<" "<<endl;
+    ConsoleHelper::SetColor(10);
     std::cout<<"INDEX | PRODUCT NAME - PRICE"<<endl;
+    ConsoleHelper::SetColor(15);
     std::cout<<"-------------------------------------------"<<endl;
+    ConsoleHelper::ResetColor();
     for(int i=0; i<all_products.size(); i++)
     {
         if(toLower(all_products[i].getCategory()) == choice)
@@ -202,12 +205,15 @@ void PRODUCT_REPO:: updateProduct()
             all_products[i].displaySearchInfo();
         }
     }
+    ConsoleHelper::SetColor(15);
     std::cout<<"-------------------------------------------"<<endl;
-    
+    ConsoleHelper::ResetColor();
+
     if(matchingIndices.empty())
     {
         ConsoleHelper::SetColor(12);
         std::cout<<"⚠️ No products in this category!"<<endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     
@@ -215,29 +221,40 @@ void PRODUCT_REPO:: updateProduct()
     std::cout<<"Enter Index No. to update (e.g., 1, 2, 3...): ";
     std::cin>>index;
     std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
+    ConsoleHelper::SetColor(12);
     if(index<=0 || index>matchingIndices.size())
     {
-        std::cout<<"Invalid choice!"<<endl;
+        std::cout<<" ⚠️ Invalid choice!"<<endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     
     int actualIndex = matchingIndices[index-1];
     
     std::cout<<endl;
-    std::cout<<"==============================================="<<endl;
+    ConsoleHelper::SetColor(10);
     std::cout<<"SELECTED PRODUCT TO UPDATE:"<<endl;
+    ConsoleHelper::SetColor(15);
+    std::cout<<"==============================================="<<endl;
     std::cout<<"Name: "<<all_products[actualIndex].getName()<<endl;
     std::cout<<"Price: Rs"<<std::fixed<<std::setprecision(2)<<all_products[actualIndex].getPrice()<<endl;
     std::cout<<"Quantity: "<<all_products[actualIndex].getQuantity()<<endl;
     std::cout<<"Category: "<<all_products[actualIndex].getCategory()<<endl;
+    ConsoleHelper::SetColor(15);    
     std::cout<<"==============================================="<<endl;
+    ConsoleHelper::ResetColor();
     std::cout<<endl;
     
+    ConsoleHelper::SetColor(10);
     std::cout<<"What do you want to Update:"<<endl;
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
     std::cout<<"1. Name"<<endl;
     std::cout<<"2. Price"<<endl;
     std::cout<<"3. Quantity"<<endl;
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::ResetColor();
     int option;
     std::cout<<"Select: ";
     std::cin>>option;
@@ -341,6 +358,7 @@ vector<PRODUCT> PRODUCT_REPO::searchByCategory(string category)
 }
 void PRODUCT_REPO:: getAllProducts(bool showCount)
 {
+    ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("TOTAL PRODUCTS");
     ConsoleHelper::ResetColor();
@@ -363,7 +381,9 @@ void PRODUCT_REPO:: getAllProducts(bool showCount)
    void PRODUCT_REPO::saveToFile() {
     ofstream my_file("my_file.csv");
     if(!my_file) {
-        cerr << "Error: Could not open file for saving!" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Error: Could not open file for saving!" << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     for(const auto& p : all_products) {

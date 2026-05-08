@@ -29,6 +29,7 @@ CART& BILL::getCart() { return cart; }
 string BILL::getPaymentStatus() const { return payment_status; }
 
 void BILL::confirmPayment() {
+     ConsoleHelper::SetColor(10);
     payment_status = "PAID";
 }
 
@@ -53,9 +54,11 @@ void BILL::generateBill() {
 void BILL::displayBill() {
     ConsoleHelper::ClearScreen();
     ConsoleHelper::Header();
-    ConsoleHelper::SetColor(10);
+    ConsoleHelper::SetColor(15);
     cout << string(50, '=') << endl;
+    ConsoleHelper::SetColor(10);
     cout << "                BILL RECEIPT " << endl;
+    ConsoleHelper::SetColor(15);
     cout << string(50, '=') << endl;
     ConsoleHelper::ResetColor();
 
@@ -92,7 +95,9 @@ void BILL::displayBill() {
     cout << left << setw(30) << " TOTAL AMOUNT: Rs" << fixed << setprecision(2) << total_amount << endl;
 
     ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(13);
     cout << "\nPress Enter to continue...";
+    ConsoleHelper::ResetColor();
     cin.ignore(10000, '\n');
 }
 
@@ -100,6 +105,7 @@ string BILL::getCurrentDate() {
     time_t now = time(0);
     tm* ltm = localtime(&now);
     stringstream ss;
+    ConsoleHelper::SetColor(10);
     ss << 1900 + ltm->tm_year << "-"
        << setw(2) << setfill('0') << 1 + ltm->tm_mon << "-"
        << setw(2) << setfill('0') << ltm->tm_mday;
