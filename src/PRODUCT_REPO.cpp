@@ -13,10 +13,16 @@
 #include"../include/stringUtlis.h"
 using namespace std;
 
+PRODUCT_REPO::PRODUCT_REPO() {
+    loadFromFile();
+    rebuildSorting();
+}
+
 void PRODUCT_REPO::addProduct(PRODUCT product)
 {
     all_products.push_back(product);
-    sorted_price.push(product);
+    rebuildSorting();
+    saveToFile();
 }
 
 void PRODUCT_REPO::rebuildSorting()
@@ -132,6 +138,7 @@ void PRODUCT_REPO:: removeProduct()
     
     int actualIndex = matchingIndices[index-1];
     all_products.erase(all_products.begin() + actualIndex);
+    saveToFile();
     std::cout<<"Product removed successfully!"<<endl;
 }
 void PRODUCT_REPO:: updateProduct()
@@ -171,7 +178,6 @@ void PRODUCT_REPO:: updateProduct()
         return;
     }
     
-    // Find all products in this category
     vector<int> matchingIndices;
     std::cout<<endl;
     std::cout<<"------- PRODUCTS IN CATEGORY: "<<actualCategory<<" -------"<<endl;
@@ -207,7 +213,6 @@ void PRODUCT_REPO:: updateProduct()
     
     int actualIndex = matchingIndices[index-1];
     
-    // Show selected product confirmation
     std::cout<<endl;
     std::cout<<"==============================================="<<endl;
     std::cout<<"SELECTED PRODUCT TO UPDATE:"<<endl;
@@ -278,7 +283,28 @@ vector<PRODUCT> PRODUCT_REPO::searchByName(string name)
 
     return results;
 }
+void PRODUCT_REPO::reduceStock(string productName, int quantitySold) {
+    bool found = false;
+    string searchName = toLower(trim(productName));
 
+    for (auto& p : all_products) {
+        if (toLower(trim(p.getName())) == searchName) {
+            int currentQty = p.getQuantity();
+            if (currentQty >= quantitySold) {
+                p.setQuantity(currentQty - quantitySold);
+            } else {
+                p.setQuantity(0);
+            }
+            found = true;
+            break;
+        }
+    }
+    
+    if (found) {
+        rebuildSorting();
+        saveToFile(); 
+    }
+}
 vector<PRODUCT> PRODUCT_REPO::searchByCategory(string category)
 {
     string cat = toLower(trim(category));
@@ -315,48 +341,40 @@ void PRODUCT_REPO:: getAllProducts(bool showCount)
         std::cout<<"Total Products In System: "<<total_count<<endl;
     }
 }
-    void PRODUCT_REPO:: saveToFile()
-    {
-        std::ofstream my_file("my_file.csv");
-        if(!my_file)
-        {
-            std::cout<<"file not created";
-        }
-        for(int i=0; i<all_products.size(); i++)
-        {
-            my_file<<all_products[i].getCategory()<<","<<all_products[i].getName()<<","<<all_products[i].getPrice()<<","<<all_products[i].getQuantity()<<endl;
-        }
-        
-
+   void PRODUCT_REPO::saveToFile() {
+    ofstream my_file("my_file.csv");
+    if(!my_file) {
+        cerr << "Error: Could not open file for saving!" << endl;
+        return;
     }
-    void PRODUCT_REPO:: loadFromFile()
-    {
-        ifstream my_file("my_file.csv", ios::in);
-        if(!my_file)
-        {
-            std::cout<<"file doesn't exist";
-            return;
-        }
-        string line;
-        while(getline(my_file, line))
-        {
-            std::stringstream ss(line);
-            std::string category, name;
-            double price;
-            int qty;
-            getline(ss, category, ',');
-            getline(ss,name,',');
-            ss>>price;
-            ss.ignore();
-            ss>>qty;
-            ss.ignore();
-            PRODUCT p(category,name, price, qty);
+    for(const auto& p : all_products) {
+        my_file << p.getCategory() << "," 
+                << p.getName() << "," 
+                << p.getPrice() << "," 
+                << p.getQuantity() << endl;
+    }
+    my_file.close();
+}
+    void PRODUCT_REPO::loadFromFile() {
+    all_products.clear();
+    ifstream my_file("my_file.csv");
+    if(!my_file) return;
+
+    string line;
+    while(getline(my_file, line)) {
+        stringstream ss(line);
+        string category, name, priceStr, qtyStr;
+        
+        getline(ss, category, ',');
+        getline(ss, name, ',');
+        getline(ss, priceStr, ',');
+        getline(ss, qtyStr, ',');
+
+        if(!category.empty() && !name.empty()) {
+            PRODUCT p(category, name, stod(priceStr), stoi(qtyStr));
             all_products.push_back(p);
             sorted_price.push(p);
-            
         }
     }
-    PRODUCT_REPO::PRODUCT_REPO()
-    {
-        loadFromFile();
-    }
+    my_file.close();
+}

@@ -2,6 +2,10 @@
 #include <limits>
 #include <vector>
 #include <iomanip>
+#include"../include/USER.h"
+#include"../include/PRODUCT_REPO.h"
+#include"../include/AUTHORITY_SERVICE.h"
+#include"../include/BILL_SERVICE.h"
 #include "../include/SYSTEM.h"
 #include "../include/USER_ACCOUNT.h"
 #include "../include/ConsoleHelper.h"
@@ -9,21 +13,20 @@
 #include "../include/UI_config.h"
 using namespace std;
 
-// Constructor
-ADMIN::ADMIN(const std::string & pass, PRODUCT_REPO& repository, AUTHORITY_SERVICE& auth_svc) 
-    : passcode(pass)
-{
-    repo = &repository;
-    auth_service = &auth_svc;
-}
 
-// Authenticate admin with passcode
+ADMIN::ADMIN(const std::string & pass, PRODUCT_REPO& repository, AUTHORITY_SERVICE& auth_svc, BILL_SERVICE& bill_svc) 
+: USER() 
+{
+    this->repo = &repository;
+    this->auth_service = &auth_svc;
+    this->bill_service = &bill_svc; 
+    this->passcode = pass;          
+}
 bool ADMIN::authenticate(AUTHORITY_SERVICE& auth)
 {
     return auth.verifyAdmin(passcode);
 }
 
-// Perform admin action
 void ADMIN::performAction()
 {
     AdminMenu();
@@ -38,7 +41,6 @@ void ADMIN::AdminMenu()
     std::string line = std::string(44, '=');
     std::string message = "Welcome to our Admin Portal";
 
-    // compute left padding for centering
     int padding = (terminalWidth - line.length()) / 2;
     int msgPadding = (terminalWidth - message.length()) / 2;
 
@@ -155,7 +157,6 @@ std::string ADMIN::getUsername() const
     return "ADMIN";
 }
 
-// Admin session handler
 void ADMIN::startSession()
 {
     bool adminLoggedIn = true;
@@ -288,7 +289,6 @@ void ADMIN::startSession()
 
 void ADMIN::viewProduct(std::string category)
 {
-    // Admin can view all products in a category
     int choice;
     ConsoleHelper::SetColor(15);
     cout << "──────────────────────────────" << endl;
@@ -328,7 +328,7 @@ void ADMIN::searchProduct(std::string productName)
     }
 }
 
-void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
+void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_service) 
 {
     string adminPass;
     cout << "Enter admin passcode (Tab to show/hide): ";
@@ -352,8 +352,7 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 
     cout << "Admin login successful." << endl;
 
-    ADMIN admin(adminPass, repo, auth_service);
-    admin.startSession();
+ADMIN admin(adminPass, repo, auth_service, bill_service);    admin.startSession();
     ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
     ConsoleHelper::ResetColor();

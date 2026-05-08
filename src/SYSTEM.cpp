@@ -1,145 +1,190 @@
-#include"../include/SYSTEM.h"
-#include"../include/USER.h"
-#include<iostream>
-#include"../include/USER_ACCOUNT.h"
-#include"../include/BUYER.h"
-#include"../include/SELLER.h"
-#include"../include/ADMIN.h"
-#include"../include/ConsoleHelper.h"
+#include "../include/SYSTEM.h"
+#include "../include/USER.h"
+#include "../include/USER_ACCOUNT.h"
+#include "../include/BUYER.h"
+#include "../include/SELLER.h"
+#include "../include/ADMIN.h"
+#include "../include/ConsoleHelper.h"
 #include "../include/UI_config.h"
-#include<limits>
-#include<cctype>
+#include "../include/BILL_SERVICE.h"
+#include "../include/PRODUCT_REPO.h"
+#include "../include/BILL.h"
+#include <iostream>
+#include <limits>
+#include <cctype>
+
 using namespace std;
+
 SYSTEM::SYSTEM()
-    : current_user(nullptr), repo(), isAdminLoggedin(false), isRegistered(false){}
-
-
-bool SYSTEM::registerAccount(const USER_ACCOUNT& account)
-{
-    return auth.registerUser(account);
+    : current_user(nullptr), isAdminLoggedin(false), isRegistered(false) {
+    // Dynamically allocate service objects
+    repo = new PRODUCT_REPO();
+    auth = new AUTHORITY_SERVICE();
+    bill_service = new BILL_SERVICE();
 }
 
-USER* SYSTEM::loginAccount(const std::string& username, const std::string& password)
-{
-    if (current_user)
-    {
+SYSTEM::~SYSTEM() {
+    // Clean up heap memory to prevent leaks
+    delete repo;
+    delete auth;
+    delete bill_service;
+    if (current_user) {
+        delete current_user;
+    }
+}
+
+bool SYSTEM::registerAccount(const USER_ACCOUNT& account) {
+    return auth->registerUser(account);
+}
+
+USER* SYSTEM::loginAccount(const std::string& username, const std::string& password) {
+    if (current_user) {
         delete current_user;
         current_user = nullptr;
     }
-
-    current_user = auth.login(username, password);
+    current_user = auth->login(username, password);
     isAdminLoggedin = false;
     return current_user;
 }
 
-bool SYSTEM::adminLogin(const std::string& passcode)
-{
-    isAdminLoggedin= auth.verifyAdmin(passcode);
+bool SYSTEM::adminLogin(const std::string& passcode) {
+    isAdminLoggedin = auth->verifyAdmin(passcode);
     return isAdminLoggedin;
 }
 
-std::vector<USER_ACCOUNT> SYSTEM::getAllUsers() const
-{
-    return auth.getAllRegisteredUsers();
+std::vector<USER_ACCOUNT> SYSTEM::getAllUsers() const {
+    return auth->getAllRegisteredUsers();
 }
 
-bool SYSTEM::deleteUser(const std::string& username)
-{
-    return auth.deleteUserByUsername(username);
+bool SYSTEM::deleteUser(const std::string& username) {
+    return auth->deleteUserByUsername(username);
 }
 
- USER* SYSTEM:: process(bool isLogin, USER_ACCOUNT account)
-{
-   if(!isLogin)
-   {
-         registerAccount(account);
-         return nullptr;
-   }
-   else
-   {
-         return loginAccount(account.getUsername(), account.getPassword()); 
-   }
+USER* SYSTEM::process(bool isLogin, USER_ACCOUNT account) {
+    if (!isLogin) {
+        registerAccount(account);
+        return nullptr;
+    } else {
+        return loginAccount(account.getUsername(), account.getPassword());
+    }
 }
 
-
-void SYSTEM:: addProduct(PRODUCT product){
-        if(isAdminLoggedin){
-            repo.addProduct(product);
-            return;
-        }
-        if(current_user==nullptr){
-            cout<<"No user Logged in"<<endl;
-            return;
-        }
-        if(current_user->getAuthority()!=ClientSELLER)
-        {
-            cout <<"Access not granted!!"<<endl;
-            return;
-        }
-        repo.addProduct(product);
+void SYSTEM::addProduct(PRODUCT product) {
+    if (isAdminLoggedin) {
+        repo->addProduct(product);
+        return;
     }
-    void SYSTEM::removeProduct(){
-        if(!isAdminLoggedin){
-            cout<<"Access not granted!!"<<endl;
-            return;
-        }
-
-        repo.removeProduct();
+    if (current_user == nullptr) {
+        cout << "No user logged in." << endl;
+        return;
     }
-    void SYSTEM:: updateProduct(){
-        if(!isAdminLoggedin){
-            cout<<"Access not granted!!"<<endl;
-            return;
-        }
-        repo.updateProduct();
+    if (current_user->getAuthority() != ClientSELLER) {
+        cout << "Access not granted! Only sellers or admins can add products." << endl;
+        return;
     }
-    void SYSTEM:: searchByName(std:: string name){
-        
-        repo.searchByName(name);
-        
+    repo->addProduct(product);
+}
 
+// Unified Search Method (Removed Redundancy)
+void SYSTEM::searchProduct() {
+    ConsoleHelper::ClearScreen();
+    ConsoleHelper::PrintHeader("SEARCH PRODUCTS");
+    cout << "[1] Search by Product Name" << endl;
+    cout << "[2] Search by Category" << endl;
+    cout << "[3] Back to Menu" << endl;
+    ConsoleHelper::PrintDivider();
+    cout << "Enter your choice: ";
 
+    int choice;
+    if (!(cin >> choice)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
     }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    void SYSTEM:: getAllProducts(){
-        if(isAdminLoggedin){
-            repo.getAllProducts(true);
-            return;
-        }
-        if(current_user==nullptr){
-            cout<<"No user Logged in"<<endl;
-            return;
-        }
-        repo.getAllProducts(false);
-    }
-    void SYSTEM:: saveToFile()
-    {
-        repo.saveToFile();
+    if (choice == 3) return;
+
+    string query;
+    cout << "Enter search term: ";
+    getline(cin, query);
+
+    if (query.empty()) {
+        cout << "Error: Search term cannot be empty!" << endl;
+        return;
     }
 
-PRODUCT_REPO& SYSTEM::getRepo()
-{
+    vector<PRODUCT> results;
+    if (choice == 1) {
+        results = repo->searchByName(query);
+    } else if (choice == 2) {
+        results = repo->searchByCategory(query);
+    } else {
+        cout << "Invalid choice!" << endl;
+        return;
+    }
+
+    if (results.empty()) {
+        cout << "No products found matching: " << query << endl;
+    } else {
+        cout << "\n--- Search Results ---" << endl;
+        for (const auto& prod : results) {
+            // Assuming your PRODUCT class has a display method
+            // If not, use repo's display logic
+            cout << "Product: " << prod.getName() << " | Category: " << prod.getCategory() << endl;
+        }
+    }
+    cout << "\nPress Enter to continue...";
+    cin.get();
+}
+
+void SYSTEM::removeProduct() {
+    if (!isAdminLoggedin) {
+        cout << "Access not granted!" << endl;
+        return;
+    }
+    repo->removeProduct();
+}
+
+void SYSTEM::updateProduct() {
+    if (!isAdminLoggedin) {
+        cout << "Access not granted!" << endl;
+        return;
+    }
+    repo->updateProduct();
+}
+
+void SYSTEM::getAllProducts() {
+    if (isAdminLoggedin) {
+        repo->getAllProducts(true);
+    } else if (current_user != nullptr) {
+        repo->getAllProducts(false);
+    } else {
+        cout << "Please log in to view the full catalog." << endl;
+    }
+}
+
+void SYSTEM::saveToFile() {
+    repo->saveToFile();
+}
+
+PRODUCT_REPO* SYSTEM::getRepo() {
     return repo;
 }
 
-AUTHORITY_SERVICE& SYSTEM::getAuthService()
-{
+AUTHORITY_SERVICE* SYSTEM::getAuthService() {
     return auth;
 }
 
-void SYSTEM::displayGuestMenu()
-{
-    cout << endl;
+void SYSTEM::displayGuestMenu() {
     ConsoleHelper::ClearScreen();
     ConsoleHelper::Header();
-    const int terminalWidth = 80; // assume 80 characters wide
+    const int terminalWidth = 80;
     std::string line = std::string(44, '=');
-    std::string message ="    👥 Welcome to our System Portal 👥" ;
+    std::string message = "    👥 Welcome to our System Portal 👥";
 
-     // compute left padding for centering
     int padding = (terminalWidth - line.length()) / 2;
-    int msgPadding = (terminalWidth - message.length()) / 2;
-
+    
     ConsoleHelper::SetColor(15);
     cout << string(padding, ' ') << line << endl;
     ConsoleHelper::SetColor(10);
@@ -149,32 +194,26 @@ void SYSTEM::displayGuestMenu()
 
     ConsoleHelper::SetColor(12);
     cout << "Guideline:" << endl;
-    cout << "Please select your role to continue." << endl;
-    cout << "Navigate with number keys for speed." << endl;
+    cout << "Register to the System if you wish to buy/sell." << endl;
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
     cout << "[1] Register" << endl;
     cout << "[2] Search Products" << endl;
-    cout << "[3] View Products" << endl;
-    cout << "[4]  Exit" << endl;
-    ConsoleHelper::SetColor(15);
+    cout << "[3] View All Products" << endl;
+    cout << "[4] Exit Guest Mode" << endl;
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
 
-void SYSTEM:: displayMainMenu()
-{
+void SYSTEM::displayMainMenu() {
     ConsoleHelper::Header();
-    ConsoleHelper::SetColor(10);
-    const int terminalWidth = 80; // assume 80 characters wide
+    const int terminalWidth = 80;
     std::string line = std::string(44, '=');
     std::string message = "Welcome to our Management Portal";
 
-    // compute left padding for centering
     int padding = (terminalWidth - line.length()) / 2;
-    int msgPadding = (terminalWidth - message.length()) / 2;
 
     ConsoleHelper::SetColor(15);
     cout << string(padding, ' ') << line << endl;
@@ -183,122 +222,78 @@ void SYSTEM:: displayMainMenu()
     ConsoleHelper::SetColor(15);
     cout << string(padding, ' ') << line << endl;
 
-    ConsoleHelper::SetColor(12);
-    cout << "Guideline:" << endl;
-    cout<<"Register to the System if you like"<<endl;
-    cout<< "If you're already a registered user"<<endl;
-    cout<<"Proceed to next Menu exiting this Menu"<<endl;
-    cout << "Navigate with number keys." << endl;
-    
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
     cout << "[1] User Login" << endl;
-    cout << "[2]  Admin Login" << endl;
-    cout << "[3]  Exit" << endl;
-    ConsoleHelper::SetColor(15);
+    cout << "[2] Admin Login" << endl;
+    cout << "[3] Exit" << endl;
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
 }
 
-void SYSTEM::handleRegistration()
-{
-    // UI logic separated to USER class for easy modification
-   bool success = USER::handleUserRegistrationUI(auth);
-    if (success)
-    {
+void SYSTEM::handleRegistration() {
+    // Dereferencing the pointer to pass as a reference
+    bool success = USER::handleUserRegistrationUI(*auth);
+    if (success) {
         isRegistered = true;
     }
-    
 }
 
-void SYSTEM::handleUserLogin()
-{
-    USER::handleUserLoginUI(auth, repo);
+void SYSTEM::handleUserLogin() {
+    USER::handleUserLoginUI(*auth, *repo);
 }
 
-
-void SYSTEM::handleAdminLogin()
-{
-    ADMIN::handleAdminLoginUI(auth, repo);
+void SYSTEM::handleAdminLogin() {
+ADMIN::handleAdminLoginUI(*auth, *repo, *bill_service);
+}
+void SYSTEM::viewProductList() {
+    ConsoleHelper::ClearScreen();
+    repo->getAllProducts(false);
+    cout << "\nPress Enter to return...";
+    cin.get();
 }
 
-void SYSTEM:: guestMenu()
-{
-    bool end= true;
-    while(end)
-    {
-       displayGuestMenu();
+void SYSTEM::guestMenu() {
+    bool end = true;
+    while (end) {
+        displayGuestMenu();
         int choice;
-        cin>>choice;
-        if (cin.fail())
-        {
+        if (!(cin >> choice)) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "⚠️ Invalid input. Try again." << endl;
             continue;
         }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        switch (choice)
-        {
-            case 1:
-                handleRegistration();
-                break;
-            case 2:
-               { string name;
-                cout<<"Enter the name of the product: ";
-                getline(cin,name);
-                searchByName(name);
-                break;
-               }
-             case 3:
-                repo.getAllProducts(false);
-                break;
 
-            case 4:
-                cout << "Exiting system..." << endl;
-                end = false;
-                break;
-            default:
-            cout << "⚠️ Invalid input. Try again." << endl;
+        switch (choice) {
+            case 1: handleRegistration(); break;
+            case 2: searchProduct(); break;
+            case 3: viewProductList(); break;
+            case 4: end = false; break;
+            default: cout << "⚠️ Invalid input." << endl;
         }
     }
 }
 
-void SYSTEM::run()
-{
+void SYSTEM::run() {
     bool running = true;
-    while (running)
-    {
+    while (running) {
         displayMainMenu();
         int choice;
-        cin >> choice;
-
-        if (cin.fail())
-        {
+        if (!(cin >> choice)) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "⚠️ Invalid input. Try again." << endl;
             continue;
         }
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        switch (choice)
-        {
-            
-            case 1:
-                handleUserLogin();
-                break;
-             case 2:
-                handleAdminLogin();
-                break;
-            case 3:
-                cout << "Exiting system..." << endl;
-                running = false;
-                break;
-            default:
-            cout << "⚠️ Invalid input. Try again." << endl;
+        switch (choice) {
+            case 1: handleUserLogin(); break;
+            case 2: handleAdminLogin(); break;
+            case 3: running = false; break;
+            default: cout << "⚠️ Invalid input." << endl;
         }
     }
-
 }

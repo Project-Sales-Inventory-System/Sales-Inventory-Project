@@ -178,15 +178,7 @@ void BUYER:: startSession()
         }
     }
 }
-void BUYER:: myProducts(){}
 
-void BUYER:: placeOrder(){
-        //LOGIC
-    ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------PLACE ORDER-------");
-    ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
-}
 void BUYER:: viewCart(){
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("--------VIEW CART-------");
