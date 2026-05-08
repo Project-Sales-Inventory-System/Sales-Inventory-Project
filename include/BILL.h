@@ -31,6 +31,6 @@ public:
     int getItemCount() const { return item_count; }
     double getTotalAmount() const { return total_amount; }
     std::string getDate() const { return date; }
-    std::string getPaymentStatus() const { return payment_status; }
+    std::string getPaymentStatus() const ;
     CART& getCart();
 };
