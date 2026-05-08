@@ -70,9 +70,11 @@ void PRODUCT_REPO:: removeProduct()
 {
     if(all_products.empty())
     {
-        std::cout<<"No product found, can't delete!!!"<<std::endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ No product found, can't delete!!!"<<std::endl;
         return;
     }
+    ConsoleHelper::SetColor(14);
     std::cout<<"Available Categories:"<<std::endl;
     showCategory();
     string choice;
@@ -98,7 +100,8 @@ void PRODUCT_REPO:: removeProduct()
     
     if(!categoryFound)
     {
-        std::cout<<"Category not found!!"<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ Category not found!!"<<endl;
         return;
     }
     
@@ -121,7 +124,8 @@ void PRODUCT_REPO:: removeProduct()
     
     if(matchingIndices.empty())
     {
-        std::cout<<"No products in this category!"<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ No products in this category!"<<endl;
         return;
     }
     
@@ -132,7 +136,8 @@ void PRODUCT_REPO:: removeProduct()
     
     if(index<=0 || index>matchingIndices.size())
     {
-        std::cout<<"Invalid choice!"<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ Invalid choice!"<<endl;
         return;
     }
     
@@ -140,18 +145,22 @@ void PRODUCT_REPO:: removeProduct()
     all_products.erase(all_products.begin() + actualIndex);
     saveToFile();
     std::cout<<"Product removed successfully!"<<endl;
+    ConsoleHelper::SetColor(10);
+    std::cout<<"⚠️ Product removed successfully!"<<endl;
 }
 void PRODUCT_REPO:: updateProduct()
 {
     if(all_products.empty())
     {
-        std::cout<<"No product found."<<endl;
-        std::cout<<"Can't Update."<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ No product found."<<endl;
+        std::cout<<"⚠️ Can't Update."<<endl;
         return;
     }
     std::cout<<"Available Categories:"<<endl;
     showCategory();
     string choice;
+
     std::cout<<"Select the Category: ";
     std::cin>>choice;
     std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -174,7 +183,8 @@ void PRODUCT_REPO:: updateProduct()
     
     if(!categoryFound)
     {
-        std::cout<<"Category not found!!"<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ Category not found!!"<<endl;
         return;
     }
     
@@ -196,7 +206,8 @@ void PRODUCT_REPO:: updateProduct()
     
     if(matchingIndices.empty())
     {
-        std::cout<<"No products in this category!"<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ No products in this category!"<<endl;
         return;
     }
     
@@ -239,7 +250,9 @@ void PRODUCT_REPO:: updateProduct()
         std::cout<<"Enter new name: ";
         getline(std::cin, name);
         all_products[actualIndex].setName(name);
+        ConsoleHelper::SetColor(10);
         std::cout<<"Name updated successfully!"<<endl;
+        ConsoleHelper::ResetColor();
     }
     else if(option==2)
     {
@@ -249,7 +262,9 @@ void PRODUCT_REPO:: updateProduct()
         std::cin>>price;
         std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
         all_products[actualIndex].setPrice(price);
+        ConsoleHelper::SetColor(10);
         std::cout<<"Price updated successfully!"<<endl;
+        ConsoleHelper::ResetColor();
     }
     else if(option==3)
     {
@@ -259,11 +274,15 @@ void PRODUCT_REPO:: updateProduct()
         std::cin>>qty;
         std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
         all_products[actualIndex].setQuantity(qty);
+        ConsoleHelper::SetColor(10);
         std::cout<<"Quantity updated successfully!"<<endl;
+        ConsoleHelper::ResetColor();
     }
     else
     {
-        std::cout<<"Invalid option!"<<endl;
+        ConsoleHelper::SetColor(12);
+        std::cout<<"⚠️ Invalid option!"<<endl;
+        ConsoleHelper::ResetColor();
     }
     rebuildSorting();
 }
@@ -322,16 +341,16 @@ vector<PRODUCT> PRODUCT_REPO::searchByCategory(string category)
 }
 void PRODUCT_REPO:: getAllProducts(bool showCount)
 {
-    ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("------TOTAL PRODUCTS------");
+    ConsoleHelper::SetColor(10);
+    ConsoleHelper::PrintHeader("TOTAL PRODUCTS");
     ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
     
     rebuildSorting();
     int total_count = all_products.size();
     auto temp = sorted_price;
     while(!temp.empty())
     {
+        ConsoleHelper::SetColor(10);
         temp.top().displaySearchInfo();
         temp.pop();
     }

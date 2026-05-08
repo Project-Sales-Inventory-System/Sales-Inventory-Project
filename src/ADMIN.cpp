@@ -69,9 +69,12 @@ void ADMIN::AdminMenu()
 
 void ADMIN::handleUserManagement()
 {
+    ConsoleHelper::ClearScreen();
+    ConsoleHelper::Header();
     if (!auth_service)
     {
-        cout << "Auth service not available." << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Auth service not available." << endl;
         return;
     }
 
@@ -83,14 +86,18 @@ void ADMIN::handleUserManagement()
     }
 
     cout << endl;
-    ConsoleHelper::SetColor(10);
+    ConsoleHelper::SetColor(15);
     cout << "===============================================" << endl;
+    ConsoleHelper::SetColor(10);
     cout << "REGISTERED USERS" << endl;
+    ConsoleHelper::SetColor(15);
     cout << "===============================================" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
-    cout << "-----------------------------------------------" << endl;
     ConsoleHelper::SetColor(10);
+    cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << "-----------------------------------------------" << endl;
+    ConsoleHelper::SetColor(7);
     for (int i = 0; i < users.size(); i++)
     {
         cout << i + 1 << "     | "
@@ -100,33 +107,39 @@ void ADMIN::handleUserManagement()
              << users[i].getMailAddress()
              << endl;
     }
+    ConsoleHelper::SetColor(15);
     cout << "-----------------------------------------------" << endl;
     ConsoleHelper::SetColor(7);
     string usernameToDelete;
     cout << "Enter username to delete or 0 to go back: ";
     getline(cin, usernameToDelete);
-
     if (usernameToDelete == "0")
     {
         return;
     }
     if (auth_service->deleteUserByUsername(usernameToDelete))
     {
-        cout << "User deleted successfully!" << endl;
         ConsoleHelper::SetColor(10);
+        cout << "User deleted successfully!" << endl;
+        ConsoleHelper::SetColor(15);
         cout << "\n===============================================" << endl;
+        ConsoleHelper::SetColor(10);
         cout << "UPDATED USER LIST" << endl;
+        ConsoleHelper::SetColor(15);
         cout << "===============================================" << endl;
+        ConsoleHelper::ResetColor();
         vector<USER_ACCOUNT> updatedUsers = auth_service->getAllRegisteredUsers();
         if (updatedUsers.empty())
         {
             ConsoleHelper::SetColor(12);
-            cout << "No users registered." << endl;
+            cout << "⚠️ No users registered." << endl;
+            ConsoleHelper::ResetColor();
         }
         else
         {
-            ConsoleHelper::SetColor(15);
+            ConsoleHelper::SetColor(10);
             cout << "INDEX | NAME | USERNAME | ROLE | EMAIL" << endl;
+            ConsoleHelper::SetColor(15);
             cout << "-----------------------------------------------" << endl;
             for (int i = 0; i < updatedUsers.size(); i++)
             {
@@ -138,6 +151,7 @@ void ADMIN::handleUserManagement()
                      << updatedUsers[i].getMailAddress()
                      << endl;
             }
+            ConsoleHelper::SetColor(15);
             cout << "-----------------------------------------------" << endl;
         }
     }
@@ -229,7 +243,7 @@ void ADMIN::startSession()
                 {
                     repo->addProduct(product);
                     repo->saveToFile();
-                    ConsoleHelper::SetColor(13);
+                    ConsoleHelper::SetColor(10);
                     cout << "Product added successfully!" << endl;
                 }
                 ConsoleHelper::SetColor(13);
@@ -291,12 +305,12 @@ void ADMIN::viewProduct(std::string category)
 {
     int choice;
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
-    ConsoleHelper::SetColor(11);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(10);
     cout << "[1] View Products Category " << endl;
     cout << "[2] View Product Stock" << endl;
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
     cin>>choice;
@@ -344,12 +358,14 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 
     if (!auth_service.verifyAdmin(adminPass))
     {
+        ConsoleHelper::SetColor(12);
         cout << "⚠️ Invalid Passcode." << endl;
+        ConsoleHelper::SetColor(13);
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
-
+     ConsoleHelper::SetColor(10);
     cout << "Admin login successful." << endl;
 
 ADMIN admin(adminPass, repo, auth_service, bill_service);    admin.startSession();

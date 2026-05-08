@@ -195,6 +195,9 @@ void SYSTEM::displayGuestMenu() {
     ConsoleHelper::SetColor(12);
     cout << "Guideline:" << endl;
     cout << "Register to the System if you wish to buy/sell." << endl;
+    cout<< "If you're already a registered user"<<endl;
+    cout<<"Proceed to next Menu exiting this Menu"<<endl;
+    cout << "Navigate with number keys for speed." << endl;
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
@@ -222,6 +225,10 @@ void SYSTEM::displayMainMenu() {
     ConsoleHelper::SetColor(15);
     cout << string(padding, ' ') << line << endl;
 
+    ConsoleHelper::SetColor(12);
+    cout << "Guideline:" << endl;
+    cout << "Please select your role to continue." << endl;
+    cout << "Navigate with number keys." << endl;
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(10);
