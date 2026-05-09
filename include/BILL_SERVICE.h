@@ -23,5 +23,5 @@ public:
     
     void autoConfirmSale(int bill_id, PRODUCT_REPO& repo); 
     
-    BILL* getSaleReport(int & count);
+    void getSaleReport();
 };

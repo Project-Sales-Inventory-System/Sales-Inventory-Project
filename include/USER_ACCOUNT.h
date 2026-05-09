@@ -23,6 +23,7 @@ class USER_ACCOUNT
         std::string getUsername() const;
         std::string getContactNumber() const;
         int getAge() const;
+        int getUserId() const;  
         std::string getLocation() const;
         std::string getMailAddress() const;
 };

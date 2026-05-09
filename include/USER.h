@@ -2,6 +2,7 @@
 #include "../include/USER_ACCOUNT.h"
 class AUTHORITY_SERVICE;
 class PRODUCT_REPO;
+class BILL_SERVICE;
 
 #include<string>
 class USER
@@ -22,6 +23,6 @@ class USER
     Authority getAuthority() const;
     
     static bool handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service);
-    static void handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo);
+    static void handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_svc);
 
 };

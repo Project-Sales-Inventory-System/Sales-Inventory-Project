@@ -67,5 +67,5 @@ void PRODUCT:: displayInfo() const
 
 void PRODUCT:: displaySearchInfo() const
 {
-    cout << product_name << " - Rs" << fixed << setprecision(2) << product_price << endl;
+    cout << product_name << " - Rs" << fixed << setprecision(2) << product_price << " - Stock: " << product_qty << endl;
 }

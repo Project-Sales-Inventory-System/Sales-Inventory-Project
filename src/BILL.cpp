@@ -7,16 +7,14 @@
 
 using namespace std;
 
-static CART dummyCart;
-
 BILL::BILL()
     : billId(0), customerId(0), item_count(0), total_amount(0.0),
-      payment_status("UNPAID"), cart(dummyCart) 
+      payment_status("UNPAID") 
 {}
 
-BILL::BILL(int id, int custId, CART& c)
-    : billId(id), customerId(custId), cart(c), item_count(0),
-      total_amount(0.0), payment_status("UNPAID")
+BILL::BILL(int id, int custId, const CART& c)
+    : billId(id), customerId(custId), item_count(0),
+      total_amount(0.0), payment_status("UNPAID"), items(c.getItems())
 {}
 
 BILL::~BILL() {
@@ -25,15 +23,21 @@ BILL::~BILL() {
 
 int BILL::getBillId() const { return billId; }
 int BILL::getUserId() const { return customerId; }
-CART& BILL::getCart() { return cart; }
+void BILL::setCustomerId(int id) { customerId = id; }
+void BILL::setBillId(int id) { billId = id; }
+void BILL::setPaymentStatus(std::string status) { payment_status = status; }
+const std::vector<PRODUCT>& BILL::getItems() const { return items; }
 string BILL::getPaymentStatus() const { return payment_status; }
 
 void BILL::confirmPayment() {
     payment_status = "PAID";
 }
-
+void BILL::addItem(const PRODUCT& product) {
+    items.push_back(product);
+    item_count += product.getQuantity();
+    total_amount += product.getPrice() * product.getQuantity();
+}
 void BILL::generateBill() {
-    items = cart.getItems();
     item_count = 0;
     total_amount = 0.0;
 
@@ -42,7 +46,7 @@ void BILL::generateBill() {
         total_amount += p.getPrice() * p.getQuantity();
     }
 
-    payment_status = "⚠️ UNPAID";
+    payment_status = "UNPAID";
     date = getCurrentDate();
 
     ConsoleHelper::SetColor(10);

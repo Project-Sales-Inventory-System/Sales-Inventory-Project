@@ -17,7 +17,7 @@ using namespace std;
 
 SYSTEM::SYSTEM()
     : current_user(nullptr), isAdminLoggedin(false), isRegistered(false) {
-    // Dynamically allocate service objects
+   
     repo = new PRODUCT_REPO();
     auth = new AUTHORITY_SERVICE();
     bill_service = new BILL_SERVICE();
@@ -85,7 +85,7 @@ void SYSTEM::addProduct(PRODUCT product) {
     repo->addProduct(product);
 }
 
-// Unified Search Method (Removed Redundancy)
+
 void SYSTEM::searchProduct() {
     ConsoleHelper::ClearScreen();
     ConsoleHelper::PrintHeader("SEARCH PRODUCTS");
@@ -129,8 +129,7 @@ void SYSTEM::searchProduct() {
     } else {
         cout << "\n--- Search Results ---" << endl;
         for (const auto& prod : results) {
-            // Assuming your PRODUCT class has a display method
-            // If not, use repo's display logic
+           
             cout << "Product: " << prod.getName() << " | Category: " << prod.getCategory() << endl;
         }
     }
@@ -234,7 +233,6 @@ void SYSTEM::displayMainMenu() {
 }
 
 void SYSTEM::handleRegistration() {
-    // Dereferencing the pointer to pass as a reference
     bool success = USER::handleUserRegistrationUI(*auth);
     if (success) {
         isRegistered = true;
@@ -242,7 +240,7 @@ void SYSTEM::handleRegistration() {
 }
 
 void SYSTEM::handleUserLogin() {
-    USER::handleUserLoginUI(*auth, *repo);
+    USER::handleUserLoginUI(*auth, *repo, *bill_service);
 }
 
 void SYSTEM::handleAdminLogin() {

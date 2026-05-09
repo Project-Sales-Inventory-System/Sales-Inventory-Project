@@ -246,10 +246,10 @@ USER* AUTHORITY_SERVICE::login(std::string username, std::string password)
             return nullptr;
         }
 
-        cout << "Login Successful >-<" << endl;
-        // Don't create BUYER/SELLER here - SYSTEM will do that
-        // AUTHORITY_SERVICE cannot know about PRODUCT_REPO
-        return nullptr;  // SYSTEM will handle user object creation
+        cout << "Login Successful >-<\n\n" << endl;
+        cout<<endl;
+        
+        return nullptr;  
     }
 
     if (!usernameFound)

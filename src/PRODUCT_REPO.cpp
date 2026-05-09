@@ -318,6 +318,23 @@ vector<PRODUCT> PRODUCT_REPO::searchByCategory(string category)
         }
     }
 
+    // Display the results
+    if (results.empty())
+    {
+        cout << "⚠️ No products found in category: " << category << endl;
+        return results;
+    }
+
+    cout << endl;
+    cout << "------- PRODUCTS IN CATEGORY: " << category << " -------" << endl;
+    cout << "PRODUCT NAME - PRICE - STOCK" << endl;
+    cout << "-------------------------------------------" << endl;
+    for (const auto& product : results)
+    {
+        product.displaySearchInfo();
+    }
+    cout << "-------------------------------------------" << endl;
+
     return results;
 }
 void PRODUCT_REPO:: getAllProducts(bool showCount)

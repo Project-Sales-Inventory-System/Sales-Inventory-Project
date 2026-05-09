@@ -192,8 +192,7 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
     return false;
 }
 
-// UI Handler for User Login - All console input/output here
-void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
+void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_svc)
 {
     int modeChoice;
     cout<<"Enter as: "<<endl;
@@ -225,11 +224,11 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
         cout << "Login failed. Invalid credentials." << endl;
         return;
     }
-    cout<<" Welcome "<<account.getUsername()<<"!"<<endl;
+    cout<<" \tWelcome "<<account.getUsername()<<"!"<<endl;
     
     if(modeChoice==1)
     {
-        BUYER buyer(account, repo);
+        BUYER buyer(account, repo, bill_svc);
         buyer.startSession();
     }
     else if(modeChoice==2)

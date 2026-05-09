@@ -1,9 +1,9 @@
 #pragma once
 #include"../include/USER.h"
-//#include"../include/BILL.h"
 #include"../include/PRODUCT.h"
 #include"../include/AUTHORITY_SERVICE.h"
 #include<string>
+#include "../include/ConsoleHelper.h"
 #include"../include/USER_ACCOUNT.h"
 #include"../include/PRODUCT_REPO.h"
 
@@ -12,7 +12,7 @@ class SELLER: public USER
     private:
     PRODUCT_REPO* repo;
     void SellerMenu();
-    
+    void displayResults(const std::vector<PRODUCT>& results); // add this
     public:
     SELLER(USER_ACCOUNT sDetails, PRODUCT_REPO& repository);
     bool  authenticate(AUTHORITY_SERVICE& auth);

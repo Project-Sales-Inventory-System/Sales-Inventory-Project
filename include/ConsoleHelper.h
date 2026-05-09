@@ -1,13 +1,9 @@
 #pragma once
 #include <string>
-#include<string>
-#ifndef WINDOWS_H
-#define WINDOWS_H
 #include <windows.h>
-#undef WINDOWS_H
-#endif
+
 class ConsoleHelper {
-    public:
+public:
     static void SetColor(int ColourCode);
     static void ResetColor();
     static void ClearScreen();
@@ -16,6 +12,5 @@ class ConsoleHelper {
     static void PrintSuccess();
     static void PrintHeader(std::string title);
     static void Header();
-    static std:: string getPassword();
-
+    static std::string getPassword();
 };

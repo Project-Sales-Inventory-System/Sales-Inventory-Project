@@ -23,7 +23,7 @@ ADMIN(const std::string& pass, PRODUCT_REPO& repository, AUTHORITY_SERVICE& auth
     bool authenticate(AUTHORITY_SERVICE& auth);
     void performAction();
     std::string getUsername() const;
-    void viewProduct(std::string category) override;
+    void viewProduct(std::string category="")override;
     void searchProduct(std::string productName) override;
     void startSession();
     
