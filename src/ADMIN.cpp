@@ -37,7 +37,7 @@ void ADMIN::AdminMenu()
 {
    ConsoleHelper::Header();
     ConsoleHelper::SetColor(10);
-    const int terminalWidth = 80; // assume 80 characters wide
+    const int terminalWidth = 80; 
     std::string line = std::string(44, '=');
     std::string message = "Welcome to our Admin Portal";
 
@@ -55,12 +55,13 @@ void ADMIN::AdminMenu()
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(11);
     cout << "[1]  Manage user" << endl;
-    cout << "[2]  View Products by Category" << endl;
+    cout << "[2]  View Products" << endl;
     cout << "[3]  Add Product" << endl;
     cout << "[4]  Remove Product" << endl;
     cout << "[5]  Update Product" << endl;
     cout << "[6]  Search Products" << endl;
-    cout << "[7]  Logout" << endl;
+    cout << "[7]  Manage Sale Report" << endl;
+    cout << "[8]  Logout" << endl;
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
@@ -199,10 +200,7 @@ void ADMIN::startSession()
                 break;
             case 2:
             {
-                string category;
-                cout << "Enter category to view products: ";
-                getline(cin, category);
-                viewProduct(category);
+                viewProduct();
                 ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
                 ConsoleHelper::SetColor(7);
@@ -280,7 +278,33 @@ void ADMIN::startSession()
                 getline(cin, name);
                 if (repo)
                 {
-                    repo->searchByName(name);
+                    vector<PRODUCT> results = repo->searchByName(name);
+                    if (results.empty())
+                    {
+                        ConsoleHelper::SetColor(12);
+                        cout << "⚠️ No products found." << endl;
+                    }
+                    else
+                    {
+                        ConsoleHelper::SetColor(10);
+                        cout << "\n===============================================" << endl;
+                        cout << "SEARCH RESULTS" << endl;
+                        cout << "===============================================" << endl;
+                        ConsoleHelper::SetColor(15);
+                        cout << "INDEX | NAME | CATEGORY | PRICE | QUANTITY" << endl;
+                        cout << "-----------------------------------------------" << endl;
+                        for (int i = 0; i < results.size(); i++)
+                        {
+                            ConsoleHelper::SetColor(10);
+                            cout << i + 1 << "     | "
+                                 << results[i].getName() << " | "
+                                 << results[i].getCategory() << " | "
+                                 << results[i].getPrice() << " | "
+                                 << results[i].getQuantity()
+                                 << endl;
+                        }
+                        cout << "-----------------------------------------------" << endl;
+                    }
                 }
                 ConsoleHelper::SetColor(13);
                 cout << "Press Enter to continue...";
@@ -289,6 +313,32 @@ void ADMIN::startSession()
                 break;
             }
             case 7:
+            {
+                ConsoleHelper::ClearScreen();
+                ConsoleHelper::SetColor(11);
+                ConsoleHelper::PrintHeader("--------MANAGE SALE REPORT-------");
+                ConsoleHelper::ResetColor();
+                ConsoleHelper::PrintDivider();
+                
+                if (bill_service)
+                {
+                    bill_service->getSaleReport();
+                }
+                else
+                {
+                    ConsoleHelper::SetColor(12);
+                    cout << "⚠️ Bill service not available." << endl;
+                    ConsoleHelper::ResetColor();
+                }
+                
+                ConsoleHelper::SetColor(13);
+                cout << "\nPress Enter to continue...";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                ConsoleHelper::SetColor(7);
+                break;
+            }
+            case 8:
+            
             ConsoleHelper::SetColor(12);
                 cout << "Admin logout." << endl;
                 adminLoggedIn = false;
@@ -305,30 +355,43 @@ void ADMIN::viewProduct(std::string category)
 {
     int choice;
     ConsoleHelper::SetColor(15);
-    ConsoleHelper::PrintDivider();
-    ConsoleHelper::SetColor(10);
-    cout << "[1] View Products Category " << endl;
-    cout << "[2] View Product Stock" << endl;
+    cout << "──────────────────────────────" << endl;
+    ConsoleHelper::SetColor(11);
+    cout << "[1] View Products by Category" << endl;
+    cout << "[2] View All Product Stock"    << endl;
     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
-    cin>>choice;
+    cin >> choice;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
 
-    if (choice==1)
+    if (choice == 1)
     {
+        ConsoleHelper::SetColor(11);
+        cout << "\nAvailable Categories:" << endl;
+        set<string> categories = repo->getCategoryInfo();
+        for (const auto& cat : categories)
+        {
+            cout << " - " << cat << endl;
+        }
+        ConsoleHelper::ResetColor();
+
+        cout << "Enter category: ";
+        getline(cin, category); 
         repo->searchByCategory(category);
     }
-    else if(choice==2)
+    else if (choice == 2)
     {
         repo->getAllProducts(true);
     }
     else
     {
-        cout<<"⚠️ Product info not found in repositroy"<<endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Invalid choice." << endl;
+        ConsoleHelper::ResetColor();
     }
 }
-
 
 void ADMIN::searchProduct(std::string productName)
 {
@@ -357,20 +420,19 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
     }
 
     if (!auth_service.verifyAdmin(adminPass))
-    {
-        ConsoleHelper::SetColor(12);
-        cout << "⚠️ Invalid Passcode." << endl;
-        ConsoleHelper::SetColor(13);
-        cout << "Press Enter to continue...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        return;
-    }
-     ConsoleHelper::SetColor(10);
-    cout << "Admin login successful." << endl;
-
-ADMIN admin(adminPass, repo, auth_service, bill_service);    admin.startSession();
+{
+    ConsoleHelper::SetColor(12);
+    cout << "⚠️ Invalid Passcode." << endl;
     ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
-    ConsoleHelper::ResetColor();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return;
+}
+
+ConsoleHelper::SetColor(10);
+cout << "Admin login successful." << endl;
+ConsoleHelper::ResetColor();
+cout << "Press Enter to continue...";   
+cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+cin.get();                                       
 }

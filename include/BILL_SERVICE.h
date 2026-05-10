@@ -3,7 +3,7 @@
 #include <vector>
 #include "../include/BILL.h"
 #include "../include/CART.h"
-#include "PRODUCT_REPO.h" // Include this to use PRODUCT_REPO in parameters
+#include "PRODUCT_REPO.h" 
 
 class BILL_SERVICE
 {
@@ -23,5 +23,5 @@ public:
     
     void autoConfirmSale(int bill_id, PRODUCT_REPO& repo); 
     
-    BILL* getSaleReport(int & count);
+    void getSaleReport();
 };

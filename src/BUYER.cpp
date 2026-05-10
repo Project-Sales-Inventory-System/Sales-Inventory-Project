@@ -2,51 +2,67 @@
 #include<iostream>
 #include<iomanip>
 #include<limits>
+#include<vector>
 using namespace std;
 #include"../include/ConsoleHelper.h"
 #include"../include/USER.h"
 #include"../include/CART.h"
-//#include"../include/BILL.h"
+#include"../include/BILL.h"
+#include"../include/BILL_SERVICE.h"
 #include"../include/PRODUCT.h"
 #include"../include/AUTHORITY_SERVICE.h"
-    BUYER::BUYER(USER_ACCOUNT Bdetails, PRODUCT_REPO& repository)
-    {
-        CART cart;
+
+BUYER::BUYER(USER_ACCOUNT Bdetails, PRODUCT_REPO& repository, BILL_SERVICE& bill_svc)
+{
     user_acc = Bdetails;
     repo = &repository;
+    bill_service = &bill_svc;
 }
-bool BUYER:: authenticate(AUTHORITY_SERVICE& auth) {
-     return auth.verifyClient(user_acc.getUsername(), "");
+
+bool BUYER::authenticate(AUTHORITY_SERVICE& auth) {
+    return auth.verifyClient(user_acc.getUsername(), "");
 }
-void BUYER:: performAction() {
-    cout<<"Buyer interacting"<<endl;
+
+void BUYER::performAction() {
+    cout << "Buyer interacting" << endl;
 }
-std:: string BUYER:: getUsername()const{
+
+std::string BUYER::getUsername() const {
     return user_acc.getUsername();
 }
+
+int BUYER::getCartItemCount() const {
+    return cart.getItemCount();
+}
+
+double BUYER::getCartTotal() {
+    return cart.calculateTotal();
+}
+
 void BUYER::BuyerMenu()
 {
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("--------BUYER MENU -------");
     ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();  
+    ConsoleHelper::PrintDivider();
     cout << "[1] View Product" << endl;
     cout << "[2] Search Product" << endl;
-    cout << "[3] Logout" << endl;
-    cout << "[4] View Cart" << endl;
-    cout << "[5] Edit Cart" << endl;
-    cout<<"Enter your choice: ";
+    cout << "[3] Edit Cart" << endl;
+    cout << "[4] Request Bill" << endl;
+    cout << "[5] Logout" << endl;
+    cout << "Enter your choice: ";
+}
 
-    
-    }
-
-void BUYER:: viewProduct(std:: string) {
+void BUYER::viewProduct(std::string) {
     ConsoleHelper::ClearScreen();
     if (repo)
     {
         repo->getAllProducts(false);
     }
+    cout << "\nPress Enter to return to menu...";
+    cin.get();
 }
+
 void BUYER::searchProduct(std::string keyword) {
     bool search_again = true;
 
@@ -65,7 +81,7 @@ void BUYER::searchProduct(std::string keyword) {
         cin >> searchChoice;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        if (searchChoice == 3) return;  
+        if (searchChoice == 3) return;
 
         vector<PRODUCT> results;
 
@@ -94,19 +110,37 @@ void BUYER::searchProduct(std::string keyword) {
             }
             default:
                 cout << "Invalid choice!" << endl;
-                continue; 
+                continue;
         }
 
         if (results.empty()) {
             cout << "No result found. Press Enter...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.get();
             continue;
         }
 
+        ConsoleHelper::SetColor(10);
+        cout << "\n===============================================" << endl;
+        cout << "SEARCH RESULTS" << endl;
+        cout << "===============================================" << endl;
+        ConsoleHelper::SetColor(15);
+        cout << "INDEX | NAME | CATEGORY | PRICE | QUANTITY" << endl;
+        cout << "-----------------------------------------------" << endl;
+        for (int i = 0; i < (int)results.size(); i++) {
+            ConsoleHelper::SetColor(11);
+            cout << i + 1 << "     | "
+                 << results[i].getName() << " | "
+                 << results[i].getCategory() << " | "
+                 << results[i].getPrice() << " | "
+                 << results[i].getQuantity()
+                 << endl;
+        }
+        cout << "-----------------------------------------------" << endl;
+        ConsoleHelper::ResetColor();
+
         bool interacting = true;
         while (interacting) {
-            cout << endl;
-            cout << "ADD TO CART: Enter index number and A, e.g. [1A]" << endl;
+            cout << "\nADD TO CART: Enter index number and A, e.g. [1A]" << endl;
             cout << "TO VIEW CART: Enter V" << endl;
             cout << "TO SEARCH AGAIN: Enter S" << endl;
             cout << "TO EXIT: Enter 0" << endl;
@@ -118,19 +152,37 @@ void BUYER::searchProduct(std::string keyword) {
             if (choice == "0") {
                 search_again = false;
                 interacting = false;
+    
             }
             else if (choice.size() >= 2 && (choice.back() == 'a' || choice.back() == 'A')) {
                 string indexStr = choice.substr(0, choice.size() - 1);
                 int id = stoi(indexStr);
-                if (id < 1 || id > results.size()) {  
+                if (id < 1 || id > (int)results.size()) {
                     cout << "Invalid index" << endl;
                 } else {
-                    cart.addItem(results[id - 1]);
-                    cout << results[id - 1].getName() << " added to Cart!!" << endl;
+                    cout << "Enter quantity to add: ";
+                    int quantity;
+                    cin >> quantity;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    if (quantity <= 0) {
+                        cout << "Invalid quantity!" << endl;
+                    } else if (quantity > results[id - 1].getQuantity()) {
+                        ConsoleHelper::SetColor(12);
+                        cout << "⚠️ Only " << results[id - 1].getQuantity() << " available in stock." << endl;
+                        ConsoleHelper::ResetColor();
+                    } else {
+                        PRODUCT item = results[id - 1];
+                        item.setQuantity(quantity);
+                        cart.addItem(item);
+                        ConsoleHelper::SetColor(10);
+                        cout << "✓ " << quantity << "x " << results[id - 1].getName() << " added to Cart!!" << endl;
+                        ConsoleHelper::ResetColor();
+                    }
                 }
             }
             else if (choice == "s" || choice == "S") {
-                interacting = false; 
+                interacting = false;
             }
             else if (choice == "v" || choice == "V") {
                 cart.viewCart();
@@ -140,118 +192,149 @@ void BUYER::searchProduct(std::string keyword) {
             }
         }
     }
-
-    cout << "\nPress Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
-  
 
-
-void BUYER:: startSession()
+void BUYER::startSession()
 {
-    bool buyerLoggedIn= true;
-    while(buyerLoggedIn)
+    bool buyerLoggedIn = true;
+    while (buyerLoggedIn)
     {
+        ConsoleHelper::ClearScreen();
         BuyerMenu();
         int choice;
-        cin>> choice;
+        cin >> choice;
 
         if (cin.fail())
         {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Try again." << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Invalid input. Try again." << endl;
+            ConsoleHelper::ResetColor();
             continue;
         }
 
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        switch(choice)
+        switch (choice)
         {
             case 1: viewProduct(""); break;
             case 2: searchProduct(""); break;
-            case 3:
-                cout<<"Logging out..."<<endl;
-                buyerLoggedIn=false; 
+            case 3: editCart(); break;
+            case 4: requestBill(); break;
+            case 5:
+                ConsoleHelper::SetColor(10);
+                cout << "Thank you for shopping!" << endl;
+                ConsoleHelper::ResetColor();
+                buyerLoggedIn = false;
                 break;
-            default:cout<<"Invalid choice"<<endl;
+            default:
+                ConsoleHelper::SetColor(12);
+                cout << "⚠️ Invalid choice" << endl;
+                ConsoleHelper::ResetColor();
+                cout << "Press Enter to continue...";
+                cin.get();
         }
     }
 }
 
-void BUYER:: viewCart(){
-    ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------VIEW CART-------");
-    ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
-    cart.viewCart();
-}
-void BUYER :: editCart(){
+void BUYER::editCart() {
     ConsoleHelper::SetColor(11);
     ConsoleHelper::PrintHeader("--------EDIT CART-------");
     ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
+
     bool editing = true;
-    while(editing)
-    {
-        ConsoleHelper::ClearScreen();
+    while (editing) {
         cart.viewCart();
-        if(cart.getItemCount()==0)
-        {
-            cout<<"Cart is empty!!"<<endl;
-            editing=false;
+        if (cart.getItemCount() == 0) {
+            std::cout << "Cart is empty!!" << std::endl;
+            cout << "Press Enter to continue...";
+            cin.get();
             break;
         }
-        cout << "[R] Remove Item\n";
-        cout << "[U] Update Quantity\n";
-        cout << "[B] Back to Menu\n";
-        cout << "Enter choice: ";
-        
+
+        std::cout << "[R] Remove Item | [U] Update Quantity | [B] Back: ";
         char choice;
-        cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        
-        switch(choice)
-        {
-            case 'R':
-            case 'r':
-            {
-                string productName;
-                cout << "Enter product name to remove: ";
-                getline(cin, productName);
-                cart.removeItem(productName);
-                break;
-            }
-            case 'U':
-            case 'u':
-            {
-                string productName;
-                int qty;
-                cout << "Enter product name to update: ";
-                getline(cin, productName);
-                cout << "Enter new quantity: ";
-                cin >> qty;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cart.updateQuantity(productName, qty);
-                break;
-            }
-            case 'B':
-            case 'b':
-                editing = false;
-                break;
-            default:
-                cout << "Invalid choice!" << endl;
-                cout << "Press Enter to continue...";
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        std::cin >> choice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        if (choice == 'B' || choice == 'b') {
+            editing = false;
+            continue;
         }
+
+        std::string productName;
+        std::cout << "Enter exact product name: ";
+        std::getline(std::cin >> std::ws, productName);
+
+        if (choice == 'R' || choice == 'r') {
+            cart.removeItem(productName);
+        }
+        else if (choice == 'U' || choice == 'u') {
+            int qty;
+            std::cout << "Enter new quantity: ";
+            if (!(std::cin >> qty)) {
+                std::cout << "Invalid quantity!" << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cart.updateQuantity(productName, qty);
+        }
+
+        std::cout << "\nPress Enter to refresh cart...";
+        std::cin.get();
+        ConsoleHelper::ClearScreen();
     }
 }
-    
 
-void  BUYER:: requestBill(){
+void BUYER::requestBill() {
     ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------BILL-------");
+    ConsoleHelper::PrintHeader("--------REQUEST BILL-------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    //LOGIC
+
+    if (cart.getItemCount() == 0) {
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Your cart is empty! Add items before requesting a bill." << endl;
+        ConsoleHelper::ResetColor();
+        cout << "Press Enter to continue...";
+        cin.get();
+        return;
+    }
+
+    if (!bill_service) {
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Bill service not available." << endl;
+        ConsoleHelper::ResetColor();
+        return;
+    }
+
+    BILL bill = bill_service->autoGenerateBill(cart);
+    bill.displayBill();
+
+    cout << "\nConfirm payment for Bill #" << bill.getBillId() << "? (Y/N): ";
+    char confirm;
+    cin >> confirm;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (confirm == 'Y' || confirm == 'y') {
+        bill.confirmPayment();
+        bill_service->autoConfirmSale(bill.getBillId(), *repo);
+
+        ConsoleHelper::SetColor(10);
+        cout << "\n✓ Payment confirmed successfully!" << endl;
+        cout << "✓ Sale recorded and inventory updated." << endl;
+        ConsoleHelper::ResetColor();
+
+        cart = CART();
+    } else {
+        ConsoleHelper::SetColor(12);
+        cout << "\n✗ Payment cancelled." << endl;
+        ConsoleHelper::ResetColor();
+    }
+
+    cout << "Press Enter to continue...";
+    cin.get();
 }

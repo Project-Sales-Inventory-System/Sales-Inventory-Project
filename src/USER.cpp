@@ -10,9 +10,6 @@ using namespace std;
 #include"../include/PRODUCT_REPO.h"
 #include<limits>
 #include<cctype>
-//#include"../include/CART.h"
-
-// Constructor
 USER::USER() {
 }
 
@@ -24,22 +21,18 @@ Authority USER::getAuthority() const {
     return user_acc.getAuthority();
 }
 
-// UI Handler for User Registration - All console input/output here
 bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
 {
     string fullName, username, password, contactNo, location, email;
     int age;
 
-    // Clear input buffer at the start
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    // Full name - MANDATORY (at least first + last name)
     bool validName = false;
     do {
         cout << "Enter full name (First Name Last Name - at least 2 words): ";
         getline(cin, fullName);
         
-        // Count spaces to ensure at least first + last name
         int spaceCount = 0;
         validName = false;
         
@@ -49,7 +42,6 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
                     spaceCount++;
                 }
             }
-            // At least 1 space means 2 words (first and last name)
             if (spaceCount >= 1) {
                 validName = true;
             }
@@ -60,7 +52,6 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         }
     } while (!validName);
 
-    // Username - Check for duplicates immediately
     bool validUsername = false;
     do {
         cout << "Enter username (min 5 characters, must include 1 special character like @, #, $, %, &, !): ";
@@ -76,7 +67,6 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
             continue;
         }
         
-        // Check for at least one special character
         bool hasSpecialChar = false;
         string specialChars = "@#$%&!^*()_+-=[]{}|;:,.<>?/~`";
         for (char c : username) {
@@ -98,7 +88,6 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         }
     } while (!validUsername);
 
-    // Password - At least 5 characters
     bool validPassword = false;
     do {
         cout << "Enter password - minimum 5 characters (Tab to show/hide): ";
@@ -116,7 +105,6 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         }
     } while (!validPassword);
 
-    // Contact number - 10 digits, must start with 97 or 98
     do {
         cout << "Enter contact number: ";
         getline(cin, contactNo);
@@ -192,53 +180,55 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
     return false;
 }
 
-// UI Handler for User Login - All console input/output here
-void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo)
+void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo, BILL_SERVICE& bill_svc)
 {
     int modeChoice;
-    cout<<"Enter as: "<<endl;
-    cout<<"[1] Buyer"<<endl;
-    cout<<"[2] Seller"<<endl;
-    cout<<"Enter choice: ";
-    cin>>modeChoice;
+    cout << "Enter as: " << endl;
+    cout << "[1] Buyer" << endl;
+    cout << "[2] Seller" << endl;
+    cout << "Enter choice: ";
+    cin >> modeChoice;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
+
     string username, password;
     cout << "Enter username: ";
     getline(cin, username);
-    cout << "Enter password (tab to show/hide): ";
-    password=ConsoleHelper::getPassword();
 
-    if(username.empty() || password.empty())
+    cout << "Enter password (tab to show/hide): ";
+    password = ConsoleHelper::getPassword();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // ← FIX: flush the '\n' getPassword() leaves behind
+
+    if (username.empty() || password.empty())
     {
-        cout<<"Username and password cann't be empty"<<endl;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Username and password can't be empty" << endl;
         return;
     }
-    
-    // Verify credentials and get account
+
     USER_ACCOUNT account = auth_service.verifyAndGetAccount(username, password);
-    
-    // Check if account is valid (username not empty means successful login)
+
     if (account.getUsername().empty())
     {
         cout << "Login failed. Invalid credentials." << endl;
+        cout << "Press Enter to continue...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
-    cout<<" Welcome "<<account.getUsername()<<"!"<<endl;
-    
-    if(modeChoice==1)
+
+    cout << "\tWelcome " << account.getUsername() << "!" << endl;
+
+    if (modeChoice == 1)
     {
-        BUYER buyer(account, repo);
+        BUYER buyer(account, repo, bill_svc);
         buyer.startSession();
     }
-    else if(modeChoice==2)
+    else if (modeChoice == 2)
     {
         SELLER seller(account, repo);
         seller.startSession();
     }
-    else{
-        cout<<"Invalid Choice"<<endl;
+    else
+    {
+        cout << "Invalid Choice" << endl;
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;

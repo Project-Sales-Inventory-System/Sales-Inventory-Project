@@ -13,12 +13,11 @@ private:
     double total_amount;
     std::string date;
     std::string payment_status;
-    CART& cart; 
     std::string getCurrentDate();
 
 public:
     BILL(); 
-    BILL(int id, int custId, CART& c);
+    BILL(int id, int custId, const CART& c);
     ~BILL();
 
     void generateBill();
@@ -28,9 +27,13 @@ public:
     // Getters
     int getBillId() const;
     int getUserId() const;
-    int getItemCount() const { return item_count; }
-    double getTotalAmount() const { return total_amount; }
-    std::string getDate() const { return date; }
-    std::string getPaymentStatus() const ;
-    CART& getCart();
+    void setCustomerId(int id);
+    int getItemCount() const;
+    double getTotalAmount() const ;
+    std::string getDate() const ;
+    void setBillId(int id);
+    void addItem(const PRODUCT& product);
+    void setPaymentStatus(std::string status);
+    std::string getPaymentStatus() const;
+    const std::vector<PRODUCT>& getItems() const;
 };

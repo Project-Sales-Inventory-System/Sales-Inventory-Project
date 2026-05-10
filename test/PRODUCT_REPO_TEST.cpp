@@ -6,6 +6,7 @@
 #include <vector>
 #include "../include/PRODUCT_REPO.h"
 #include "../include/PRODUCT.h"
+using namespace std;
 
 int main() {
     PRODUCT_REPO p1;

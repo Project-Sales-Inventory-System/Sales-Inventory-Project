@@ -3,8 +3,9 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
+#include <string>
 using namespace std;
-
 BILL_SERVICE::BILL_SERVICE() {
     bill_count = 0;
     loadSalesFromFile();
@@ -17,20 +18,9 @@ BILL_SERVICE::~BILL_SERVICE() {
 // ─── File I/O ───────────────────────────────────────────────────────────────
 
 void BILL_SERVICE::saveSalesFromFile() {
-    ofstream file("sales_history.csv");
-    if (!file) {
-        ConsoleHelper::SetColor(12);
-        cout << "Warning: Could not save sales history.\n";
-        ConsoleHelper::ResetColor();
-        return;
-    }
+    std::ofstream file("sales_history.csv");
     for (const auto& bill : allBills) {
-        file << bill.getBillId()        << ","
-             << bill.getUserId()        << ","
-             << bill.getPaymentStatus() << ","
-             << bill.getDate()          << ","
-             << bill.getTotalAmount()   << ","
-             << bill.getItemCount()     << "\n";
+        file << bill.getBillId() << "," << bill.getUserId() << "," << bill.getPaymentStatus() << "\n";
     }
     file.close();
 }
@@ -38,24 +28,16 @@ void BILL_SERVICE::saveSalesFromFile() {
 void BILL_SERVICE::loadSalesFromFile() {
     ifstream file("sales_history.csv");
     if (!file) return;
-
-    string line;
+    std::string line;
     while (getline(file, line)) {
-        if (line.empty()) continue;
-        stringstream ss(line);
-        string id, uId, status, date, total, itemCount;
-        getline(ss, id,        ',');
-        getline(ss, uId,       ',');
-        getline(ss, status,    ',');
-        getline(ss, date,      ',');
-        getline(ss, total,     ',');
-        getline(ss, itemCount, ',');
-
+        std::stringstream ss(line);
+        std::string id, uId, status;
+        getline(ss, id, ',');
+        getline(ss, uId, ',');
+        getline(ss, status, ',');
         if (!id.empty()) {
-            int parsedId = stoi(id);
-            bill_count = max(bill_count, parsedId);
-            // Full reconstruction requires CART; we only track bill_count here.
-            // Push reconstructed bills if CART serialization is added later.
+            bill_count = std::max(bill_count, std::stoi(id));
+            // In a full build, you'd push a reconstructed bill to allBills here
         }
     }
     file.close();
@@ -89,16 +71,16 @@ void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
                 return;
             }
 
-            // 1. Mark as paid
+            
             bill.confirmPayment();
 
-            // 2. Reduce stock for each item
-            auto items = bill.getCart().getItems();
-            for (const auto& item : items) {
+            
+            auto items = bill.getItems(); 
+            for (auto& item : items) {
                 repo.reduceStock(item.getName(), item.getQuantity());
             }
 
-            // 3. Persist changes
+            // 3. Save both states
             saveSalesFromFile();
             repo.saveToFile();
 
@@ -117,7 +99,54 @@ void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
 
 // ─── Report ──────────────────────────────────────────────────────────────────
 
-BILL* BILL_SERVICE::getSaleReport(int& count) {
-    count = static_cast<int>(allBills.size());
-    return allBills.empty() ? nullptr : allBills.data();
+
+
+void BILL_SERVICE::getSaleReport() {
+    ConsoleHelper::SetColor(10);
+    cout << "\n===============================================" << endl;
+    cout << "SALES REPORT" << endl;
+    cout << "===============================================" << endl;
+    ConsoleHelper::ResetColor();
+    
+    if (allBills.empty()) {
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ No sales recorded." << endl;
+        ConsoleHelper::ResetColor();
+        return;
+    }
+    
+    ConsoleHelper::SetColor(15);
+    cout << "BILL ID | USER ID | STATUS | TOTAL ITEMS | AMOUNT" << endl;
+    cout << "-----------------------------------------------" << endl;
+    ConsoleHelper::ResetColor();
+    
+    double totalRevenue = 0.0;
+    int totalSales = 0;
+    
+    for (const auto& bill : allBills) {
+        if (bill.getPaymentStatus() == "PAID") {
+            ConsoleHelper::SetColor(10);
+            totalSales++;
+            const auto& items = bill.getItems();
+            int itemCount = 0;
+            double billAmount = 0.0;
+            for (const auto& item : items) {
+                itemCount += item.getQuantity();
+                billAmount += item.getPrice() * item.getQuantity();
+            }
+            totalRevenue += billAmount;
+            
+            cout << bill.getBillId() << "     | " 
+                 << bill.getUserId() << "      | "
+                 << bill.getPaymentStatus() << "   | "
+                 << itemCount << "          | Rs "
+                 << fixed << setprecision(2) << billAmount << endl;
+        }
+    }
+    
+    cout << "-----------------------------------------------" << endl;
+    ConsoleHelper::SetColor(11);
+    cout << "Total Sales: " << totalSales << endl;
+    cout << "Total Revenue: Rs " << fixed << setprecision(2) << totalRevenue << endl;
+    ConsoleHelper::ResetColor();
 }

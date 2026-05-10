@@ -22,7 +22,12 @@ int main(){
     PRODUCT p2("Electronics", "Phone", 20000.0, 1);
     cart.addItem(p2);
     assert(cart.getItemCount() == 2);
-     
+
+    // test add duplicate item
+    PRODUCT p2("Electronics", "Phone", 20000.0, 1);
+    cart.addItem(p2);
+    assert(cart.getItemCount() == 2);
+
     // test add non-existing item
     PRODUCT p3("nonExisting", "nonExistingItem", 500.0, 5);
     cart.addItem(p3);
@@ -38,11 +43,11 @@ int main(){
 
     // Test updateQuantity
     cart.updateQuantity("Phone", 3);
-    assert(p2.getQuantity() == 3);
+    assert(cart.calculateTotal() == 60000.0);
 
     // Test update non-existing
     cart.updateQuantity("Shirt", 5);
-    assert(p1.getQuantity() == 0);
+    assert(cart.calculateTotal() == 60000.0);
 
     // Test viewCart
     {

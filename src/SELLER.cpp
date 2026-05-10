@@ -4,28 +4,29 @@
 #include"../include/PRODUCT.h"
 #include"../include/AUTHORITY_SERVICE.h"
 #include"../include/ConsoleHelper.h"
+#include"../include/USER_ACCOUNT.h"
+#include"../include/PRODUCT_REPO.h"
 #include<string>
 #include<iostream>
 #include<iomanip>
 #include<limits>
-#include"../include/USER_ACCOUNT.h"
-using namespace std;
+#include<vector>
 
-SELLER:: SELLER(USER_ACCOUNT sDetails, PRODUCT_REPO& repository){
+SELLER::SELLER(USER_ACCOUNT sDetails, PRODUCT_REPO& repository) {
     user_acc = sDetails;
     repo = &repository;
 }
 
-std:: string SELLER:: getUsername() const{
+std::string SELLER::getUsername() const {
     return user_acc.getUsername();
 }
 
-bool SELLER:: authenticate(AUTHORITY_SERVICE& auth) {
-    return auth.verifyClient(user_acc.getUsername(), "");   
+bool SELLER::authenticate(AUTHORITY_SERVICE& auth) {
+    return auth.verifyClient(user_acc.getUsername(), "");
 }
 
-void SELLER:: performAction(){
-    cout<<"Seller interacting"<<endl;
+void SELLER::performAction() {
+    std::cout << "Seller interacting" << std::endl;
 }
 
 void SELLER::SellerMenu()
@@ -34,14 +35,14 @@ void SELLER::SellerMenu()
     ConsoleHelper::PrintHeader("--------SELLER MENU -------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
-    cout << "[1] Add Product" << endl;
-    cout << "[2] Search Product" << endl;
-    cout << "[3] View Products" << endl;
-    cout << "[4] Logout" << endl;
-    cout << "Enter your choice: ";
+    std::cout << "[1] Add Product"    << std::endl;
+    std::cout << "[2] Search Product" << std::endl;
+    std::cout << "[3] View Products"  << std::endl;
+    std::cout << "[4] Logout"         << std::endl;
+    std::cout << "Enter your choice: ";
 }
 
-void SELLER:: viewProduct(std:: string){
+void SELLER::viewProduct(std::string) {
     ConsoleHelper::ClearScreen();
     if (repo)
     {
@@ -49,115 +50,168 @@ void SELLER:: viewProduct(std:: string){
     }
 }
 
-void SELLER:: searchProduct(std:: string keyword){
-    ConsoleHelper::ClearScreen();
-    ConsoleHelper::PrintHeader("SEARCH PRODUCTS");
-    ConsoleHelper::PrintHeader("-SEARCH OPTION-");
-    ConsoleHelper::PrintDivider();
-    cout << "[1] Search by Product Name" << endl;
-    cout << "[2] Search by Category" << endl;
-    cout << "[3] Back to Menu" << endl;
-    ConsoleHelper::PrintDivider();
-    cout << "Enter your choice: ";
-    
-    int searchChoice;
-    cin >> searchChoice;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
-    switch(searchChoice)
+void SELLER::displayResults(const std::vector<PRODUCT>& results)
+{
+    ConsoleHelper::SetColor(10);
+    std::cout << "\nSEARCH RESULTS" << std::endl;
+    std::cout << std::string(60, '=') << std::endl;
+    ConsoleHelper::SetColor(15);
+    std::cout << std::left
+              << std::setw(5)  << "NO"
+              << std::setw(20) << "NAME"
+              << std::setw(15) << "CATEGORY"
+              << std::setw(10) << "PRICE"
+              << "QUANTITY" << std::endl;
+    std::cout << std::string(60, '-') << std::endl;
+
+    for (int i = 0; i < (int)results.size(); i++)
     {
-        case 1:
-        {
-            string productName;
-            cout << "Enter product name to search: ";
-            getline(cin, productName);
-            
-            if (!productName.empty() && repo)
-            {
-                repo->searchByName(productName);
-            }
-            else if (productName.empty())
-            {
-                cout << "Error: Product name cannot be empty!" << endl;
-            }
-            break;
-        }
-        case 2:
-        {
-            string category;
-            cout << "Enter product category to search: ";
-            getline(cin, category);
-            
-            if (!category.empty() && repo)
-            {
-                repo->searchByCategory(category);
-            }
-            else if (category.empty())
-            {
-                cout << "Error: Category cannot be empty!" << endl;
-            }
-            break;
-        }
-        case 3:
-            break;
-        default:
-            cout << "Invalid choice!" << endl;
+        ConsoleHelper::SetColor(11);
+        std::cout << std::left
+                  << std::setw(5)  << i + 1
+                  << std::setw(20) << results[i].getName()
+                  << std::setw(15) << results[i].getCategory()
+                  << std::setw(10) << std::fixed << std::setprecision(2) << results[i].getPrice()
+                  << results[i].getQuantity() << std::endl;
     }
-    
-    cout << "\nPress Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    ConsoleHelper::SetColor(15);
+    std::cout << std::string(60, '-') << std::endl;
+    ConsoleHelper::ResetColor();
 }
 
-void SELLER:: addProduct(PRODUCT product){
+void SELLER::searchProduct(std::string keyword) {
+    bool search_again = true;
+    while (search_again) {
+        ConsoleHelper::ClearScreen();
+        ConsoleHelper::PrintHeader("SEARCH PRODUCTS");
+        ConsoleHelper::PrintHeader("-SEARCH OPTION-");
+        ConsoleHelper::PrintDivider();
+        std::cout << "[1] Search by Product Name" << std::endl;
+        std::cout << "[2] Search by Category"     << std::endl;
+        std::cout << "[3] Back to Menu"           << std::endl;
+        ConsoleHelper::PrintDivider();
+        std::cout << "Enter your choice: ";
+
+        int searchChoice;
+        std::cin >> searchChoice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        if (searchChoice == 3) return;
+
+        switch (searchChoice)
+        {
+            case 1: {
+                std::string productName;
+                std::cout << "Enter product name to search: ";
+                std::getline(std::cin, productName);
+
+                if (productName.empty()) {
+                    ConsoleHelper::SetColor(12);
+                    std::cout << "⚠️ Product name cannot be empty!" << std::endl;
+                    ConsoleHelper::ResetColor();
+                } else if (repo) {
+                    std::vector<PRODUCT> results = repo->searchByName(productName);
+                    if (results.empty()) {
+                        ConsoleHelper::SetColor(12);
+                        std::cout << "⚠️ No products found." << std::endl;
+                        ConsoleHelper::ResetColor();
+                    } else {
+                        displayResults(results);
+                    }
+                }
+                break;
+            }
+            case 2: {
+                std::string category;
+                std::cout << "Enter product category to search: ";
+                std::getline(std::cin, category);
+
+                if (category.empty()) {
+                    ConsoleHelper::SetColor(12);
+                    std::cout << "⚠️ Category cannot be empty!" << std::endl;
+                    ConsoleHelper::ResetColor();
+                } else if (repo) {
+                    std::vector<PRODUCT> results = repo->searchByCategory(category);
+                    if (results.empty()) {
+                        ConsoleHelper::SetColor(12);
+                        std::cout << "⚠️ No products found." << std::endl;
+                        ConsoleHelper::ResetColor();
+                    } else {
+                        displayResults(results);
+                    }
+                }
+                break;
+            }
+            default:
+                ConsoleHelper::SetColor(12);
+                std::cout << "⚠️ Invalid choice!" << std::endl;
+                ConsoleHelper::ResetColor();
+                continue;
+        }
+
+        std::cout << "\n[S] Search Again | [0] Back to Menu: ";
+        std::string next;
+        std::getline(std::cin, next);
+        if (next == "0") {
+            search_again = false;
+        }
+    }
+}
+
+void SELLER::addProduct(PRODUCT product) {
     if (repo)
     {
         repo->addProduct(product);
         repo->saveToFile();
     }
     ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------PRODUCT ADDED SUCESSFULLY-------");
+    ConsoleHelper::PrintHeader("--------PRODUCT ADDED SUCCESSFULLY-------");
     ConsoleHelper::ResetColor();
     ConsoleHelper::PrintDivider();
 }
-
 
 void SELLER::startSession()
 {
     bool sellerLoggedIn = true;
     while (sellerLoggedIn)
     {
+        ConsoleHelper::ClearScreen();
         SellerMenu();
         int choice;
-        cin >> choice;
+        std::cin >> choice;
 
-        if (cin.fail())
+        if (std::cin.fail())
         {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Try again." << endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            ConsoleHelper::SetColor(12);
+            std::cout << "⚠️ Invalid input. Try again." << std::endl;
+            ConsoleHelper::ResetColor();
             continue;
         }
 
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice)
         {
-            case 1:
-            {
-                string category, name;
+            case 1: {
+                std::string category, name;
                 double price;
                 int qty;
-                cout << "Enter product category: ";
-                getline(cin, category);
-                cout << "Enter product name: ";
-                getline(cin, name);
-                cout << "Enter product price: ";
-                cin >> price;
-                cout << "Enter product quantity: ";
-                cin >> qty;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                std::cout << "Enter product category: ";
+                std::getline(std::cin, category);
+                std::cout << "Enter product name: ";
+                std::getline(std::cin, name);
+                std::cout << "Enter product price: ";
+                std::cin >> price;
+                std::cout << "Enter product quantity: ";
+                std::cin >> qty;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 PRODUCT product(category, name, price, qty);
                 addProduct(product);
+                ConsoleHelper::SetColor(13);
+                std::cout << "Press Enter to continue...";
+                std::cin.get();
                 break;
             }
             case 2:
@@ -165,13 +219,22 @@ void SELLER::startSession()
                 break;
             case 3:
                 viewProduct("");
+                ConsoleHelper::SetColor(13);
+                std::cout << "Press Enter to continue...";
+                std::cin.get();
                 break;
             case 4:
-                cout << "Logging out..." << endl;
+                ConsoleHelper::SetColor(10);
+                std::cout << "Logging out..." << std::endl;
+                ConsoleHelper::ResetColor();
                 sellerLoggedIn = false;
                 break;
             default:
-                cout << "Invalid choice. Try again." << endl;
+                ConsoleHelper::SetColor(12);
+                std::cout << "⚠️ Invalid choice. Try again." << std::endl;
+                ConsoleHelper::ResetColor();
+                std::cout << "Press Enter to continue...";
+                std::cin.get();
         }
     }
 }
