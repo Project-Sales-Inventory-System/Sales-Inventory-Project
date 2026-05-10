@@ -178,7 +178,34 @@ void CART::updateQuantity(const std::string product_name, int qnt) {
         std::cout << "Product not found!" << std::endl;
     }
 }
+void CART::viewCart() {
+    ConsoleHelper::SetColor(10);
+    ConsoleHelper::PrintHeader("CART ITEMS");
+    ConsoleHelper::PrintDivider();
+    
+    if (cart_items.empty()) {
+        std::cout << "Cart is empty!" << std::endl;
+        ConsoleHelper::ResetColor();
+        return;
+    }
 
+    ConsoleHelper::SetColor(13);
+    std::cout << std::left << std::setw(20) << "Product" << "|" 
+              << std::setw(10) << "Qty" << "|" 
+              << std::setw(15) << "Price (Rs)" << std::endl;
+    ConsoleHelper::ResetColor();
+    std::cout << std::string(20, '-') << "+" << std::string(10, '-') << "+" << std::string(15, '-') << std::endl;
+
+    for (const auto& item : cart_items) {
+        std::cout << std::left << std::setw(20) << item.getName() << "|"
+                  << std::setw(10) << item.getQuantity() << "|"
+                  << std::setw(15) << std::fixed << std::setprecision(2) << item.getPrice() << std::endl;
+    }
+
+    std::cout << std::string(20, '-') << "+" << std::string(10, '-') << "+" << std::string(15, '-') << std::endl;
+    std::cout << "Total: Rs" << std::fixed << std::setprecision(2) << total_amount << std::endl;
+    ConsoleHelper::ResetColor();
+}
 double CART::calculateTotal() {
     ConsoleHelper::ClearScreen();
     ConsoleHelper::SetColor(10);

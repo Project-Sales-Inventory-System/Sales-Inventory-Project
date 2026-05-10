@@ -25,6 +25,8 @@ class BUYER: public USER
     std:: string getUsername() const;
     void viewProduct(std:: string);
     void searchProduct(std:: string);
+    int getCartItemCount() const ;
+    double getCartTotal(); 
     void myProducts();
     void placeOrder();
     void viewCart();

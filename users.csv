@@ -1,10 +1,5 @@
 full_name,username,password,contact_num,age,location,mail_address,authority
-User,testuser,actualpassword,1234567890,25,City,test@email.com,1
-John Buyer,johnbuyer,buypass,1234567890,25,New York,john@email.com,1
-Jane Seller,janeseller,sellpass,9876543210,30,LA,jane@email.com,2
-prasamsa risal,prasamsa#2,12345,9823220411,19,itahari,abc@gmail.com,1
-Nibisa Timsina,nibi-123,nibi@123,9844031820,20,itahari,nibisa123@gmail.com,1
-Nibisa Timsina,nibi@123,nibi@123,9844031820,20,itahari,nibisa123@gmail.com,1
-nibisa timsina,bsdh%jd,sdcsd,9844031820,20,itahari,nibisa123@gmail.com,1
-hdbchjd jhbd, ncdv$jn,gdvccjh52,9844031280,20,birat,nibi123@gmail.com,1
-chgv jhyg,fcv @gbf,dcfcmkkl88,9844031820,20,itahari,nibisa123@gmail.com,0
+Pranali Rathod,pranali123,efg123,9812983450,40,delhi,efg@gmail.com,1
+Shraddha Kapoor,shraddha123,efg123,9856712340,40,mumbai,xyz@gmail.com,2
+rakhi sah,abc123@,123456,9807654321,3,brt,abc@gmail.com,1
+Rakhi Sah,rakhi@123,pass123,9812345678,25,ktm,rakhi@gmail.com,1

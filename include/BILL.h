@@ -27,6 +27,9 @@ public:
     int getBillId() const;
     int getUserId() const;
     void setCustomerId(int id);
+    int getItemCount() const;
+    double getTotalAmount() const ;
+    std::string getDate() const ;
     void setBillId(int id);
     void addItem(const PRODUCT& product);
     void setPaymentStatus(std::string status);

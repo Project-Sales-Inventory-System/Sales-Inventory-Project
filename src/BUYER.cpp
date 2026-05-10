@@ -26,6 +26,12 @@ void BUYER:: performAction() {
 std:: string BUYER:: getUsername()const{
     return user_acc.getUsername();
 }
+int BUYER::getCartItemCount() const {
+    return cart.getItemCount();
+}
+double BUYER::getCartTotal()  {
+    return cart.calculateTotal();
+}
 void BUYER::BuyerMenu()
 {
     ConsoleHelper::SetColor(11);
