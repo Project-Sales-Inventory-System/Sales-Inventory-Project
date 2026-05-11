@@ -166,7 +166,6 @@ void ADMIN::handleUserManagement()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-// Get username
 std::string ADMIN::getUsername() const
 {
     return "ADMIN";
@@ -314,7 +313,6 @@ void ADMIN::startSession()
             }
             case 7:
             {
-                ConsoleHelper::ClearScreen();
                 ConsoleHelper::SetColor(11);
                 ConsoleHelper::PrintHeader("--------MANAGE SALE REPORT-------");
                 ConsoleHelper::ResetColor();
@@ -432,7 +430,8 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 ConsoleHelper::SetColor(10);
 cout << "Admin login successful." << endl;
 ConsoleHelper::ResetColor();
-cout << "Press Enter to continue...";   
-cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
-cin.get();                                       
+
+// Create ADMIN object and start session
+ADMIN admin(adminPass, repo, auth_service, bill_service);
+admin.startSession();
 }

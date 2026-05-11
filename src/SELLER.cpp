@@ -211,7 +211,7 @@ void SELLER::startSession()
                 addProduct(product);
                 ConsoleHelper::SetColor(13);
                 std::cout << "Press Enter to continue...";
-                std::cin.get();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 break;
             }
             case 2:
@@ -221,7 +221,7 @@ void SELLER::startSession()
                 viewProduct("");
                 ConsoleHelper::SetColor(13);
                 std::cout << "Press Enter to continue...";
-                std::cin.get();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 break;
             case 4:
                 ConsoleHelper::SetColor(10);
@@ -234,7 +234,7 @@ void SELLER::startSession()
                 std::cout << "⚠️ Invalid choice. Try again." << std::endl;
                 ConsoleHelper::ResetColor();
                 std::cout << "Press Enter to continue...";
-                std::cin.get();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 }

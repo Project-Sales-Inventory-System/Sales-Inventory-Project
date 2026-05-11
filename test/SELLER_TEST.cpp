@@ -15,14 +15,6 @@ int main(){
     USER_ACCOUNT account("Rakhi Sah", "rakhi123", "abc123", "9812345670", 30, "ktm", "abc@email.com", ClientSELLER);
     SELLER seller(account, repo);
 
-    //Authentication test
-    {
-       // AUTHORITY_SERVICE auth;
-        //auth.registerUser(account) ;
-       // assert (seller.authenticate(auth) == true);
-
-    }
-    
     // getUsername test
     {
         assert(seller.getUsername() == "rakhi123");
@@ -236,6 +228,6 @@ int main(){
         
     }
 
-    std::cout <<"All Tests Passed!" << std::endl;
+    std::cout <<"All SELLER Tests Passed!" << std::endl;
     return 0;
 }

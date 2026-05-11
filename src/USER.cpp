@@ -169,7 +169,7 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
     USER_ACCOUNT newAccount(fullName, username, password, contactNo, age, location, email, Client);
     if (auth_service.registerUser(newAccount)) {
         cout << "Registration successful!" << endl;
-        cin.get();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return true;  // ← CHANGE false to true here!
     } else {
         cout << "Registration failed. Please try again." << endl;
@@ -233,6 +233,4 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
-    cout << "Press Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }

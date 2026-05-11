@@ -134,7 +134,7 @@ void SYSTEM::searchProduct() {
         }
     }
     cout << "\nPress Enter to continue...";
-    cin.get();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 void SYSTEM::removeProduct() {
@@ -176,7 +176,6 @@ AUTHORITY_SERVICE* SYSTEM::getAuthService() {
 }
 
 void SYSTEM::displayGuestMenu() {
-    ConsoleHelper::ClearScreen();
     ConsoleHelper::Header();
     const int terminalWidth = 80;
     std::string line = std::string(44, '=');
@@ -251,13 +250,13 @@ void SYSTEM::handleUserLogin() {
 }
 
 void SYSTEM::handleAdminLogin() {
-ADMIN::handleAdminLoginUI(*auth, *repo, *bill_service);
+    ADMIN::handleAdminLoginUI(*auth, *repo, *bill_service);
 }
 void SYSTEM::viewProductList() {
     ConsoleHelper::ClearScreen();
     repo->getAllProducts(false);
     cout << "\nPress Enter to return...";
-    cin.get();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 void SYSTEM::guestMenu() {

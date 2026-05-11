@@ -53,8 +53,6 @@ int main() {
         assert(buyer1.getUsername() != buyer2.getUsername());
     }
 
-
-
     //performAction
     {
         stringstream output;
@@ -114,7 +112,7 @@ int main() {
 
         BUYER Buyer(acc, freshRepo, bs);
 
-        // test9: search by name, add to cart, view cart, search by category, exit
+        //search by name, add to cart, view cart, search by category, exit
         {
             stringstream input(
                 "1\n"        // search by name
@@ -145,10 +143,9 @@ int main() {
             assert(result.find("added to Cart") != string::npos);  // "✓ 2x Laptop added to Cart!!"
             assert(result.find("Enter product category to search:") != string::npos);
             assert(result.find("Shirt") != string::npos);
-            cout << "test9 passed - searchProduct name and category" << endl;
         }
 
-        // test10: empty name and empty category give error messages
+        //empty name and empty category give error messages
         {
             stringstream input(
                 "1\n"   // search by name
@@ -174,10 +171,9 @@ int main() {
             assert(result.find("SEARCH PRODUCTS") != string::npos);
             assert(result.find("Error: Product name cannot be empty!") != string::npos);
             assert(result.find("Error: Category cannot be empty!") != string::npos);
-            cout << "test10 passed - empty name and category errors" << endl;
         }
 
-        // test11: search non-existing product and category
+        //search non-existing product and category
         {
             stringstream input(
                 "1\n"      // search by name
@@ -202,10 +198,9 @@ int main() {
 
             assert(result.find("SEARCH PRODUCTS") != string::npos);
             assert(result.find("No result found") != string::npos);
-            cout << "test11 passed - no result found" << endl;
         }
 
-        // test12: invalid menu choice then exit
+        //invalid menu choice then exit
         {
             stringstream input(
                 "5\n"  // invalid choice
@@ -224,10 +219,9 @@ int main() {
             string result = output.str();
 
             assert(result.find("Invalid choice!") != string::npos);
-            cout << "test12 passed - invalid menu choice" << endl;
         }
 
-        // test13: add quantity exceeding stock
+        //add quantity exceeding stock
         {
             stringstream input(
                 "1\n"       // search by name
@@ -248,9 +242,8 @@ int main() {
 
             string result = output.str();
 
-            assert(result.find("Only") != string::npos);  // "⚠️ Only X available in stock."
+            assert(result.find("Only") != string::npos);  
             assert(result.find("available in stock") != string::npos);
-            cout << "test13 passed - quantity exceeds stock" << endl;
         }
     }
 

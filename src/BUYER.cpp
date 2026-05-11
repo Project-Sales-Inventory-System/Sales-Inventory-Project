@@ -60,7 +60,7 @@ void BUYER::viewProduct(std::string) {
         repo->getAllProducts(false);
     }
     cout << "\nPress Enter to return to menu...";
-    cin.get();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 void BUYER::searchProduct(std::string keyword) {
@@ -115,7 +115,7 @@ void BUYER::searchProduct(std::string keyword) {
 
         if (results.empty()) {
             cout << "No result found. Press Enter...";
-            cin.get();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
 
@@ -233,7 +233,7 @@ void BUYER::startSession()
                 cout << "⚠️ Invalid choice" << endl;
                 ConsoleHelper::ResetColor();
                 cout << "Press Enter to continue...";
-                cin.get();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     }
 }
@@ -249,7 +249,7 @@ void BUYER::editCart() {
         if (cart.getItemCount() == 0) {
             std::cout << "Cart is empty!!" << std::endl;
             cout << "Press Enter to continue...";
-            cin.get();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             break;
         }
 
@@ -284,7 +284,7 @@ void BUYER::editCart() {
         }
 
         std::cout << "\nPress Enter to refresh cart...";
-        std::cin.get();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         ConsoleHelper::ClearScreen();
     }
 }
@@ -300,7 +300,7 @@ void BUYER::requestBill() {
         cout << "⚠️ Your cart is empty! Add items before requesting a bill." << endl;
         ConsoleHelper::ResetColor();
         cout << "Press Enter to continue...";
-        cin.get();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
 
@@ -336,5 +336,5 @@ void BUYER::requestBill() {
     }
 
     cout << "Press Enter to continue...";
-    cin.get();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
