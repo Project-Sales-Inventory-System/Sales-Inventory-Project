@@ -285,13 +285,17 @@ void ADMIN::startSession()
                     }
                     else
                     {
-                        ConsoleHelper::SetColor(10);
-                        cout << "\n===============================================" << endl;
-                        cout << "SEARCH RESULTS" << endl;
-                        cout << "===============================================" << endl;
                         ConsoleHelper::SetColor(15);
+                        cout << "\n===============================================" << endl;
+                        ConsoleHelper::SetColor(10);
+                        cout << "SEARCH RESULTS" << endl;
+                        ConsoleHelper::SetColor(15);
+                        cout << "===============================================" << endl;
+                        ConsoleHelper::SetColor(10);
                         cout << "INDEX | NAME | CATEGORY | PRICE | QUANTITY" << endl;
+                        ConsoleHelper::SetColor(15);
                         cout << "-----------------------------------------------" << endl;
+                        ConsoleHelper::SetColor(7);
                         for (int i = 0; i < results.size(); i++)
                         {
                             ConsoleHelper::SetColor(10);
@@ -302,7 +306,9 @@ void ADMIN::startSession()
                                  << results[i].getQuantity()
                                  << endl;
                         }
+                        ConsoleHelper::SetColor(15);
                         cout << "-----------------------------------------------" << endl;
+                        ConsoleHelper::SetColor(7);
                     }
                 }
                 ConsoleHelper::SetColor(13);
@@ -314,7 +320,7 @@ void ADMIN::startSession()
             case 7:
             {
                 ConsoleHelper::SetColor(11);
-                ConsoleHelper::PrintHeader("--------MANAGE SALE REPORT-------");
+                ConsoleHelper::PrintHeader("MANAGE SALE REPORT");
                 ConsoleHelper::ResetColor();
                 ConsoleHelper::PrintDivider();
                 
@@ -345,16 +351,16 @@ void ADMIN::startSession()
             ConsoleHelper::SetColor(12);
                 cout << "⚠️ Invalid choice. Try again." << endl;
         }
-    }
+    } 
 }
-
 
 void ADMIN::viewProduct(std::string category)
 {
     int choice;
+    ConsoleHelper::Header();
     ConsoleHelper::SetColor(15);
-    cout << "──────────────────────────────" << endl;
-    ConsoleHelper::SetColor(11);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(10);
     cout << "[1] View Products by Category" << endl;
     cout << "[2] View All Product Stock"    << endl;
     ConsoleHelper::SetColor(15);
@@ -399,7 +405,9 @@ void ADMIN::searchProduct(std::string productName)
     }
     else
     {
+        ConsoleHelper::SetColor(12);
         cout << "⚠️ Product repository not available." << endl;
+        ConsoleHelper::ResetColor();
     }
 }
 
@@ -411,9 +419,12 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
     
     if(adminPass.empty())
     {
+        ConsoleHelper::SetColor(12);
         cout << "⚠️ Error: Admin passcode cannot be empty!" << endl;
+        ConsoleHelper::SetColor(13);
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        ConsoleHelper::ResetColor();
         return;
     }
 
@@ -430,8 +441,6 @@ void ADMIN::handleAdminLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& re
 ConsoleHelper::SetColor(10);
 cout << "Admin login successful." << endl;
 ConsoleHelper::ResetColor();
-
-// Create ADMIN object and start session
 ADMIN admin(adminPass, repo, auth_service, bill_service);
 admin.startSession();
 }
