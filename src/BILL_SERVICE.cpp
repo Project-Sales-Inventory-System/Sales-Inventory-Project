@@ -15,7 +15,6 @@ BILL_SERVICE::~BILL_SERVICE() {
     saveSalesFromFile();
 }
 
-// ─── File I/O ───────────────────────────────────────────────────────────────
 
 void BILL_SERVICE::saveSalesFromFile() {
     std::ofstream file("sales_history.csv");
@@ -43,7 +42,6 @@ void BILL_SERVICE::loadSalesFromFile() {
     file.close();
 }
 
-// ─── Bill Creation ───────────────────────────────────────────────────────────
 
 BILL BILL_SERVICE::createBILL(CART cart, int user_ID) {
     bill_count++;
@@ -58,7 +56,6 @@ BILL BILL_SERVICE::autoGenerateBill(CART cart) {
     return createBILL(cart, 0); // guest user ID = 0
 }
 
-// ─── Confirm Sale ────────────────────────────────────────────────────────────
 
 void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
     for (auto& bill : allBills) {
@@ -93,18 +90,19 @@ void BILL_SERVICE::autoConfirmSale(int bill_id, PRODUCT_REPO& repo) {
     }
 
     ConsoleHelper::SetColor(12);
-    cout << " Bill ID #" << bill_id << " not found.\n";
+    cout << " Bill ID #" << bill_id << "⚠️ not found.\n";
     ConsoleHelper::ResetColor();
 }
 
-// ─── Report ──────────────────────────────────────────────────────────────────
 
 
 
 void BILL_SERVICE::getSaleReport() {
-    ConsoleHelper::SetColor(10);
+    ConsoleHelper::SetColor(15);
     cout << "\n===============================================" << endl;
+    ConsoleHelper::SetColor(10);
     cout << "SALES REPORT" << endl;
+    ConsoleHelper::SetColor(15);
     cout << "===============================================" << endl;
     ConsoleHelper::ResetColor();
     
@@ -117,6 +115,7 @@ void BILL_SERVICE::getSaleReport() {
     
     ConsoleHelper::SetColor(15);
     cout << "BILL ID | USER ID | STATUS | TOTAL ITEMS | AMOUNT" << endl;
+    ConsoleHelper::SetColor(7);
     cout << "-----------------------------------------------" << endl;
     ConsoleHelper::ResetColor();
     
@@ -145,7 +144,7 @@ void BILL_SERVICE::getSaleReport() {
     }
     
     cout << "-----------------------------------------------" << endl;
-    ConsoleHelper::SetColor(11);
+    ConsoleHelper::SetColor(10);
     cout << "Total Sales: " << totalSales << endl;
     cout << "Total Revenue: Rs " << fixed << setprecision(2) << totalRevenue << endl;
     ConsoleHelper::ResetColor();

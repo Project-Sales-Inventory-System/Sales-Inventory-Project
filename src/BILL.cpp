@@ -63,12 +63,19 @@ void BILL::displayBill() {
     ConsoleHelper::ClearScreen();
     ConsoleHelper::Header();
 
+       ConsoleHelper::Header();
+    const int terminalWidth = 80;
+    std::string line = std::string(44, '=');
+    std::string message = "    BILL RECIPT";
+
+    int padding = (terminalWidth - line.length()) / 2;
+    
     ConsoleHelper::SetColor(15);
-    cout << string(50, '=') << endl;
+    std::cout << string(padding, ' ') << line << endl;
     ConsoleHelper::SetColor(10);
-    cout << "                BILL RECEIPT" << endl;
+    std::cout << string(padding, ' ') << message << endl;
     ConsoleHelper::SetColor(15);
-    cout << string(50, '=') << endl;
+    std::cout << string(padding, ' ') << line << endl;
     ConsoleHelper::ResetColor();
 
     cout << " Bill ID     : " << billId << endl;
@@ -90,7 +97,7 @@ void BILL::displayBill() {
          << setw(8)  << " Qty"          << "|"
          << setw(14) << " Price (Rs)"   << "|"
          << setw(15) << " Category"     << endl;
-
+    
     cout << string(20, '-') << "+"
          << string(8,  '-') << "+"
          << string(14, '-') << "+"
@@ -108,7 +115,7 @@ void BILL::displayBill() {
     cout << left << setw(30) << " TOTAL ITEMS  :" << item_count << endl;
     cout << left << setw(30) << " TOTAL AMOUNT :" << " Rs "
          << fixed << setprecision(2) << total_amount << endl;
-
+    ConsoleHelper::SetColor(7);
     ConsoleHelper::PrintDivider();
     ConsoleHelper::SetColor(13);
     cout << "\n Press Enter to continue...";

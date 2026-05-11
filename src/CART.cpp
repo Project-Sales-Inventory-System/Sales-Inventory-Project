@@ -8,6 +8,7 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+
 int CART::getItemCount() const {
     return static_cast<int>(cart_items.size());
 }
@@ -31,11 +32,20 @@ void CART::CartMenu() {
     while (true) {
         ConsoleHelper::ClearScreen();
         ConsoleHelper::Header();
-        ConsoleHelper::SetColor(10);
-        std::cout << std::string(44, '=') << std::endl;
-        std::cout << "              CART MENU" << std::endl;
-        std::cout << std::string(44, '=') << std::endl;
-        ConsoleHelper::ResetColor();
+    const int terminalWidth = 80;
+    std::string line = std::string(44, '=');
+    std::string message = "    CART MENU";
+
+    int padding = (terminalWidth - line.length()) / 2;
+    
+    ConsoleHelper::SetColor(15);
+    std::cout << std::string(padding, ' ') << line << std::endl;
+    ConsoleHelper::SetColor(10);
+    std::cout << std::string(padding, ' ') << message << std::endl;
+    ConsoleHelper::SetColor(15);
+    std::cout << std::string(padding, ' ') << line << std::endl;
+
+    ConsoleHelper::ResetColor();
         printMenu();
         std::cout << std::string(44, '-') << std::endl;
         std::cout << "Enter your choice: ";
@@ -124,8 +134,7 @@ void CART::addItem(const PRODUCT product) {
     ConsoleHelper::ClearScreen();
     ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("ITEM ADDED SUCCESSFULLY");
-    
-    ConsoleHelper::SetColor(13);
+    ConsoleHelper::SetColor(7);
     std::cout << std::left << std::setw(20) << "Product" << "|" << std::setw(10) << "Qty" << "|" << std::setw(15) << "Price (Rs)" << std::endl;
     ConsoleHelper::ResetColor();
 
@@ -214,8 +223,13 @@ double CART::calculateTotal() {
     ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("CART TOTAL");
     ConsoleHelper::ResetColor();
+    ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(7);
     std::cout << std::fixed << std::setprecision(2);
     std::cout << "Total amount: Rs" << total_amount << std::endl;
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(7);
     return total_amount;
 }

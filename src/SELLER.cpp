@@ -31,14 +31,27 @@ void SELLER::performAction() {
 
 void SELLER::SellerMenu()
 {
-    ConsoleHelper::SetColor(11);
-    ConsoleHelper::PrintHeader("--------SELLER MENU -------");
-    ConsoleHelper::ResetColor();
-    ConsoleHelper::PrintDivider();
+     ConsoleHelper::ClearScreen();
+    ConsoleHelper::Header();
+    const int terminalWidth = 80;
+    std::string line = std::string(44, '=');
+    std::string message = "    👥 SELLER MENU 👥";
+
+    int padding = (terminalWidth - line.length()) / 2;
+    
+    ConsoleHelper::SetColor(15);
+    std::cout << std::string(padding, ' ') << line << std::endl;
+    ConsoleHelper::SetColor(10);
+    std::cout << std::string(padding, ' ') << message << std::endl;
+    ConsoleHelper::SetColor(15);
+    std::cout << std::string(padding, ' ') << line << std::endl;
+    ConsoleHelper::SetColor(10);
     std::cout << "[1] Add Product"    << std::endl;
     std::cout << "[2] Search Product" << std::endl;
     std::cout << "[3] View Products"  << std::endl;
     std::cout << "[4] Logout"         << std::endl;
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
     std::cout << "Enter your choice: ";
 }
 
