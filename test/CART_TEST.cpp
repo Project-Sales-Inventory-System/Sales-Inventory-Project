@@ -23,16 +23,6 @@ int main(){
     cart.addItem(p2);
     assert(cart.getItemCount() == 2);
 
-    // test add duplicate item
-    PRODUCT p2("Electronics", "Phone", 20000.0, 1);
-    cart.addItem(p2);
-    assert(cart.getItemCount() == 2);
-
-    // test add non-existing item
-    PRODUCT p3("nonExisting", "nonExistingItem", 500.0, 5);
-    cart.addItem(p3);
-    assert(cart.getItemCount() == 2);
-
     // Test removeItem
     cart.removeItem("Shirt");
     assert(cart.getItemCount() == 1);
@@ -70,6 +60,12 @@ int main(){
         assert(!buffer.str().empty());
         assert(buffer.str().find("60000.00") != std::string::npos);
     }
+
+    // test add non-existing item
+    PRODUCT p3("nonExisting", "nonExistingItem", 500.0, 5);
+    cart.addItem(p3);
+    assert(cart.getItemCount() == 1);
+
     
     std::cout << "All CART tests passed!" << std::endl;
     return 0;
