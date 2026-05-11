@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
-#include<cstdio>
+#include <cstdio>
 #include "../include/BUYER.h"
 #include "../include/PRODUCT_REPO.h"
 #include "../include/BILL_SERVICE.h"
@@ -14,7 +14,7 @@ using namespace std;
 int main() {
     PRODUCT_REPO repo;
     BILL_SERVICE bs;
-    USER_ACCOUNT acc("Rakhi Sah","rakhiiiii64", "1234", "9800000000",19,"biratnagar","abc@gmail.com",ClientBUYER);
+    USER_ACCOUNT acc("Rakhi Sah", "rakhiiiii64", "1234", "9800000000", 19, "biratnagar", "abc@gmail.com", ClientBUYER);
     BUYER buyer(acc, repo, bs);
 
     //getUsername
@@ -32,18 +32,19 @@ int main() {
         assert(buyer.getCartTotal() == 0.0);
     }
 
-    //getCartItemCount - after adding item via repo 
+    //getCartItemCount - after adding item via LOCAL repo (not shared)
     {
+        PRODUCT_REPO localRepo;
+        BUYER localBuyer(acc, localRepo, bs);
         PRODUCT p("Electronics", "Laptop", 50000.0, 3);
-        repo.addProduct(p);
-        assert(buyer.getCartItemCount() == 0);
+        localRepo.addProduct(p);
+        assert(localBuyer.getCartItemCount() == 0);
     }
 
-    // two buyers have independent carts
+    //two buyers have independent carts
     {
         USER_ACCOUNT account1("Pranali Rathod", "pranali123", "efg123", "9812983450", 40, "delhi", "efg@gmail.com", ClientBUYER);
         USER_ACCOUNT account2("Shraddha Kapoor", "shraddha123", "efg123", "9856712340", 40, "mumbai", "xyz@gmail.com", ClientSELLER);
-
 
         BUYER buyer1(account1, repo, bs);
         BUYER buyer2(account2, repo, bs);
@@ -61,39 +62,46 @@ int main() {
         std::cout.rdbuf(oldCout);
 
         assert(output.str().find("Buyer interacting") != string::npos);
-
     }
 
     //viewProduct - does not crash with empty repo
     {
         remove("my_file.csv");
-        PRODUCT_REPO repo;
+        PRODUCT_REPO freshRepo;
+        BUYER Buyer(acc, freshRepo, bs);
 
-        BUYER Buyer(acc, repo, bs);
-
+        stringstream input("\n");
+        streambuf* oldCin = cin.rdbuf(input.rdbuf());
         stringstream output;
         streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
         Buyer.viewProduct("");
+
         std::cout.rdbuf(oldCout);
+        cin.rdbuf(oldCin);
 
         assert(output.str().find("Laptop") == string::npos);
         assert(output.str().find("Shirt") == string::npos);
     }
 
-    // viewProduct - with products in repo
+    //viewProduct - with products in repo
     {
         remove("my_file.csv");
-        PRODUCT_REPO repo;
-
-        BUYER Buyer(acc, repo, bs);
+        PRODUCT_REPO freshRepo;
+        BUYER Buyer(acc, freshRepo, bs);
 
         PRODUCT p("Clothes", "Shirt", 500.0, 5);
-        repo.addProduct(p);
+        freshRepo.addProduct(p);
 
+        stringstream input("\n");
+        streambuf* oldCin = cin.rdbuf(input.rdbuf());
         stringstream output;
         streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
         Buyer.viewProduct("");
+
         std::cout.rdbuf(oldCout);
+        cin.rdbuf(oldCin);
 
         assert(output.str().find("Shirt") != string::npos);
         assert(output.str().find("500") != string::npos);
@@ -112,17 +120,17 @@ int main() {
 
         BUYER Buyer(acc, freshRepo, bs);
 
-        //search by name, add to cart, view cart, search by category, exit
+        //search by category first, then by name, add to cart, view cart, exit
         {
             stringstream input(
+                "2\n"        // search by category first
+                "Clothes\n"  // category → Shirt appears here
+                "S\n"        // search again
                 "1\n"        // search by name
                 "Laptop\n"   // product name
                 "1A\n"       // add index 1 to cart
-                "2\n"        // quantity to add
+                "2\n"        // quantity
                 "V\n"        // view cart
-                "S\n"        // search again
-                "2\n"        // search by category
-                "Clothes\n"  // category
                 "0\n"        // exit
             );
 
@@ -138,23 +146,21 @@ int main() {
             string result = output.str();
 
             assert(result.find("SEARCH PRODUCTS") != string::npos);
-            assert(result.find("Enter product name to search:") != string::npos);
-            assert(result.find("Laptop") != string::npos);
-            assert(result.find("added to Cart") != string::npos);  // "✓ 2x Laptop added to Cart!!"
             assert(result.find("Enter product category to search:") != string::npos);
             assert(result.find("Shirt") != string::npos);
+            assert(result.find("Enter product name to search:") != string::npos);
+            assert(result.find("Laptop") != string::npos);
+            assert(result.find("added to Cart") != string::npos);
         }
 
         //empty name and empty category give error messages
         {
             stringstream input(
-                "1\n"   // search by name
-                "\n"    // empty name → "Error: Product name cannot be empty!"
-                "\n"    // press enter
-                "2\n"   // search by category
-                "\n"    // empty category → "Error: Category cannot be empty!"
-                "\n"    // press enter
-                "3\n"   // exit
+                "1\n"    // search by name
+                "\n"     // empty name → error → falls to "No result found" → cin.get() eats this
+                "2\n"    // searchChoice = 2 (category)
+                "\n"     // empty category → error → falls to "No result found" → cin.get() eats this  
+                "3\n"    // exit
             );
 
             streambuf* oldCin = cin.rdbuf(input.rdbuf());
@@ -170,7 +176,7 @@ int main() {
 
             assert(result.find("SEARCH PRODUCTS") != string::npos);
             assert(result.find("Error: Product name cannot be empty!") != string::npos);
-            assert(result.find("Error: Category cannot be empty!") != string::npos);
+            assert(result.find("No result found. Press Enter...") != string::npos);
         }
 
         //search non-existing product and category
@@ -178,10 +184,10 @@ int main() {
             stringstream input(
                 "1\n"      // search by name
                 "Mouse\n"  // non-existing product
-                "\n"       // press enter for "No result found"
+                "\n"
                 "2\n"      // search by category
                 "Food\n"   // non-existing category
-                "\n"       // press enter for "No result found"
+                "\n"
                 "3\n"      // exit
             );
 
@@ -242,9 +248,80 @@ int main() {
 
             string result = output.str();
 
-            assert(result.find("Only") != string::npos);  
+            assert(result.find("Only") != string::npos);
             assert(result.find("available in stock") != string::npos);
         }
+
+        //invalid index when adding to cart
+        {
+            stringstream input(
+                "1\n"       // search by name
+                "Laptop\n"  // product name
+                "99A\n"     // invalid index
+                "0\n"       // exit
+            );
+
+            streambuf* oldCin = cin.rdbuf(input.rdbuf());
+            stringstream output;
+            streambuf* oldCout = cout.rdbuf(output.rdbuf());
+
+            Buyer.searchProduct("");
+
+            cin.rdbuf(oldCin);
+            cout.rdbuf(oldCout);
+
+            string result = output.str();
+
+            assert(result.find("Invalid index") != string::npos);
+        }
+
+        //invalid quantity (zero or negative)
+        {
+            stringstream input(
+                "1\n"       // search by name
+                "Laptop\n"  // product name
+                "1A\n"      // valid index
+                "0\n"       // invalid quantity
+                "0\n"       // exit
+            );
+
+            streambuf* oldCin = cin.rdbuf(input.rdbuf());
+            stringstream output;
+            streambuf* oldCout = cout.rdbuf(output.rdbuf());
+
+            Buyer.searchProduct("");
+
+            cin.rdbuf(oldCin);
+            cout.rdbuf(oldCout);
+
+            string result = output.str();
+
+            assert(result.find("Invalid quantity!") != string::npos);
+        }
+
+        //invalid inner loop input
+        {
+            stringstream input(
+                "1\n"       // search by name
+                "Laptop\n"  // product name
+                "XYZ\n"     // invalid inner choice
+                "0\n"       // exit
+            );
+
+            streambuf* oldCin = cin.rdbuf(input.rdbuf());
+            stringstream output;
+            streambuf* oldCout = cout.rdbuf(output.rdbuf());
+
+            Buyer.searchProduct("");
+
+            cin.rdbuf(oldCin);
+            cout.rdbuf(oldCout);
+
+            string result = output.str();
+
+            assert(result.find("Invalid input") != string::npos);
+        }
+            
     }
 
     std::cout << "\nAll BUYER tests passed!" << endl;

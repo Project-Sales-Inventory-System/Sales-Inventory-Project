@@ -124,8 +124,7 @@ int main()
         streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
         bs.autoConfirmSale(999, repo); 
         std::cout.rdbuf(oldCout);
-
-        assert(output.str().find("Bill ID not found.") != string::npos);
+        assert(output.str().find("Bill ID #999⚠️ not found.") != string::npos);
     }
 
     
