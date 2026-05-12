@@ -1,3 +1,4 @@
+#include <limits>
 #include "../include/BILL.h"
 #include "../include/ConsoleHelper.h"
 #include <iostream>
@@ -120,8 +121,7 @@ void BILL::displayBill() {
     ConsoleHelper::SetColor(13);
     cout << "\n Press Enter to continue...";
     ConsoleHelper::ResetColor();
-    cin.ignore(10000, '\n');
-    cin.get();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 string BILL::getCurrentDate() {

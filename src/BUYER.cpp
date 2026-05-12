@@ -277,7 +277,7 @@ void BUYER::startSession()
                 cout << "⚠️ Invalid choice" << endl;
                 ConsoleHelper::ResetColor();
                 cout << "Press Enter to continue...";
-                cin.get();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     }
 }
@@ -333,7 +333,7 @@ void BUYER::editCart() {
         }
 
         std::cout << "\nPress Enter to refresh cart...";
-        std::cin.get();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         ConsoleHelper::ClearScreen();
     }
 }
@@ -350,7 +350,7 @@ void BUYER::requestBill() {
         cout << "⚠️ Your cart is empty! Add items before requesting a bill." << endl;
         ConsoleHelper::ResetColor();
         cout << "Press Enter to continue...";
-        cin.get();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
 

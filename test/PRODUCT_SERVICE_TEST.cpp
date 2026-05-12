@@ -28,6 +28,6 @@ int main(){
         assert(buffer.str().find("Apple") == std::string::npos);
     }
 
-    std::cout << "All tests passed!" << std::endl;
+    std::cout << "All PRODUCT_SERVICE tests passed!" << std::endl;
     return 0;
 }

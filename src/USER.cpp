@@ -186,6 +186,7 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         cout << "Registration successful!" << endl;
         ConsoleHelper::ResetColor();
         cin.get();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return true;  // ← CHANGE false to true here!
     } else {
         ConsoleHelper::SetColor(12);

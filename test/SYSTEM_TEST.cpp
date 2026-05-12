@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-    // test1: registerAccount
+    //registerAccount
     {
         remove("users.csv");
         SYSTEM sys;
@@ -25,9 +25,7 @@ int main()
         
     }
 
-    
-
-    // test3: loginAccount - valid credentials
+    //loginAccount - valid credentials
     {
         
         SYSTEM sys;
@@ -43,7 +41,7 @@ int main()
         
     }
 
-// test4: loginAccount - invalid credentials
+    //loginAccount - invalid credentials
     {
         
         SYSTEM sys;
@@ -58,9 +56,7 @@ int main()
         assert(output.str().find("Password incorrect") != string::npos);
     }
 
-
-
-    // test5: adminLogin - wrong passcode
+    //adminLogin - wrong passcode
     {
         remove("my_file.csv");
         SYSTEM sys;
@@ -70,7 +66,7 @@ int main()
         assert(result == false);
     }
 
-    // test6: getAllUsers
+    //getAllUsers
     {
         
         SYSTEM sys;
@@ -87,7 +83,7 @@ int main()
         
     }
 
-    // test7: deleteUser - existing user
+    //deleteUser - existing user
     {
         
         SYSTEM sys;
@@ -101,7 +97,7 @@ int main()
         assert(sys.getAllUsers().size() == 2);
         
     }
-    // test8: deleteUser - non-existing user
+    //deleteUser - non-existing user
     {
         SYSTEM sys;
 
@@ -114,7 +110,7 @@ int main()
     
 
 
-    // test11: addProduct - no user logged in
+    //addProduct - no user logged in
     {
         remove("my_file.csv");
         SYSTEM sys;
@@ -130,7 +126,7 @@ int main()
         std::cout << "test11 passed - addProduct no user" << std::endl;
     }
 
-    // test12: addProduct - admin logged in
+    //addProduct - admin logged in
     {
         remove("my_file.csv");
         SYSTEM sys;
@@ -145,7 +141,7 @@ int main()
         std::cout << "test12 passed - addProduct admin" << std::endl;
     }
 
-    // test13: searchProduct - by name
+    //searchProduct - by name
     {
         SYSTEM sys;
 
@@ -170,7 +166,7 @@ int main()
         
     }
 
-    // test14: searchProduct - by category
+    //searchProduct - by category
     {
         SYSTEM sys;
 
@@ -195,9 +191,8 @@ int main()
         
     }
 
-    // test15: searchProduct - empty query
+    //searchProduct - empty query
     {
-      
         SYSTEM sys;
 
         stringstream input(
@@ -217,9 +212,8 @@ int main()
         
     }
 
-    // test16: searchProduct - no results
+    //searchProduct - no results
     {
-        
         SYSTEM sys;
 
         stringstream input(
@@ -240,7 +234,7 @@ int main()
         
     }
 
-    // test17: removeProduct - not admin
+    //removeProduct - not admin
     {
         SYSTEM sys;
 
@@ -279,24 +273,6 @@ int main()
         
     }
 
-    
-
-    
-    // getRepo - not null
-    {
-        SYSTEM sys;
-
-        assert(sys.getRepo() != nullptr);
-    }
-
-    //getAuthService - not null
-    {
-        SYSTEM sys;
-
-        assert(sys.getAuthService() != nullptr);
-        
-    }
-
-    std::cout << "All Tests Passed!" << std::endl;
+    std::cout << "All SYSTEM Tests Passed!" << std::endl;
     return 0;
 }

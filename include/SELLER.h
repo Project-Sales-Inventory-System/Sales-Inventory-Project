@@ -1,3 +1,23 @@
+/*
+SELLER class represents a seller or vendor in the system.
+
+SELLER : public USER-inheritance
+
+PRIVATE FUNCTIONS:
+-SellerMenu():Displays seller menu options.
+-displayResults(const std::vector<PRODUCT>& results):Displays product search results.
+
+PUBLIC FUNCTIONS:
+-SELLER(USER_ACCOUNT sDetails,:PRODUCT_REPO& repository):Constructor that initializes seller details and repository.
+-authenticate(AUTHORITY_SERVICE& auth):Authenticates seller using authority service.
+-getUsername() const:Returns seller username.
+-performAction():Performs seller-selected operations.
+-viewProduct(std::string):Displays details of a specific product.
+-searchProduct(std::string):Searches products using product name or keyword.
+-addProduct(PRODUCT product):Adds a new product to the repository.
+-startSession():Starts seller interaction session.
+
+*/
 #pragma once
 #include"../include/USER.h"
 #include"../include/PRODUCT.h"

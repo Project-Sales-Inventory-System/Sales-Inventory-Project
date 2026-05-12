@@ -229,6 +229,6 @@ int main()
         
     }
 
-    cout << "\nAll ADMIN tests passed!" << endl;
+    cout << "All ADMIN tests passed!" << endl;
     return 0;
 }

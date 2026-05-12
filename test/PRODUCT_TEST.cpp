@@ -5,9 +5,6 @@
 int main(){
     PRODUCT p1("Electronics", "mobile", 30000.00, 10);
 
-    //Test getCategory
-    assert(p1.getCategory()=="Electronics");
-
     //Test getName
     assert(p1.getName()=="mobile");
 
@@ -32,6 +29,10 @@ int main(){
     //Test setName
     p1.setName("smartPhone");
     assert(p1.getName()=="smartPhone");
+
+    //Test getCategory
+    assert(p1.getCategory()=="Electronics");
+
     
     std::cout<<"All PRODUCT tests passed sucessfully!" << std::endl;
     return 0;

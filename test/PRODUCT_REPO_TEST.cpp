@@ -79,6 +79,6 @@ int main() {
     assert(file.is_open());
     file.close();
 
-    std::cout << "All tests passed!" << std::endl;
+    std::cout << "All PRODUCT_REPOtests passed!" << std::endl;
     return 0;
 }

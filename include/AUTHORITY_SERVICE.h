@@ -1,3 +1,31 @@
+/*
+AUTHORITY_SERVICE : Provides authentication and user management services.
+
+STANDARD LIBRARIES USED:
+-vector:Used for storing collections of data.
+-string:Used for text handling.
+
+PRIVATE DATA MEMBERS:
+-admin_pass="admin1234"-Default administrator password.Used for admin verification.
+-registered_user:Vector containing all registered users.
+-users_file:Path of CSV file containing user data.
+
+PRIVATE FUNCTIONS:
+-loadUsersFromCsv():Loads user information from CSV file into memory.
+-saveUsersToCsv():Saves all registered users to CSV file.
+
+PUBLIC FUNCTIONS:
+-AUTHORITY_SERVICE():Constructor that initializes the service.
+-registerUser(USER_ACCOUNT account):Registers a new user.
+-verifyClient(username, password):Verifies user login credentials.
+-login(username, password):Logs user into the system.
+-verifyAdmin(passcode):Verifies administrator
+-getAllRegisteredUsers():Returns all registered users.
+-deleteUserByUsername(username):Removes a user account using username.
+-verifyAndGetAccount(username, password):Verifies credentials and returns account information.
+-usernameExists(username):Checks whether username already exists.
+
+*/
 #pragma once
 #include<string>
 #include"../include/USER_ACCOUNT.h"

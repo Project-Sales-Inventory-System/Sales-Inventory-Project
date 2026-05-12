@@ -47,10 +47,10 @@ int main()
         assert(bill.getItemCount() == 3);        // 1+2
         assert(bill.getTotalAmount() == 51000.0); // 50000+1000
         assert(bill.getPaymentStatus() == "UNPAID");
-        std::cout << "test3 passed - createBILL with items" << std::endl;
+        
     }
 
-    // test4: createBILL - bill_count increments
+    //createBILL - bill_count increments
     {
         BILL_SERVICE bs;
         CART cart;
@@ -66,7 +66,6 @@ int main()
 
     // test autoGenerateBill - empty cart
     {
-        
         BILL_SERVICE bs;
         CART cart;
 
@@ -123,10 +122,9 @@ int main()
 
         stringstream output;
         streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
-        bs.autoConfirmSale(999, repo); // non-existing bill
+        bs.autoConfirmSale(999, repo); 
         std::cout.rdbuf(oldCout);
-
-        assert(output.str().find("Bill ID not found.") != string::npos);
+        assert(output.str().find("Bill ID #999⚠️ not found.") != string::npos);
     }
 
     
