@@ -108,7 +108,7 @@ void PRODUCT_REPO:: removeProduct()
     // Find all products in this category
     vector<int> matchingIndices;
     std::cout<<endl;
-    std::cout<<"------- PRODUCTS IN CATEGORY: "<<actualCategory<<" -------"<<endl;
+    std::cout<<"    PRODUCTS IN CATEGORY: "<<actualCategory<<"   "<<endl;
     std::cout<<"INDEX | PRODUCT NAME - PRICE"<<endl;
     std::cout<<"-------------------------------------------"<<endl;
     for(int i=0; i<all_products.size(); i++)
@@ -362,7 +362,7 @@ vector<PRODUCT> PRODUCT_REPO::searchByCategory(string category)
     }
 
     cout << endl;
-    cout << "------- PRODUCTS IN CATEGORY: " << category << " -------" << endl;
+    cout << "PRODUCTS IN CATEGORY: " << category << " -------" << endl;
     cout << "PRODUCT NAME - PRICE - STOCK" << endl;
     cout << "-------------------------------------------" << endl;
     for (const auto& product : results)
@@ -376,8 +376,13 @@ vector<PRODUCT> PRODUCT_REPO::searchByCategory(string category)
 void PRODUCT_REPO:: getAllProducts(bool showCount)
 {
     ConsoleHelper::Header();
+    cout << setfill(' ');// ye
+    ConsoleHelper::SetColor(15); 
+    cout << "\n" << string(58, '=') << endl;
     ConsoleHelper::SetColor(10);
-    ConsoleHelper::PrintHeader("TOTAL PRODUCTS");
+    cout << setw(35) << "  TOTAL PRODUCTS" << endl;
+    ConsoleHelper::SetColor(15);
+    cout << string(58, '=') << "\n" << endl;
     ConsoleHelper::ResetColor();
     
     rebuildSorting();

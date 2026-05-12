@@ -58,12 +58,16 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         getline(cin, username);
         
         if (username.empty()) {
-            cout << "Error: Username cannot be empty!" << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Error: Username cannot be empty!" << endl;
+            ConsoleHelper::ResetColor();
             continue;
         }
         
         if (username.length() < 5) {
-            cout << "Error: Username must be at least 5 characters long!" << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Error: Username must be at least 5 characters long!" << endl;
+            ConsoleHelper::ResetColor();
             continue;
         }
         
@@ -77,12 +81,16 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         }
         
         if (!hasSpecialChar) {
-            cout << "Error: Username must contain at least one special character (@, #, $, %, &, !, etc.)!" << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Error: Username must contain at least one special character (@, #, $, %, &, !, etc.)!" << endl;
+            ConsoleHelper::ResetColor();
             continue;
         }
         
         if (auth_service.usernameExists(username)) {
-            cout << "Error: Username already exists! Please enter a different username." << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Error: Username already exists! Please enter a different username." << endl;
+            ConsoleHelper::ResetColor();
         } else {
             validUsername = true;
         }
@@ -94,12 +102,16 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
         password = ConsoleHelper::getPassword();
         
         if (password.empty()) {
-            cout << "Error: Password cannot be empty!" << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Error: Password cannot be empty!" << endl;
+            ConsoleHelper::ResetColor();
             continue;
         }
         
         if (password.length() < 5) {
-            cout << "Error: Password must have at least 5 characters!" << endl;
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ Error: Password must have at least 5 characters!" << endl;
+            ConsoleHelper::ResetColor();
         } else {
             validPassword = true;
         }
@@ -138,7 +150,9 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid age" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Invalid age" << endl;
+        ConsoleHelper::ResetColor();
         return false;
     }
 
@@ -168,12 +182,18 @@ bool USER::handleUserRegistrationUI(AUTHORITY_SERVICE& auth_service)
 
     USER_ACCOUNT newAccount(fullName, username, password, contactNo, age, location, email, Client);
     if (auth_service.registerUser(newAccount)) {
+        ConsoleHelper::SetColor(10);
         cout << "Registration successful!" << endl;
+        ConsoleHelper::ResetColor();
         cin.get();
         return true;  // ← CHANGE false to true here!
     } else {
-        cout << "Registration failed. Please try again." << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Registration failed. Please try again." << endl;
+        ConsoleHelper::ResetColor();
+        ConsoleHelper::SetColor(13);
         cout << "\nPress Enter to continue...";
+        ConsoleHelper::ResetColor();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return false;
     }
@@ -184,8 +204,14 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
 {
     int modeChoice;
     cout << "Enter as: " << endl;
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(10);
     cout << "[1] Buyer" << endl;
     cout << "[2] Seller" << endl;
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::ResetColor();
     cout << "Enter choice: ";
     cin >> modeChoice;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -200,7 +226,9 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
 
     if (username.empty() || password.empty())
     {
-        cout << "Username and password can't be empty" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Username and password can't be empty" << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
 
@@ -208,13 +236,18 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
 
     if (account.getUsername().empty())
     {
-        cout << "Login failed. Invalid credentials." << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Login failed. Invalid credentials." << endl;
+        ConsoleHelper::ResetColor();
+         ConsoleHelper::SetColor(13);
         cout << "Press Enter to continue...";
+        ConsoleHelper::ResetColor();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
-
+    ConsoleHelper::SetColor(10);
     cout << "\tWelcome " << account.getUsername() << "!" << endl;
+    ConsoleHelper::ResetColor();
 
     if (modeChoice == 1)
     {
@@ -228,11 +261,17 @@ void USER::handleUserLoginUI(AUTHORITY_SERVICE& auth_service, PRODUCT_REPO& repo
     }
     else
     {
-        cout << "Invalid Choice" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Invalid Choice" << endl;
+        ConsoleHelper::ResetColor();
+         ConsoleHelper::SetColor(13);
         cout << "Press Enter to continue...";
+        ConsoleHelper::ResetColor();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
+    ConsoleHelper::SetColor(13);
     cout << "Press Enter to continue...";
+    ConsoleHelper::ResetColor();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }

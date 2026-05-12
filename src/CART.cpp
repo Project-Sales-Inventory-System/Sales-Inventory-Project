@@ -135,13 +135,13 @@ void CART::addItem(const PRODUCT product) {
     ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("ITEM ADDED SUCCESSFULLY");
     ConsoleHelper::SetColor(7);
-    std::cout << std::left << std::setw(20) << "Product" << "|" << std::setw(10) << "Qty" << "|" << std::setw(15) << "Price (Rs)" << std::endl;
+    std::cout << std::left << std::setfill(' ') << std::setw(20) << "Product" << "|" << std::setw(10) << "Qty" << "|" << std::setw(15) << "Price (Rs)" << std::endl;
     ConsoleHelper::ResetColor();
 
     std::cout << std::string(20, '-') << "+" << std::string(10, '-') << "+" << std::string(15, '-') << std::endl;
     
     for (const auto& item : cart_items) {
-        std::cout << std::left << std::setw(20) << item.getName() << "|" 
+        std::cout << std::left << std::setfill(' ') << std::setw(20) << item.getName() << "|" 
                   << std::setw(10) << item.getQuantity() << "|" 
                   << std::setw(15) << std::fixed << std::setprecision(2) << item.getPrice() << std::endl;
     }
@@ -202,14 +202,14 @@ void CART::viewCart() {
     }
 
     ConsoleHelper::SetColor(10);
-    std::cout << std::left << std::setw(20) << "Product" << "|" 
+    std::cout << std::left << std::setfill(' ') << std::setw(20) << "Product" << "|" 
               << std::setw(10) << "Qty" << "|" 
               << std::setw(15) << "Price (Rs)" << std::endl;
     ConsoleHelper::ResetColor();
     std::cout << std::string(20, '-') << "+" << std::string(10, '-') << "+" << std::string(15, '-') << std::endl;
 
     for (const auto& item : cart_items) {
-        std::cout << std::left << std::setw(20) << item.getName() << "|"
+        std::cout << std::left << std::setfill(' ') << std::setw(20) << item.getName() << "|"
                   << std::setw(10) << item.getQuantity() << "|"
                   << std::setw(15) << std::fixed << std::setprecision(2) << item.getPrice() << std::endl;
     }

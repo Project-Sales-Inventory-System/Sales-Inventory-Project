@@ -75,11 +75,15 @@ void SYSTEM::addProduct(PRODUCT product) {
         return;
     }
     if (current_user == nullptr) {
-        cout << "No user logged in." << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ No user logged in." << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     if (current_user->getAuthority() != ClientSELLER) {
-        cout << "Access not granted! Only sellers or admins can add products." << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Access not granted! Only sellers or admins can add products." << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     repo->addProduct(product);
@@ -88,11 +92,17 @@ void SYSTEM::addProduct(PRODUCT product) {
 
 void SYSTEM::searchProduct() {
     ConsoleHelper::ClearScreen();
+    ConsoleHelper::SetColor(10);
     ConsoleHelper::PrintHeader("SEARCH PRODUCTS");
+    ConsoleHelper::SetColor(15);
+    ConsoleHelper::PrintDivider();
+    ConsoleHelper::SetColor(10);
     cout << "[1] Search by Product Name" << endl;
     cout << "[2] Search by Category" << endl;
     cout << "[3] Back to Menu" << endl;
+     ConsoleHelper::SetColor(15);
     ConsoleHelper::PrintDivider();
+    ConsoleHelper::ResetColor();
     cout << "Enter your choice: ";
 
     int choice;
@@ -110,7 +120,9 @@ void SYSTEM::searchProduct() {
     getline(cin, query);
 
     if (query.empty()) {
-        cout << "Error: Search term cannot be empty!" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Error: Search term cannot be empty!" << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
 
@@ -120,26 +132,36 @@ void SYSTEM::searchProduct() {
     } else if (choice == 2) {
         results = repo->searchByCategory(query);
     } else {
-        cout << "Invalid choice!" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Invalid choice!" << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
 
     if (results.empty()) {
-        cout << "No products found matching: " << query << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ No products found matching: " << query << endl;
+        ConsoleHelper::ResetColor();
     } else {
-        cout << "\n--- Search Results ---" << endl;
+        ConsoleHelper::SetColor(10);
+        cout << "\nSearch Results" << endl;
+        ConsoleHelper::ResetColor();
         for (const auto& prod : results) {
            
             cout << "Product: " << prod.getName() << " | Category: " << prod.getCategory() << endl;
         }
     }
+        ConsoleHelper::SetColor(13);
     cout << "\nPress Enter to continue...";
+    ConsoleHelper::ResetColor();
     cin.get();
 }
 
 void SYSTEM::removeProduct() {
     if (!isAdminLoggedin) {
-        cout << "Access not granted!" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Access not granted!" << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     repo->removeProduct();
@@ -147,7 +169,9 @@ void SYSTEM::removeProduct() {
 
 void SYSTEM::updateProduct() {
     if (!isAdminLoggedin) {
-        cout << "Access not granted!" << endl;
+        ConsoleHelper::SetColor(12);
+        cout << "⚠️ Access not granted!" << endl;
+        ConsoleHelper::ResetColor();
         return;
     }
     repo->updateProduct();
@@ -256,7 +280,9 @@ ADMIN::handleAdminLoginUI(*auth, *repo, *bill_service);
 void SYSTEM::viewProductList() {
     ConsoleHelper::ClearScreen();
     repo->getAllProducts(false);
+    ConsoleHelper::SetColor(13);
     cout << "\nPress Enter to return...";
+    ConsoleHelper::ResetColor();
     cin.get();
 }
 

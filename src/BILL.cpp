@@ -92,7 +92,7 @@ void BILL::displayBill() {
     ConsoleHelper::ResetColor();
 
     cout << "\n";
-    cout << left
+    cout << left << setfill(' ')
          << setw(20) << " Product Name" << "|"
          << setw(8)  << " Qty"          << "|"
          << setw(14) << " Price (Rs)"   << "|"
@@ -104,7 +104,7 @@ void BILL::displayBill() {
          << string(15, '-') << endl;
 
     for (const auto& p : items) {
-        cout << left
+        cout << left << setfill(' ')
              << setw(20) << (" " + p.getName())     << "|"
              << setw(8)  << (" " + to_string(p.getQuantity())) << "|"
              << " " << setw(13) << fixed << setprecision(2) << p.getPrice() << "|"
@@ -112,8 +112,8 @@ void BILL::displayBill() {
     }
 
     cout << string(58, '-') << endl;
-    cout << left << setw(30) << " TOTAL ITEMS  :" << item_count << endl;
-    cout << left << setw(30) << " TOTAL AMOUNT :" << " Rs "
+    cout << left << setfill(' ') << setw(30) << " TOTAL ITEMS  :" << item_count << endl;
+    cout << left << setfill(' ') << setw(30) << " TOTAL AMOUNT :" << " Rs "
          << fixed << setprecision(2) << total_amount << endl;
     ConsoleHelper::SetColor(7);
     ConsoleHelper::PrintDivider();
