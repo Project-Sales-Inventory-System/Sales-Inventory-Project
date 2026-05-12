@@ -382,8 +382,24 @@ void ADMIN::viewProduct(std::string category)
         ConsoleHelper::ResetColor();
 
         cout << "Enter category: ";
-        getline(cin, category); 
-        repo->searchByCategory(category);
+        getline(cin, category);
+        
+        vector<PRODUCT> results = repo->searchByCategory(category);
+        if (results.empty()) {
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ No products found in category: " << category << endl;
+            ConsoleHelper::ResetColor();
+        } else {
+            cout << endl;
+            cout << "PRODUCTS IN CATEGORY: " << category << " -------" << endl;
+            cout << "INDEX | NAME - PRICE - STOCK" << endl;
+            cout << "-------------------------------------------" << endl;
+            for (int i = 0; i < (int)results.size(); i++) {
+                cout << (i+1) << ".     | ";
+                results[i].displaySearchInfo();
+            }
+            cout << "-------------------------------------------" << endl;
+        }
     }
     else if (choice == 2)
     {
@@ -401,7 +417,21 @@ void ADMIN::searchProduct(std::string productName)
 {
     if (repo)
     {
-        repo->searchByName(productName);
+        vector<PRODUCT> results = repo->searchByName(productName);
+        if (results.empty()) {
+            ConsoleHelper::SetColor(12);
+            cout << "⚠️ No products found matching: " << productName << endl;
+            ConsoleHelper::ResetColor();
+        } else {
+            cout << "\nSearch Results:" << endl;
+            cout << "INDEX | NAME - PRICE - STOCK" << endl;
+            cout << "-------------------------------------------" << endl;
+            for (int i = 0; i < (int)results.size(); i++) {
+                cout << (i+1) << ".     | ";
+                results[i].displaySearchInfo();
+            }
+            cout << "-------------------------------------------" << endl;
+        }
     }
     else
     {

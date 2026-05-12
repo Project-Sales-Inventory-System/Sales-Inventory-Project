@@ -144,17 +144,24 @@ void SYSTEM::searchProduct() {
         ConsoleHelper::ResetColor();
     } else {
         ConsoleHelper::SetColor(10);
-        cout << "\nSearch Results" << endl;
+        cout << "\n" << string(60, '=') << endl;
+        cout << "SEARCH RESULTS" << endl;
+        cout << string(60, '=') << endl;
+        cout << "INDEX | NAME | CATEGORY | PRICE | QUANTITY" << endl;
+        cout << string(60, '-') << endl;
         ConsoleHelper::ResetColor();
-        for (const auto& prod : results) {
-           
-            cout << "Product: " << prod.getName() << " | Category: " << prod.getCategory() << endl;
+        for (int i = 0; i < (int)results.size(); i++) {
+            cout << (i+1) << "     | " 
+                 << results[i].getName() << " | " 
+                 << results[i].getCategory() << " | " 
+                 << results[i].getPrice() << " | " 
+                 << results[i].getQuantity() << endl;
         }
+        cout << string(60, '=') << endl;
     }
-        ConsoleHelper::SetColor(13);
+    ConsoleHelper::SetColor(13);
     cout << "\nPress Enter to continue...";
     ConsoleHelper::ResetColor();
-    cin.get();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
